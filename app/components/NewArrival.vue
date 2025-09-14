@@ -1,0 +1,77 @@
+<template>
+  <section class="w-full mx-auto mt-12 px-4 sm:px-10 h-auto">
+    <!-- Header -->
+    <div class="w-full flex justify-between items-center mb-3">
+      <h2 class="text-2xl font-bold mb-6">جدیدترین محصولات</h2>
+
+      <div class="flex gap-2">
+        <button
+          @click="slidePrev"
+          :disabled="!swiperReady"
+          class="rounded-full p-3 bg-[#F1F2EE] outline outline-1 cursor-pointer"
+          aria-label="قبلی"
+        >
+          <NuxtImg src="/images/Vector-(1).svg" alt="prev" width="16" height="16" />
+        </button>
+        <button
+          @click="slideNext"
+          :disabled="!swiperReady"
+          class="rounded-full p-3 bg-[#DCF763] outline outline-1 cursor-pointer"
+          aria-label="بعدی"
+        >
+          <NuxtImg src="/images/Vector-(2).svg" alt="next" width="16" height="16" />
+        </button>
+      </div>
+    </div>
+
+    <!-- Swiper (Client-only) -->
+    <ClientOnly>
+      <Swiper
+        v-if="productStore.products.length"
+        ref="swiperRef"
+        :slides-per-view="'auto'"
+        :space-between="10"
+        grab-cursor
+        class="!overflow-hidden"
+        @swiper="onSwiper"
+      >
+        <SwiperSlide
+          v-for="product in productStore.products"
+          :key="product.id"
+          class="!w-[180px] sm:!w-[220px] md:!w-[250px]"
+        >
+          <NuxtLink :to="`/product/${product.id}`">
+            <ProductCard :product="product" />
+          </NuxtLink>
+        </SwiperSlide>
+      </Swiper>
+    </ClientOnly>
+  </section>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+import ProductCard from '@/components/ui/ProductCard.vue'
+import { useProductStore } from '~/stores/products'
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+
+const productStore = useProductStore()
+
+// SSR-ready: بارگذاری محصولات قبل از رندر
+await productStore.fetchProducts()
+
+const swiperRef = ref<any>(null)
+const swiperInstance = ref<any>(null)
+const swiperReady = ref(false)
+
+const onSwiper = (swiper: any) => {
+  swiperInstance.value = swiper
+  swiperReady.value = true
+}
+
+const slideNext = () => swiperInstance.value?.slideNext()
+const slidePrev = () => swiperInstance.value?.slidePrev()
+</script>

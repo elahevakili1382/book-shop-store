@@ -1,0 +1,9 @@
+
+[
+  { "id": 1, "name": "غیر داستانی", "items": 302, "icon": "/images/NonFictionIcon(1).svg" },
+  { "id": 2, "name": "داستانی", "items": 115, "icon": "/images/NonFictionIcon(2).svg" },
+  { "id": 3, "name": "تاریخی", "items": 552, "icon": "/images/NonFictionIcon(3).svg" },
+  { "id": 4, "name": "اشعار", "items": 1000, "icon": "/images/NonFictionIcon(4).svg" },
+  { "id": 5, "name": "ترسناک", "items": 60, "icon": "/images/NonFictionIcon(5).svg" },
+  { "id": 6, "name": "فضایی", "items": 140, "icon": "/images/NonFictionIcon(6).svg" }
+]
