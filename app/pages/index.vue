@@ -14,6 +14,8 @@ definePageMeta({
         <NewArrival/>
         <BestSelling/>
         <DealsOfDay/>
+        <ShopWithUs/>
+        <JoinWithUs/>
     </main>
 </template>
 

@@ -8,14 +8,33 @@ export default defineNuxtConfig({
     css: [
     "@fontsource/vazir/index.css"
   ],
+  
 
-  // experimental:{
-  //   sharedPrerenderData:false,
-  //   compileTemplate:true,
-  //   resetA
-
-
-  // },
+fontawesome: {
+    // پک‌های مورد نیاز
+    component: 'FontAwesome',
+    icons: {
+      solid: [
+        'book',
+        'user',
+        'headset',
+        'handshake',
+        'address-card',
+        'location-dot',
+        'phone',
+        'envelope'
+      ],
+      brands: [
+        'facebook-f',
+        'twitter',
+        'instagram',
+        'linkedin-in'
+      ],
+      regular: [
+        'envelope'
+      ]
+    }
+  },
   app:{
     head:{
       title:"website",
@@ -43,6 +62,7 @@ export default defineNuxtConfig({
     "@nuxt/icon",
     "@nuxt/image",
     "@pinia/nuxt",
-    "nuxt-swiper"
+    "nuxt-swiper",
+    "@vesp/nuxt-fontawesome"
   ]
 })

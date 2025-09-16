@@ -50,9 +50,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import ProductCard from '@/components/ui/ProductCard.vue'
-import { useProductStore } from '~/stores/products'
+import { useProductStore } from '~/stores/productStore'
+import type SwiperClass from 'swiper'
+
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import 'swiper/css'
 import 'swiper/css/navigation'
@@ -60,18 +62,19 @@ import 'swiper/css/pagination'
 
 const productStore = useProductStore()
 
-// SSR-ready: بارگذاری محصولات قبل از رندر
-await productStore.fetchProducts()
+// فراخوانی searchProducts با یک query پیش‌فرض
+onMounted(() => {
+  productStore.searchProducts('programming') // مثال: 'programming' به عنوان query پیش‌فرض
+})
 
-const swiperRef = ref<any>(null)
-const swiperInstance = ref<any>(null)
+const swiperRef = ref<SwiperClass | null>(null)
+const swiperInstance = ref<SwiperClass | null>(null)
 const swiperReady = ref(false)
 
-const onSwiper = (swiper: any) => {
+const onSwiper = (swiper: SwiperClass) => {
   swiperInstance.value = swiper
   swiperReady.value = true
 }
-
 const slideNext = () => swiperInstance.value?.slideNext()
 const slidePrev = () => swiperInstance.value?.slidePrev()
 </script>

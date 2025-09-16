@@ -40,8 +40,8 @@
 <div class="w-full flex justify-center px-4">
   <button
     @click="addProduct"
-    class="bg-[#435058] rounded-full text-white flex items-center justify-center gap-2 
-           px-6 py-2 hover:bg-[#5b6a6a] transition w-auto max-w-[240px]"
+    class="bg-[#435058] rounded-full text-white flex items-center justify-center gap-1
+           px-6 py-2 hover:bg-[#5b6a6a] transition w-auto max-w-[320px]"
   >
     افزودن به سبد
     <NuxtImg src="/images/user.svg" alt="افزودن به سبد خرید" width="18" height="18" />

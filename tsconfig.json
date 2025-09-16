@@ -1,4 +1,15 @@
 {
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./app/*"],
+      "#app": [".nuxt/types/app.d.ts"]
+    },
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "types": ["vitest/globals", "node", "@nuxt/types"]
+  },
   // https://nuxt.com/docs/guide/concepts/typescript
   "files": [],
   "references": [

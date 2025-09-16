@@ -9,6 +9,7 @@
 import { onMounted } from 'vue'
 import { useCartStore } from '@/stores/cart'
 
+
 const cartStore = useCartStore()
 
 onMounted(() => {

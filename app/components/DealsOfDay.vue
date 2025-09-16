@@ -1,9 +1,7 @@
 <template>
   <section class="w-full mx-auto mt-12 px-4 sm:px-10">
-    <!-- هدر -->
     <div class="w-full flex justify-between items-center mb-3">
       <h2 class="text-2xl font-bold mb-6">فروش های روز</h2>
-
       <div class="flex gap-2">
         <button
           @click="slidePrev"
@@ -22,12 +20,10 @@
       </div>
     </div>
 
-    <!-- لودینگ -->
     <div v-if="isLoading" class="flex justify-center items-center h-40">
       <span class="text-gray-500 text-lg">در حال بارگذاری ...</span>
     </div>
 
-    <!-- Swiper -->
     <ClientOnly v-else>
       <Swiper
         v-if="products.length"
@@ -37,11 +33,7 @@
         grab-cursor
         class="!overflow-hidden"
         @swiper="onSwiper"
-        :breakpoints="{
-          640: { slidesPerView: 1 },
-          768: { slidesPerView: 2 },
-          1024: { slidesPerView: 3 },
-        }"
+        :breakpoints="{ 640: { slidesPerView: 1 }, 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }"
       >
         <SwiperSlide
           v-for="product in products"
@@ -58,32 +50,39 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
-import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
-import { useProductStore } from '~/stores/products'
+import type SwiperClass from 'swiper'
+import type { Product } from '~/stores/productStore'
 import SoldProductCard from '~/components/SoldProductCard.vue'
+import { useProductStore } from '~/stores/productStore'
+
+import 'swiper/css'
 
 const productStore = useProductStore()
 
+// فراخوانی searchProducts با یک query مشخص
 onMounted(() => {
-  productStore.fetchProducts()
+  productStore.searchProducts('programming') // مثال: برنامه‌نویسی به عنوان query پیش‌فرض
 })
 
-const products = computed(() => productStore.products)
+const products = computed<Product[]>(() => productStore.products)
 const isLoading = computed(() => productStore.isLoading)
 
-const swiperRef = ref<any>(null)
-const swiperInstance = ref<any>(null)
+const swiperRef = ref<SwiperClass | null>(null)
+const swiperInstance = ref<SwiperClass | null>(null)
 const swiperReady = ref(false)
 
-const onSwiper = (swiper: any) => {
+function onSwiper(swiper: SwiperClass) {
   swiperInstance.value = swiper
   swiperReady.value = true
 }
 
-const slideNext = () => swiperInstance.value?.slideNext()
-const slidePrev = () => swiperInstance.value?.slidePrev()
+function slideNext() {
+  swiperInstance.value?.slideNext()
+}
+
+function slidePrev() {
+  swiperInstance.value?.slidePrev()
+}
 </script>
 
 <style scoped>

@@ -39,11 +39,10 @@
     <nav class="hidden md:flex items-center space-x-6 rtl:space-x-reverse">
       <NuxtLink
         to="/"
-        class="font-bold px-6 py-1 bg-[#435058] rounded-full text-white hover:bg-[#0c161dcb] hover:scale-105"
+        class="font-bold px-6 py-1 bg-[#435058] rounded-full text-white hover:bg-[#0c161dcb] hover:scale-105 me-5"
       >
         خانه
       </NuxtLink>
-      <NuxtLink to="/" class="font-bold text-gray-600 hover:text-gray-500">دسته بندی ها</NuxtLink>
       <NuxtLink to="/" class="font-bold text-gray-600 hover:text-gray-500">منتخب ها</NuxtLink>
       <NuxtLink to="/" class="font-bold text-gray-600 hover:text-gray-500">تازه ها</NuxtLink>
       <NuxtLink to="/" class="font-bold text-gray-600 hover:text-gray-500">پرفروش ها</NuxtLink>
@@ -86,12 +85,7 @@
               class="px-3 py-2 rounded hover:bg-[#5a5a57e5] hover:text-white"
               >خانه</NuxtLink
             >
-            <NuxtLink
-              to="/"
-              @click="ui.closeMobileMenu()"
-              class="px-3 py-2 rounded hover:bg-[#5a5a57e5] hover:text-white"
-              >دسته‌بندی</NuxtLink
-            >
+            
             <NuxtLink
               to="/"
               @click="ui.closeMobileMenu()"

@@ -1,12 +1,13 @@
+//stores/categoryProduct.ts
 import { defineStore } from 'pinia'
 
-interface Product {
+export interface Product {
   id: string
   title: string
   price: number
   image: string
-  rating?: number
-  category?: string
+  rating?: number   // اختیاری
+  category: string
 }
 
 interface OpenLibraryResponse {
@@ -36,32 +37,36 @@ export const useCategoryProductStore = defineStore('categoryProduct', {
     isLoading: false,
     error: null as string | null
   }),
+
   getters: {
-    filteredProducts: (state) =>
+    filteredProducts: (state): Product[] =>
       state.products.filter(p => p.category === state.selectedCategory)
   },
+
   actions: {
     async fetchProducts(categoryKey: string) {
       this.isLoading = true
       this.error = null
+
       try {
         const { data, error: fetchError } = await useFetch<OpenLibraryResponse>(
           `https://openlibrary.org/subjects/${categoryKey}.json?limit=20`,
           { server: false }
         )
+
         if (fetchError.value) throw new Error(fetchError.value.message || 'خطا در دریافت محصولات')
 
         if (data.value?.works) {
           this.products = data.value.works
-            .filter(book => book.cover_id)
+            .filter(book => book.cover_id) // فقط کتاب‌هایی که عکس دارند
             .map(book => ({
               id: book.key,
               title: book.title,
-              price: Math.floor(Math.random() * 200000) + 50000,
+              price: Math.floor(Math.random() * 200000) + 50000, // قیمت تصادفی
               image: book.cover_id
                 ? `https://covers.openlibrary.org/b/id/${book.cover_id}-L.jpg`
                 : '/images/default-book.jpg',
-              rating: book.rating ?? Math.round((Math.random() * 4 + 1) * 10) / 10,
+              rating: book.rating ?? Math.round((Math.random() * 4 + 1) * 10) / 10, // اگر rating نبود، عدد تصادفی
               category: this.selectedCategory
             }))
         }
