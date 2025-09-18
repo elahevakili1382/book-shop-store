@@ -51,38 +51,49 @@
 import { ref, computed, onMounted } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import type SwiperClass from 'swiper'
-import type { Product } from '~/stores/productStore'
+import type { Product } from '../../types/types'
 import SoldProductCard from '~/components/SoldProductCard.vue'
 import { useProductStore } from '~/stores/productStore'
 
 import 'swiper/css'
 
-const productStore = useProductStore()
+const store = useProductStore()
 
-// فراخوانی searchProducts با یک query مشخص
-onMounted(() => {
-  productStore.searchProducts('programming') // مثال: برنامه‌نویسی به عنوان query پیش‌فرض
-})
+// --- استیت محلی کامپوننت برای جداسازی از سایر کامپوننت‌ها
+const products = ref<Product[]>([])
+const isLoading = ref(false)
+const error = ref<string | null>(null)
 
-const products = computed<Product[]>(() => productStore.products)
-const isLoading = computed(() => productStore.isLoading)
-
+// --- Swiper
 const swiperRef = ref<SwiperClass | null>(null)
 const swiperInstance = ref<SwiperClass | null>(null)
 const swiperReady = ref(false)
-
-function onSwiper(swiper: SwiperClass) {
+const onSwiper = (swiper: SwiperClass) => {
   swiperInstance.value = swiper
   swiperReady.value = true
 }
+const slideNext = () => swiperInstance.value?.slideNext()
+const slidePrev = () => swiperInstance.value?.slidePrev()
 
-function slideNext() {
-  swiperInstance.value?.slideNext()
+// --- fetch محصولات فقط برای همین کامپوننت
+async function loadProducts(query: string) {
+  isLoading.value = true
+  error.value = null
+  try {
+    await store.searchProducts(query)
+    // جدا کردن state محلی از استور
+    products.value = store.products.map(p => ({ ...p }))
+  } catch (err: unknown) {
+    error.value = err instanceof Error ? err.message : 'خطای ناشناخته'
+  } finally {
+    isLoading.value = false
+  }
 }
 
-function slidePrev() {
-  swiperInstance.value?.slidePrev()
-}
+// --- بارگذاری اولیه
+onMounted(() => {
+  loadProducts('programming') // مثال: query پیش‌فرض
+})
 </script>
 
 <style scoped>
