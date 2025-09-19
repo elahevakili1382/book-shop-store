@@ -18,6 +18,7 @@
       <div class="bg-white rounded-3xl w-full md:w-72 p-6 flex-col gap-6 shadow-md shrink-0">
         <h2 class="font-semibold text-lg mb-4">دسته بندی</h2>
 
+        <!-- موبایل (افقی) -->
         <ul class="flex md:hidden overflow-x-auto gap-2 mb-4">
           <li v-for="category in categories" :key="category" @click="selectCategory(category)"
               :class="['cursor-pointer px-4 py-2 rounded-lg whitespace-nowrap border', selectedCategory === category ? 'bg-gray-300 font-bold' : 'bg-white']">
@@ -25,6 +26,7 @@
           </li>
         </ul>
 
+        <!-- دسکتاپ (عمودی) -->
         <ul class="hidden md:flex flex-col gap-3 text-gray-700">
           <li v-for="category in categories" :key="category" @click="selectCategory(category)"
               :class="['cursor-pointer hover:text-gray-900 hover:font-bold px-4 py-2 rounded-lg', selectedCategory === category ? 'bg-gray-300 font-bold' : '']">
@@ -40,19 +42,31 @@
         </div>
 
         <ClientOnly v-else>
-          <Swiper v-if="products.length"
-                  :slides-per-view="'auto'"
-                  :space-between="20"
-                  @swiper="onSwiper"
-                  :breakpoints="{ 640: { slidesPerView: 1 }, 768: { slidesPerView: 2 }, 1024: { slidesPerView: 'auto' } }"
-                  grab-cursor
-                  ref="swiperRef"
-                  :rtl="true">
-            <SwiperSlide v-for="product in products" :key="product._key"
-                         class="flex !w-[180px] sm:!w-[220px] md:!w-[250px] flex-shrink-0">
-              <ProductCard :product="product" />
-            </SwiperSlide>
-          </Swiper>
+          <Swiper
+  v-if="products.length"
+  :space-between="12"
+  :grab-cursor="true"
+  :centered-slides="true"  
+  @swiper="onSwiper"
+  ref="swiperRef"
+  :rtl="true"
+  :breakpoints="{
+    0: { slidesPerView: 1 },
+    640: { slidesPerView: 1 },
+    768: { slidesPerView: 2 },
+    1024: { slidesPerView: 4 },
+    1280: { slidesPerView: 5 }
+  }"
+>
+  <SwiperSlide
+    v-for="product in products"
+    :key="product._key"
+    class="flex justify-center w-full md:!w-[250px] flex-shrink-0"
+  >
+    <ProductCard :product="product" />
+  </SwiperSlide>
+</Swiper>
+
         </ClientOnly>
       </div>
     </div>
@@ -67,7 +81,7 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 import type SwiperClass from 'swiper'
 import 'swiper/css'
 
-// استور
+// استور محصولات
 const store = useProductStore()
 
 // state

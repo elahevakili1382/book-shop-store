@@ -1,11 +1,10 @@
 <template>
   <div
-  class="flex flex-row gap-3 p-4 min-w-[420px] max-w-[410px] h-[320px] rounded-xl shadow hover:shadow-lg transition relative bg-gray-100"
-  dir="rtl"
->
-
+    class="flex flex-row gap-3 p-4 w-full max-w-[350px] sm:max-w-full h-[320px] rounded-xl shadow hover:shadow-lg transition relative bg-gray-100 mx-auto"
+    dir="rtl"
+  >
     <!-- تصویر محصول -->
-    <div class="flex-shrink-0 w-[45%]">
+    <div class="flex-shrink-0 w-1/2 sm:w-2/5">
       <NuxtImg
         :src="product.image"
         alt="product image"
@@ -15,12 +14,12 @@
     </div>
 
     <!-- جزئیات -->
-<div class="flex flex-col justify-between w-[55%] p-2 sm:p-4 h-full">
+    <div class="flex flex-col justify-between w-1/2 sm:w-3/5 p-2 sm:p-4 h-full">
       <div>
-        <p class="text-[#848C8E] text-xs mb-1">نویسنده‌ی کتاب</p>
+        <p class="text-[#848C8E] text-xs sm:text-sm mb-1">نویسنده‌ی کتاب</p>
         <h2 class="text-sm sm:text-lg font-bold mb-2 truncate">{{ product.title }}</h2>
 
-        <p class="text-[#848C8E] text-xs mb-1">قیمت کتاب</p>
+        <p class="text-[#848C8E] text-xs sm:text-sm mb-1">قیمت کتاب</p>
         <h2 class="text-sm sm:text-lg font-semibold mb-4">{{ formattedPrice }}</h2>
       </div>
 
@@ -32,9 +31,10 @@
           <img src="/images/Vector-(3).svg" alt="rating icon" class="w-3 h-3 sm:w-4 sm:h-4" />
           <span>{{ product.rating || '0.0' }}</span>
         </div>
-        <p class="text-[#848C8E] text-xs">140 نظر</p>
+        <p class="text-[#848C8E] text-xs sm:text-sm">140 نظر</p>
       </div>
-<!-- فروش رفته -->
+
+      <!-- فروش رفته -->
       <div class="w-full max-w-full sm:max-w-[200px]">
         <p class="text-sm sm:text-base">فروش رفته <span class="font-bold">21/99</span></p>
         <div class="relative w-full h-2 bg-[#848C8E] rounded-lg mb-5 overflow-hidden">
@@ -48,7 +48,7 @@
       <!-- دکمه -->
       <button
         type="button"
-        class="w-full sm:w-auto bg-[#435058] rounded-full text-white flex items-center justify-center gap-2 px-4 sm:px-6 py-1.5 sm:py-2 hover:bg-[#5b6a6a] transition whitespace-nowrap shrink-0"
+        class="w-full sm:w-auto bg-[#435058] rounded-full text-white flex items-center justify-center gap-2 px-4 sm:px-6 py-1.5 sm:py-2 hover:bg-[#5b6a6a] transition whitespace-nowrap"
       >
         افزودن به سبد
         <img src="/images/user.svg" alt="add to cart icon" class="w-3 h-3 sm:w-4 sm:h-4" />

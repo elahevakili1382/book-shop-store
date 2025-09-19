@@ -24,7 +24,7 @@
             v-model="email"
             type="email"
             placeholder="ایمیل خود را وارد کنید"
-            class="w-full px-14 py-3 rounded-[50px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#DCF763] transition"
+            class="w-full pr-28 px-14 py-3 rounded-[50px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#DCF763] transition"
           />
           <NuxtImg
             src="/images/email-icon.svg"

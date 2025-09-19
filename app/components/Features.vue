@@ -28,7 +28,6 @@
     :slides-per-view="'auto'"
     :space-between="16"
     :pagination="{ clickable: true }"
-    :modules="[Pagination]"
     grab-cursor
     class="overflow-hidden rounded-3xl !pb-4"
     @swiper="onSwiper"

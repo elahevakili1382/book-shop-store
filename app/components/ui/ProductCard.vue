@@ -1,8 +1,8 @@
 <template>
   <div
     class="flex flex-col justify-between items-center py-3 flex-shrink-0 
-           w-full max-w-[300px] sm:max-w-[300px] md:max-w-[300px] 
-           transition hover:shadow-xl hover:rounded-2xl hover:scale-105 mx-2"
+           w-full max-w-[300px] sm:max-w-[310px] md:max-w-[300px] 
+           transition hover:shadow-xl hover:rounded-2xl hover:scale-105"
   >
     <!-- تصویر کتاب (کلیک → صفحه جزئیات) -->
     <NuxtLink :to="productUrl" class="w-full h-[420px] relative flex-shrink-0">
@@ -38,11 +38,11 @@
     </NuxtLink>
 
     <!-- دکمه افزودن به سبد (کلیک → فقط addToCart) -->
-    <div class="w-full flex justify-center px-4">
+    <div class="w-full flex justify-center">
       <button
         @click="addProduct"
-        class="bg-[#435058] rounded-full text-white flex items-center justify-center gap-1
-               px-6 py-2 hover:bg-[#5b6a6a] transition w-auto max-w-[320px]"
+        class="bg-[#435058] rounded-full text-white flex items-center justify-center
+               px-16 py-3 hover:bg-[#5b6a6a] transition w-auto max-w-[330px]"
       >
         افزودن به سبد
         <NuxtImg src="/images/user.svg" alt="افزودن به سبد خرید" width="18" height="18" />

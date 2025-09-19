@@ -26,17 +26,17 @@
 
     <!-- متن -->
     <div class="max-w-xs mr-10 sm:mt-0 text-right">
-      <h2 class="text-xl lg:text-3xl font-bold">کلایو کاسلر</h2>
-      <p class="text-sm mt-2 text-gray-500">و بوید موریسون</p>
+      <h2 class="text-2xl lg:text-3xl font-bold">کلایو کاسلر</h2>
+      <p class="text-md mt-2 text-gray-500">و بوید موریسون</p>
       <div class="flex flex-row md:flex-col gap-4 mt-1">
         <button
-          class="bg-gray-300 hover:bg-gray-100 text-black px-4 py-2 rounded-full text-sm"
+          class="bg-gray-300 hover:bg-gray-200 text-black px-4 py-2 rounded-full text-md"
           role="link"
         >
           اطلاعات بیشتر
         </button>
         <button
-          class="bg-lime-400 text-black px-4 py-2 rounded-full text-sm hover:bg-lime-600"
+          class="bg-lime-400 text-black px-4 py-2 rounded-full text-md hover:bg-lime-600"
           role="link"
         >
           خرید کتاب
@@ -47,7 +47,7 @@
 
   <!-- بخش جستجو -->
   <section
-    class="w-full max-w-5xl mx-auto bg-white/45 border border-gray-100 backdrop-blur-lg rounded-3xl p-3 md:p-6 shadow-2xl mt-8"
+    class="w-full max-w-5xl mx-auto bg-white/45 border border-gray-100 backdrop-blur-lg rounded-3xl p-3 md:p-6 shadow-2xl"
   >
     <div class="flex flex-col items-center">
       <div class="w-full max-w-xl mb-6">
@@ -81,7 +81,7 @@
           <input
             type="text"
             placeholder="جستجو..."
-            class="w-full rounded-full pl-10 pr-10 py-3 border border-gray-300 focus:outline-none focus:border-blue-600 placeholder-gray-400 transition-all duration-300 shadow-md text-right"
+            class="w-full rounded-full pl-10 pr-10 py-3 border border-gray-300 focus:outline-none focus:border-blue-600 placeholder-gray-400 transition-all duration-300 shadow-md text-right font-bold"
             required
           />
 
@@ -110,32 +110,45 @@
       </div>
 
       <!-- اسلایدر کتاب‌ها -->
-      <ClientOnly>
-        <Swiper
-          :slidesPerView="5"
-          :spaceBetween="30"
-          :pagination="{ clickable: true }"
-          :modules="[Pagination]"
-          grab-cursor
-          class="w-full max-w-2xl mt-5"
-        >
-          <SwiperSlide
-            v-for="book in books"
-            :key="book.title"
-            class="slide-bg flex items-center justify-center rounded-lg"
-          >
-            <NuxtImg
-              :src="book.cover"
-              :alt="book.title"
-              width="100"
-              height="120"
-              format="webp"
-              sizes="sm:80px md:100px lg:120px"
-              class="rounded object-cover w-full h-full p-4"
-            />
-          </SwiperSlide>
-        </Swiper>
-      </ClientOnly>
+    <ClientOnly>
+  <Swiper
+    :slidesPerView="5"
+    :pagination="{ clickable: true }"
+    :modules="[Pagination]"
+    grab-cursor
+    :breakpoints="{
+      320: { slidesPerView: 3, spaceBetween: 10 },   // موبایل
+      640: { slidesPerView: 4, spaceBetween: 15 },   // تبلت
+      1024: { slidesPerView: 6, spaceBetween: 20 }   // دسکتاپ
+    }"
+    class="w-full max-w-5xl"
+  >
+<SwiperSlide
+  v-for="book in books"
+  :key="book.title"
+>
+  <!-- دیو خاکستری -->
+  <div
+    class="flex items-center justify-center
+           w-[116px] h-[117px] sm:w-[100px] sm:h-[105px] md:w-[116px] md:h-[117px]
+           bg-[#cdcdc34a] rounded-md p-1"
+  >
+    <!-- عکس -->
+    <NuxtImg
+      :src="book.cover"
+      :alt="book.title"
+      width="65"
+      height="102"
+      format="webp"
+      class="object-contain"
+    />
+  </div>
+</SwiperSlide>
+
+
+  </Swiper>
+</ClientOnly>
+
     </div>
   </section>
 </template>
@@ -163,17 +176,9 @@ const books: Book[] = [
 </script>
 
 <style scoped>
-/* بک‌گراند اسلاید و سایه */
-.slide-bg {
-  background-color: #cdcdc34a;
-  width: 116px;
-  height: 117px;
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
 
 /* pagination سفارشی */
-.swiper-pagination-bullet {
+/* .swiper-pagination-bullet {
   background-color: #aaa;
   opacity: 1;
   width: 12px;
@@ -181,7 +186,7 @@ const books: Book[] = [
   margin: 0 6px !important;
   border-radius: 50%;
   transition: background-color 0.3s;
-}
+} */
 .swiper-pagination-bullet-active {
   background-color: #dce763;
 }

@@ -31,26 +31,34 @@
 
     <!-- Swiper -->
     <ClientOnly v-else>
-      <Swiper
-        v-if="products.length"
-        ref="swiperRef"
-        :slides-per-view="'auto'"
-        :space-between="16"
-        grab-cursor
-        class="!overflow-hidden"
-        @swiper="onSwiper"
-        :breakpoints="{ 640: { slidesPerView: 1 }, 768: { slidesPerView: 2 }, 1024: { slidesPerView: 3 } }"
-      >
-        <SwiperSlide
-          v-for="product in products"
-          :key="product.id"
-          class="!w-[180px] sm:!w-[220px] md:!w-[250px] flex justify-center"
-        >
-          <NuxtLink :to="`/product/${product.id}`" class="w-full h-full">
-            <ProductCard :product="product" class="h-full" />
-          </NuxtLink>
-        </SwiperSlide>
-      </Swiper>
+<Swiper
+  v-if="products.length"
+  ref="swiperRef"
+  grab-cursor
+  class="!overflow-hidden"
+  @swiper="onSwiper"
+  :space-between="12"
+  :centered-slides="false"
+  :breakpoints="{
+    0: { slidesPerView: 1 },
+    640: { slidesPerView: 2 },
+    768: { slidesPerView: 3 },
+    1024: { slidesPerView: 4 },
+    1280: { slidesPerView: 4 }
+  }"
+>
+  <SwiperSlide
+    v-for="product in products"
+    :key="product.id"
+    class="flex justify-center"
+  >
+    <NuxtLink :to="`/product/${product.id}`" class="w-full max-w-[300px]">
+      <ProductCard :product="product" />
+    </NuxtLink>
+  </SwiperSlide>
+</Swiper>
+
+
     </ClientOnly>
   </section>
 </template>
