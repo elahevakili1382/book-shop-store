@@ -1,5 +1,14 @@
 import { defineStore } from "pinia"
-import type { SearchResponse, SubjectResponse, Doc, Work, Product as BaseProduct } from "../../types/types"
+import type {
+  SearchResponse,
+  SubjectResponse,
+  Doc,
+  Work,
+  Product as BaseProduct,
+  WorkDetail,
+  EditionEntry,
+  EditionResponse,
+} from "../../types/types"
 
 export interface Product extends BaseProduct {
   id: string
@@ -36,38 +45,39 @@ export const useProductStore = defineStore("productStore", () => {
   }
 
   // 📌 گرفتن محصولات بر اساس دسته‌بندی
-  const fetchCategoryProducts = async (categoryKey: string) => {
-    isLoading.value = true
-    error.value = null
-    const apiKey = categoryMap[categoryKey] || "biography"
+const fetchCategoryProducts = async (categoryKey: string) => {
+  isLoading.value = true
+  error.value = null
+  const apiKey = categoryMap[categoryKey] || "biography"
 
-    try {
-      const data = await $fetch<SubjectResponse>(
-        `https://openlibrary.org/subjects/${apiKey}.json?limit=20`
-      )
+  try {
+    const data = await $fetch<SubjectResponse>(
+      `https://openlibrary.org/subjects/${apiKey}.json?limit=20`
+    )
 
-      products.value = data.works
-        .filter((book: Work) => book.cover_id)
-        .map((book: Work, index: number) => ({
-          id: (index + 1).toString(),
-          openLibraryId: book.key,
-          title: book.title,
-          price: Math.floor(Math.random() * 200000) + 50000,
-          image: book.cover_id
-            ? `https://covers.openlibrary.org/b/id/${book.cover_id}-L.jpg`
-            : "/images/default-book.jpg",
-          rating: book.rating ?? Math.round((Math.random() * 4 + 1) * 10) / 10,
-          category: categoryKey,
-        }))
+    products.value = data.works
+      .filter((book: Work) => book.cover_id)
+      .map((book: Work, index: number) => ({
+        id: (index + 1).toString(),
+        openLibraryId: book.key,
+        title: book.title,
+        price: Math.floor(Math.random() * 200000) + 50000,
+        image: book.cover_id
+          ? `https://covers.openlibrary.org/b/id/${book.cover_id}-L.jpg`
+          : "/images/default-book.jpg",
+        rating: book.rating ?? Math.round((Math.random() * 4 + 1) * 10) / 10,
+        category: categoryKey,
+        firstPublishYear: book.first_publish_year ?? 0, // 🔹 fallback برای جلوگیری از undefined
+      }))
 
-      return products.value
-    } catch (err: unknown) {
-      error.value = err instanceof Error ? err.message : "خطای ناشناخته"
-      return []
-    } finally {
-      isLoading.value = false
-    }
+    return products.value
+  } catch (err: unknown) {
+    error.value = err instanceof Error ? err.message : "خطای ناشناخته"
+    return []
+  } finally {
+    isLoading.value = false
   }
+}
 
   // 📌 جستجو
   const searchProducts = async (query: string) => {
@@ -99,33 +109,59 @@ export const useProductStore = defineStore("productStore", () => {
     }
   }
 
-const fetchProductById = async (id: string): Promise<ProductDetail | null> => {
+
+
+  
+  // 📌 گرفتن جزئیات محصول
+ const fetchProductById = async (id: string): Promise<ProductDetail | null> => {
   const product = products.value.find((p) => p.id === id)
-  if (!product) return null
+  if (!product) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: "محصول مورد نظر یافت نشد",
+    })
+  }
 
   try {
-    const workData = await $fetch<any>(`https://openlibrary.org${product.openLibraryId}.json`)
+    // 📌 گرفتن اطلاعات کلی کتاب
+    const workData = await $fetch<WorkDetail>(
+      `https://openlibrary.org${product.openLibraryId}.json`
+    )
 
-    // نویسنده
-    let authorName = workData.authors?.length
-      ? (await $fetch<any>(`https://openlibrary.org${workData.authors[0].author.key}.json`)).name
-      : undefined
+  let authorName: string | undefined = undefined
+if (workData.authors?.length && workData.authors[0]?.author?.key) {
+  const authorRes = await $fetch<{ name: string }>(
+    `https://openlibrary.org${workData.authors[0].author.key}.json`
+  )
+  authorName = authorRes.name
+}
 
-    // ژانرها
+
+    // 📌 ژانرها
     const subjects: string[] = workData.subjects?.slice(0, 3) || []
 
-    // اولین انتشار
-    let firstPublish: string | undefined = workData.first_publish_date || undefined
+    // 📌 اولین انتشار
+    const firstPublish: string | undefined = workData.first_publish_date
 
-    // گرفتن edition برای اطلاعات تکمیلی
-    let editionData
+    // 📌 گرفتن اطلاعات edition
+    let editionData: EditionEntry | undefined
     try {
-      const editions = await $fetch<any>(`https://openlibrary.org/works/${workData.key}/editions.json?limit=5`)
-      editionData = editions.entries.find(
-        (e: any) => e.number_of_pages || e.physical_format || e.languages || e.publishers
-      ) || editions.entries[0]
-    } catch {}
+      const editions = await $fetch<EditionResponse>(
+        `https://openlibrary.org/works/${workData.key}/editions.json?limit=5`
+      )
+      editionData =
+        editions.entries.find(
+          (e) =>
+            e.number_of_pages ||
+            e.physical_format ||
+            e.languages ||
+            e.publishers
+        ) ?? editions.entries[0] ?? undefined
+    } catch {
+      editionData = undefined
+    }
 
+    // 📌 ساختن دیتای نهایی
     const detailedProduct: ProductDetail = {
       ...product,
       author: authorName,
@@ -138,7 +174,7 @@ const fetchProductById = async (id: string): Promise<ProductDetail | null> => {
       pages: editionData?.number_of_pages,
       format: editionData?.physical_format,
       language: editionData?.languages?.[0]?.key
-        ? editionData.languages[0].key.replace("/languages/", "")
+        ? editionData.languages[0]?.key.replace("/languages/", "")
         : undefined,
       publisher: editionData?.publishers?.[0],
       publishDate: editionData?.publish_date,
@@ -147,10 +183,60 @@ const fetchProductById = async (id: string): Promise<ProductDetail | null> => {
     return detailedProduct
   } catch (err) {
     console.error(err)
-    return null
+    throw createError({
+      statusCode: 500,
+      statusMessage: "خطا در دریافت اطلاعات محصول",
+    })
   }
 }
 
+
+// 📌 گرفتن تازه‌های همه دسته‌ها
+const fetchAllCategoriesProducts = async () => {
+  isLoading.value = true
+  error.value = null
+
+  try {
+    const allProducts: Product[] = []
+
+    // برای هر دسته‌بندی یک fetch انجام بده
+    for (const categoryKey of Object.keys(categoryMap)) {
+      const apiKey = categoryMap[categoryKey]
+      try {
+        const data = await $fetch<SubjectResponse>(
+          `https://openlibrary.org/subjects/${apiKey}.json?limit=10`
+        )
+
+        const categoryProducts: Product[] = data.works
+          .filter((book: Work) => book.cover_id)
+          .map((book: Work, index: number) => ({
+            id: `${categoryKey}-${index + 1}`,
+            openLibraryId: book.key,
+            title: book.title,
+            price: Math.floor(Math.random() * 200000) + 50000,
+            image: book.cover_id
+              ? `https://covers.openlibrary.org/b/id/${book.cover_id}-L.jpg`
+              : "/images/default-book.jpg",
+            rating: book.rating ?? Math.round((Math.random() * 4 + 1) * 10) / 10,
+            category: categoryKey,
+            firstPublishYear: book.first_publish_year ?? 0,
+          }))
+
+        allProducts.push(...categoryProducts)
+      } catch (err: unknown) {
+        console.warn(`خطا در دریافت دسته ${categoryKey}`, err)
+      }
+    }
+
+    products.value = allProducts
+    return allProducts
+  } catch (err: unknown) {
+    error.value = err instanceof Error ? err.message : "خطای ناشناخته"
+    return []
+  } finally {
+    isLoading.value = false
+  }
+}
 
   return {
     products,
@@ -159,5 +245,6 @@ const fetchProductById = async (id: string): Promise<ProductDetail | null> => {
     fetchCategoryProducts,
     searchProducts,
     fetchProductById,
+    fetchAllCategoriesProducts,
   }
 })

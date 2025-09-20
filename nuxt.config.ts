@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     css: [
     "@fontsource/vazir/index.css"
   ],
+  // plugins:['~/plugins/swiper.client.ts'],
   
 
 fontawesome: {

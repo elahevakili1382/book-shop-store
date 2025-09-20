@@ -43,8 +43,7 @@
       >
         خانه
       </NuxtLink>
-      <NuxtLink to="/" class="font-bold text-gray-600 hover:text-gray-500">منتخب ها</NuxtLink>
-      <NuxtLink to="/" class="font-bold text-gray-600 hover:text-gray-500">تازه ها</NuxtLink>
+      <NuxtLink to="/new" class="font-bold text-gray-600 hover:text-gray-500">تازه ها</NuxtLink>
       <NuxtLink to="/" class="font-bold text-gray-600 hover:text-gray-500">پرفروش ها</NuxtLink>
       <NuxtLink to="/" class="font-bold text-gray-600 hover:text-gray-500">پیشنهاد روز</NuxtLink>
       <NuxtLink to="/" class="font-bold text-gray-600 hover:text-gray-500">درباره ما</NuxtLink>
@@ -93,7 +92,7 @@
               >تازه‌ها</NuxtLink
             >
             <NuxtLink
-              to="/"
+              to="/new"
               @click="ui.closeMobileMenu()"
               class="px-3 py-2 rounded hover:bg-[#5a5a57e5] hover:text-white"
               >پرفروش‌ها</NuxtLink

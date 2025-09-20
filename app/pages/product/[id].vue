@@ -1,79 +1,54 @@
 <template>
-  <section
-    class="max-w-5xl w-full mx-auto mt-16 p-6 md:p-12 flex flex-col md:flex-row gap-8"
-  >
-    <!-- تصویر محصول -->
-    <div
-      class="flex-shrink-0 w-full md:w-1/3 relative rounded-2xl overflow-hidden shadow-lg"
-    >
-      <NuxtImg
-        :src="product?.image || '/images/default-book.jpg'"
-        :alt="product?.title"
-        class="w-full h-[600px] object-cover rounded-2xl"
-        width="400"
-        height="600"
-        format="webp"
-        priority
-      />
+  <section class="w-full max-w-6xl mx-auto px-4 py-10">
+    <!-- Loading -->
+    <div v-if="isLoading" class="flex justify-center items-center h-64">
+      <p class="text-gray-500 text-lg">در حال بارگذاری...</p>
     </div>
 
-    <!-- جزئیات محصول -->
-    <div class="flex-1 flex flex-col gap-4">
-      <h1 class="text-3xl font-bold">{{ product?.title }}</h1>
-      <p class="text-gray-500">نویسنده: {{ product?.author || "نامشخص" }}</p>
+    <!-- Error -->
+    <div v-else-if="error" class="flex flex-col justify-center items-center h-64 text-center px-4">
+      <h1 class="text-6xl font-bold text-red-500 mb-4">خطا</h1>
+      <p class="text-xl text-gray-700 mb-6">{{ error }}</p>
+      <NuxtLink
+        to="/"
+        class="bg-[#DCF763] hover:bg-[#c5e450] text-gray-900 font-semibold px-6 py-3 rounded-full"
+      >
+        بازگشت به صفحه اصلی
+      </NuxtLink>
+    </div>
 
-      <div class="flex items-center gap-3 mt-2">
-        <div
-          class="flex items-center gap-1 rounded-xl px-4 py-1 bg-[#DCF763] border border-[#435058] text-[#435058]"
-        >
-          <NuxtImg
-            src="/images/Vector-(3).svg"
-            alt="آیکون امتیاز"
-            width="16"
-            height="16"
-          />
-          <span>{{ product?.rating || "0.0" }}</span>
+    <!-- Product -->
+    <div v-else class="flex flex-col md:flex-row gap-8 items-start">
+      <!-- تصویر محصول -->
+      <div class="flex-shrink-0 w-full md:w-1/3">
+        <NuxtImg
+          :src="product?.image || '/images/default-book.jpg'"
+          :alt="product?.title"
+          class="w-full rounded-2xl object-cover shadow-lg"
+          width="300"
+          height="420"
+        />
+      </div>
+
+      <!-- جزئیات محصول -->
+      <div class="flex-1 flex flex-col gap-4">
+        <h1 class="text-3xl font-bold">{{ product?.title }}</h1>
+        <p v-if="product?.author" class="text-gray-600">نویسنده: {{ product.author }}</p>
+        <p v-if="product?.firstPublish" class="text-gray-500 text-sm">اولین انتشار: {{ product.firstPublish }}</p>
+        <p v-if="product?.pages" class="text-gray-500 text-sm">تعداد صفحات: {{ product.pages }}</p>
+        <p v-if="product?.format" class="text-gray-500 text-sm">فرمت: {{ product.format }}</p>
+
+        <p class="mt-4 text-gray-700">{{ product?.summary }}</p>
+
+        <div class="mt-6">
+          <span class="text-2xl font-semibold">{{ formattedPrice }}</span>
         </div>
-        <p class="text-gray-400 text-sm">140 نظر</p>
-      </div>
 
-      <div class="mt-4">
-        <p class="text-gray-500 text-sm">قیمت کتاب</p>
-        <h2 class="text-2xl font-semibold">{{ formattedPrice }}</h2>
-      </div>
-
-      <!-- اطلاعات جدید -->
-      <div class="mt-6 grid grid-cols-2 gap-4 text-gray-600">
-        <p>
-          <span class="font-semibold">ژانر:</span>
-          {{ product?.subjects?.join("، ") || "نامشخص" }}
-        </p>
-        <p>
-          <span class="font-semibold">اولین انتشار:</span>
-          {{ product?.firstPublish || "نامشخص" }}
-        </p>
-      </div>
-
-      <div class="mt-6 text-gray-700">
-        <h3 class="text-xl font-semibold mb-2">خلاصه کتاب</h3>
-        <p class="text-sm line-clamp-5">
-          {{ product?.summary || "توضیحی برای این کتاب موجود نیست." }}
-        </p>
-      </div>
-
-      <div class="mt-6">
         <button
-          @click="addProduct"
-          class="bg-[#435058] rounded-full text-white flex items-center justify-center gap-2
-                 px-8 py-3 hover:bg-[#5b6a6a] transition w-full max-w-xs"
+          @click="addToCart"
+          class="mt-4 bg-[#435058] text-white font-semibold px-6 py-3 rounded-full hover:bg-[#5b6a6a] transition"
         >
           افزودن به سبد
-          <NuxtImg
-            src="/images/user.svg"
-            alt="افزودن به سبد خرید"
-            width="20"
-            height="20"
-          />
         </button>
       </div>
     </div>
@@ -81,36 +56,70 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue"
-import { useRoute } from "vue-router"
-import { useProductStore } from "@/stores/productStore"
-import type { ProductDetail } from "@/stores/productStore"
-import { useCartStore } from "@/stores/cart"
-import { NuxtImg } from "#components"
+import { ref, computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
+import { useProductStore } from '@/stores/productStore'
+import { NuxtImg, NuxtLink } from '#components'
 
 const route = useRoute()
 const productStore = useProductStore()
-const cartStore = useCartStore()
+const productId = route.params.id as string
 
 const product = ref<ProductDetail | null>(null)
+const isLoading = ref(true)
+const error = ref<string | null>(null)
 
-const formattedPrice = computed(() =>
-  product.value
-    ? new Intl.NumberFormat("fa-IR").format(product.value.price) + " تومان"
-    : ""
-)
+onMounted(async () => {
+  try {
+    const data = await productStore.fetchProductById(productId)
+    if (!data) throw new Error('محصول مورد نظر یافت نشد')
+    product.value = data
+  } catch (err: any) {
+    error.value = err.message
+  } finally {
+    isLoading.value = false
+  }
+})
 
-function addProduct() {
+const formattedPrice = computed(() => {
+  return product.value
+    ? new Intl.NumberFormat('fa-IR').format(product.value.price) + ' تومان'
+    : ''
+})
+
+const addToCart = () => {
   if (!product.value) return
+  const cartStore = useCartStore()
   cartStore.addToCart({
     id: product.value.id,
     name: product.value.title,
-    price: product.value.price,
+    price: product.value.price
   })
 }
 
-onMounted(async () => {
-  const id = route.params.id as string
-  product.value = await productStore.fetchProductById(id)
+// --- SEO Meta
+const metaDescription = computed(() => product.value?.summary || 'کتاب مورد نظر یافت نشد')
+const metaTitle = computed(() => product.value?.title || 'محصول نامشخص')
+const metaImage = computed(() => product.value?.image || '/images/default-book.jpg')
+const metaUrl = computed(() => `https://yourdomain.com/product/${productId}`)
+
+useSeoMeta({
+  description: metaDescription.value,
+  ogTitle: metaTitle.value,
+  ogDescription: metaDescription.value,
+  ogImage: metaImage.value,
+  ogUrl: metaUrl.value,
+  twitterTitle: metaTitle.value,
+  twitterDescription: metaDescription.value,
+  twitterImage: metaImage.value,
+  twitterCard: 'summary_large_image'
+})
+
+useHead({
+  htmlAttrs: { lang: 'fa' },
+  link: [{ rel: 'icon', type: 'image/png', href: '/favicon.png' }]
 })
 </script>
+
+<style scoped>
+</style>

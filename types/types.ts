@@ -58,6 +58,8 @@ export interface Work {
   title:    string;
   cover_id?: number;
   rating?:  number;
+    first_publish_year?: number
+
 }
 export interface Product {
   id: string
@@ -69,4 +71,26 @@ export interface Product {
     originalId?: string // اضافه برای نگه داشتن id اصلی openlibrary
      openLibraryId?: string 
 
+}
+// --- Work detail (works/{id}.json)
+export interface WorkDetail {
+  key: string
+  title: string
+  description?: string | { value: string }
+  subjects?: string[]
+  first_publish_date?: string
+  authors?: { author: { key: string } }[]
+}
+
+// --- Edition response (works/{id}/editions.json)
+export interface EditionResponse {
+  entries: EditionEntry[]
+}
+
+export interface EditionEntry {
+  number_of_pages?: number
+  physical_format?: string
+  languages?: { key: string }[]
+  publishers?: string[]
+  publish_date?: string
 }
