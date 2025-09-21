@@ -2,7 +2,7 @@
   <div
     class="flex flex-col justify-between items-center py-3 flex-shrink-0 
            w-full max-w-[300px] sm:max-w-[310px] md:max-w-[300px] 
-           transition hover:shadow-xl hover:rounded-2xl hover:scale-105"
+           transition hover:shadow-xl hover:rounded-1xl hover:scale-105"
   >
     <!-- تصویر کتاب (کلیک → صفحه جزئیات) -->
     <NuxtLink :to="productUrl" class="w-full h-[420px] relative flex-shrink-0">

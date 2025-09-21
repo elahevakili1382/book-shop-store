@@ -46,7 +46,7 @@
 
     <!-- ستون ۴ -->
     <div class="hover:scale-[1.02] transition-transform duration-200">
-      <h2 class="flex items-center gap-2 text-2xl font-bold mb-3 text-[#323a40]">
+      <h2 class="flex items-center gap-2 text-3xl font-bold mb-3 text-[#323a40]">
         <FontAwesome icon="fa-solid fa-handshake" class="text-[#6b8e23]" />
         خدمات
       </h2>

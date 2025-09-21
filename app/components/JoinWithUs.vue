@@ -29,11 +29,11 @@
           <NuxtImg
             src="/images/email-icon.svg"
             alt="ایمیل"
-            class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 pointer-events-none"
+            class="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 hover:bg-[#c4d94f]"
           />
           <button
             type="submit"
-            class="absolute right-0 top-1/2 transform -translate-y-1/2 px-6 py-2 bg-[#DCF763] rounded-[50px] text-gray-800 font-semibold hover:bg-[#c4d94f] transition shadow-md"
+            class="absolute right-0 top-1/2 transform -translate-y-1/2 px-6 py-3 bg-[#DCF763] rounded-[50px] text-gray-800 font-semibold hover:bg-[#c4d94f] transition shadow-md"
           >
             عضو شدن
           </button>

@@ -44,9 +44,9 @@
         خانه
       </NuxtLink>
       <NuxtLink to="/new" class="font-bold text-gray-600 hover:text-gray-500">تازه ها</NuxtLink>
-      <NuxtLink to="/" class="font-bold text-gray-600 hover:text-gray-500">پرفروش ها</NuxtLink>
-      <NuxtLink to="/" class="font-bold text-gray-600 hover:text-gray-500">پیشنهاد روز</NuxtLink>
-      <NuxtLink to="/" class="font-bold text-gray-600 hover:text-gray-500">درباره ما</NuxtLink>
+      <NuxtLink to="/bestseller" class="font-bold text-gray-600 hover:text-gray-500">پرفروش ها</NuxtLink>
+      <NuxtLink to="/daily-offers" class="font-bold text-gray-600 hover:text-gray-500">پیشنهاد روز</NuxtLink>
+      <NuxtLink to="/about" class="font-bold text-gray-600 hover:text-gray-500">درباره ما</NuxtLink>
     </nav>
 
     <!-- آیکون‌های دسکتاپ -->
@@ -86,31 +86,32 @@
             >
             
             <NuxtLink
-              to="/"
+              to="/new"
               @click="ui.closeMobileMenu()"
               class="px-3 py-2 rounded hover:bg-[#5a5a57e5] hover:text-white"
               >تازه‌ها</NuxtLink
             >
             <NuxtLink
-              to="/new"
+              to="/bestseller"
               @click="ui.closeMobileMenu()"
               class="px-3 py-2 rounded hover:bg-[#5a5a57e5] hover:text-white"
               >پرفروش‌ها</NuxtLink
             >
             <NuxtLink
-              to="/"
+              to="/daily-offers"
               @click="ui.closeMobileMenu()"
               class="px-3 py-2 rounded hover:bg-[#5a5a57e5] hover:text-white"
               >پیشنهاد روز</NuxtLink
             >
             <NuxtLink
-              to="/"
+              to="/about"
               @click="ui.closeMobileMenu()"
               class="px-3 py-2 rounded hover:bg-[#5a5a57e5] hover:text-white"
-              >تماس با ما</NuxtLink
+              >درباره ما</NuxtLink
             >
           </nav>
 
+          
           <div class="flex items-center gap-3 pt-4 border-t border-gray-300">
             <NuxtLink
               to="/"
