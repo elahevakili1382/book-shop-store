@@ -1,9 +1,11 @@
-
 [
-  { "id": 1, "name": "غیر داستانی", "items": 302, "icon": "/images/NonFictionIcon(1).svg" },
-  { "id": 2, "name": "داستانی", "items": 115, "icon": "/images/NonFictionIcon(2).svg" },
-  { "id": 3, "name": "تاریخی", "items": 552, "icon": "/images/NonFictionIcon(3).svg" },
-  { "id": 4, "name": "اشعار", "items": 1000, "icon": "/images/NonFictionIcon(4).svg" },
-  { "id": 5, "name": "ترسناک", "items": 60, "icon": "/images/NonFictionIcon(5).svg" },
-  { "id": 6, "name": "فضایی", "items": 140, "icon": "/images/NonFictionIcon(6).svg" }
+  { "id": "programming", "slug": "programming", "name": "برنامه‌نویسی و کامپیوتر", "items": 120, "icon": "/images/NonFictionIcon(1).svg" },
+  { "id": "history",     "slug": "history",     "name": "تاریخ",                 "items": 95,  "icon": "/images/NonFictionIcon(2).svg" },
+  { "id": "biography",   "slug": "biography",   "name": "بیوگرافی عمومی",        "items": 80,  "icon": "/images/NonFictionIcon(3).svg" },
+  { "id": "fantasy",     "slug": "fantasy",     "name": "فانتزی",                "items": 150, "icon": "/images/NonFictionIcon(4).svg" },
+  { "id": "science",     "slug": "science",     "name": "علوم",                  "items": 210, "icon": "/images/NonFictionIcon(5).svg" },
+  { "id": "art",         "slug": "art",         "name": "هنر",                   "items": 65,  "icon": "/images/NonFictionIcon(6).svg" },
+  { "id": "sports",      "slug": "sports",      "name": "ورزش و ورزشکاران",      "items": 40,  "icon": "/images/NonFictionIcon(6).svg" },
+  { "id": "children",    "slug": "children",    "name": "کتاب کودک",             "items": 130, "icon": "/images/NonFictionIcon(6).svg" },
+  { "id": "romance",     "slug": "romance",     "name": "رمان عاشقانه",          "items": 110, "icon": "/images/NonFictionIcon(6).svg" }
 ]

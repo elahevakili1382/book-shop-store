@@ -38,7 +38,7 @@
       class="!w-[180px] sm:!w-[200px] md:!w-[220px] flex-shrink-0"
     >
       <NuxtLink
-        :to="`/category/${cat.id}`"
+        :to="`/category/${cat.slug}`"
         class="flex flex-col justify-center items-start p-4 gap-2 h-[90px] rounded-3xl bg-[#F1F2EE]"
       >
         <div class="flex items-center gap-4">

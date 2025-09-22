@@ -3,7 +3,8 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
 export interface Category {
-  id: number
+  id:string 
+  slug:string
   name: string
   icon: string
   items: number
