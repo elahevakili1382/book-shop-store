@@ -51,9 +51,30 @@
 
     <!-- آیکون‌های دسکتاپ -->
     <div class="hidden md:flex items-center gap-2">
-      <NuxtLink to="/" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700">
-        <NuxtImg src="/images/shopping-bag-minus.svg" alt="سبد خرید" width="20" height="20" class="w-5 h-5" />
-      </NuxtLink>
+   <NuxtLink
+  to="/cart"
+  class="relative w-10 h-10 flex items-center justify-center rounded-full bg-gray-700"
+>
+  <!-- آیکون سبد -->
+  <NuxtImg
+    src="/images/shopping-bag-minus.svg"
+    alt="سبد خرید"
+    width="20"
+    height="20"
+    class="w-5 h-5"
+  />
+
+  <!-- شمارنده -->
+  <span
+    v-if="cart.cartCount"
+    class="absolute -bottom-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full"
+  >
+    {{ cart.cartCount }}
+  </span>
+</NuxtLink>
+
+
+
       <NuxtLink
         to="/"
         class="w-10 h-10 flex items-center justify-center rounded-full bg-white text-gray-600 outline outline-1"
@@ -61,7 +82,7 @@
         <NuxtImg src="/images/favourite.svg" alt="علاقه‌مندی‌ها" width="20" height="20" class="w-5 h-5" />
       </NuxtLink>
       <NuxtLink
-        to="/"
+        to="/login"
         class="box-border flex justify-center items-center px-7 py-[10px] gap-2 w-[120px] h-[35px] bg-[#DCF763] border border-[#435058] rounded-[40px]"
       >
         <NuxtImg src="/images/user-icon.svg" alt="ورود" width="20" height="20" class="w-5 h-5" />
@@ -116,9 +137,15 @@
             <NuxtLink
               to="/"
               @click="ui.closeMobileMenu()"
-              class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700"
+              class="relative w-10 h-10 flex items-center justify-center rounded-full bg-gray-700"
             >
               <NuxtImg src="/images/shopping-bag-minus.svg" alt="سبد خرید" width="20" height="20" class="w-5 h-5" />
+               <span
+    v-if="cart.cartCount"
+    class="absolute -bottom-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full"
+  >
+    {{ cart.cartCount }}
+  </span>
             </NuxtLink>
             <NuxtLink
               to="/"
@@ -128,7 +155,7 @@
               <NuxtImg src="/images/favourite.svg" alt="علاقه‌مندی‌ها" width="20" height="20" class="w-5 h-5" />
             </NuxtLink>
             <NuxtLink
-              to="/"
+              to="/login"
               @click="ui.closeMobileMenu()"
               class="flex justify-center items-center px-4 py-2 gap-2 bg-[#DCF763] border border-[#435058] rounded-full"
             >
@@ -143,5 +170,9 @@
 </template>
 
 <script setup lang="ts">
+import Cart from '~/pages/cart.vue';
+import { useCartStore } from '@/stores/cart';
+
 const ui = useUIStore()
+const cart = useCartStore()
 </script>

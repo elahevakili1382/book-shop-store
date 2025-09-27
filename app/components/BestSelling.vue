@@ -4,32 +4,54 @@
     <div class="flex justify-between items-center">
       <h1 class="text-2xl font-bold">خرید با دسته‌بندی</h1>
       <div class="flex gap-2">
-        <button @click="slidePrev" class="rounded-full p-3 bg-[#F1F2EE] outline outline-1 cursor-pointer" :disabled="!swiperReady">
+        <button
+          @click="slidePrev"
+          class="rounded-full p-3 bg-[#F1F2EE] outline outline-1 cursor-pointer"
+          :disabled="!swiperReady"
+        >
           <img src="/images/Vector-(2).svg" alt="قبلی" />
         </button>
-        <button @click="slideNext" class="rounded-full p-3 bg-[#DCF763] outline outline-1 cursor-pointer" :disabled="!swiperReady">
+        <button
+          @click="slideNext"
+          class="rounded-full p-3 bg-[#DCF763] outline outline-1 cursor-pointer"
+          :disabled="!swiperReady"
+        >
           <img src="/images/Vector-(1).svg" alt="بعدی" />
         </button>
       </div>
     </div>
 
-    <div class="flex flex-col md:flex-row gap-3">
+    <div class="flex flex-col md:flex-row gap-4">
       <!-- ستون دسته‌بندی -->
       <div class="bg-white rounded-3xl w-full md:w-72 p-6 flex-col gap-6 shadow-md shrink-0">
         <h2 class="font-semibold text-lg mb-4">دسته بندی</h2>
 
         <!-- موبایل (افقی) -->
         <ul class="flex md:hidden overflow-x-auto gap-2 mb-4">
-          <li v-for="category in categories" :key="category" @click="selectCategory(category)"
-              :class="['cursor-pointer px-4 py-2 rounded-lg whitespace-nowrap border', selectedCategory === category ? 'bg-gray-300 font-bold' : 'bg-white']">
+          <li
+            v-for="category in categories"
+            :key="category"
+            @click="selectCategory(category)"
+            :class="[
+              'cursor-pointer px-4 py-2 rounded-lg whitespace-nowrap border',
+              selectedCategory === category ? 'bg-gray-300 font-bold' : 'bg-white'
+            ]"
+          >
             {{ category }}
           </li>
         </ul>
 
         <!-- دسکتاپ (عمودی) -->
         <ul class="hidden md:flex flex-col gap-3 text-gray-700">
-          <li v-for="category in categories" :key="category" @click="selectCategory(category)"
-              :class="['cursor-pointer hover:text-gray-900 hover:font-bold px-4 py-2 rounded-lg', selectedCategory === category ? 'bg-gray-300 font-bold' : '']">
+          <li
+            v-for="category in categories"
+            :key="category"
+            @click="selectCategory(category)"
+            :class="[
+              'cursor-pointer hover:text-gray-900 hover:font-bold px-4 py-2 rounded-lg',
+              selectedCategory === category ? 'bg-gray-300 font-bold' : ''
+            ]"
+          >
             {{ category }}
           </li>
         </ul>
@@ -43,30 +65,30 @@
 
         <ClientOnly v-else>
           <Swiper
-  v-if="products.length"
-  :space-between="12"
-  :grab-cursor="true"
-  :centered-slides="true"  
-  @swiper="onSwiper"
-  ref="swiperRef"
-  :rtl="true"
-  :breakpoints="{
-    0: { slidesPerView: 1 },
-    640: { slidesPerView: 1 },
-    768: { slidesPerView: 2 },
-    1024: { slidesPerView: 4 },
-    1280: { slidesPerView: 5 }
-  }"
->
-  <SwiperSlide
-    v-for="product in products"
-    :key="product._key"
-    class="flex justify-center w-full md:!w-[250px] flex-shrink-0"
-  >
-    <ProductCard :product="product" />
-  </SwiperSlide>
-</Swiper>
-
+            v-show="products.length"
+            :slides-offset-before="0"
+            :space-between="12"
+            :grab-cursor="true"
+             :centered-slides="false"
+            @swiper="onSwiper"
+            ref="swiperRef"
+            :rtl="true"
+            :breakpoints="{
+              0: { slidesPerView: 1 },
+              640: { slidesPerView: 1 },
+              768: { slidesPerView: 2 },
+              1024: { slidesPerView: 4 },
+              1280: { slidesPerView: 5 }
+            }"
+          >
+            <SwiperSlide
+              v-for="product in products"
+              :key="product._key"
+              class="flex justify-center w-full md:!w-[250px] flex-shrink-0"
+            >
+              <ProductCard :product="product" />
+            </SwiperSlide>
+          </Swiper>
         </ClientOnly>
       </div>
     </div>
@@ -74,7 +96,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useProductStore } from '~/stores/productStore'
 import ProductCard from '@/components/ui/ProductCard.vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
@@ -114,16 +136,17 @@ const categoryMap: Record<string, string> = {
   'رمان عاشقانه': 'romance'
 }
 
-// fetch محصولات
+// fetch محصولات با nextTick و update Swiper
 const fetchProducts = async (category: string) => {
   isLoading.value = true
-  const key = categoryMap[category] || 'biography'
   try {
     await store.fetchCategoryProducts(category)
     products.value = store.products.map(p => ({
       ...p,
       _key: p.id + category
     }))
+    await nextTick()
+    swiperInstance.value?.update() // آپدیت Swiper بعد از تغییر داده‌ها
   } catch (err) {
     console.error(err)
   } finally {
@@ -140,3 +163,9 @@ const selectCategory = (category: string) => {
   fetchProducts(category)
 }
 </script>
+
+<style scoped>
+button:hover { cursor: pointer; }
+/* Swiper slide smooth */
+.swiper-slide { transition: transform 0.3s ease-in-out; }
+</style>

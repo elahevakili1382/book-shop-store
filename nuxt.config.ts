@@ -12,30 +12,25 @@ export default defineNuxtConfig({
   
 
 fontawesome: {
-    // پک‌های مورد نیاز
-    component: 'FontAwesome',
-    icons: {
-      solid: [
-        'book',
-        'user',
-        'headset',
-        'handshake',
-        'address-card',
-        'location-dot',
-        'phone',
-        'envelope'
-      ],
-      brands: [
-        'facebook-f',
-        'twitter',
-        'instagram',
-        'linkedin-in'
-      ],
-      regular: [
-        'envelope'
-      ]
-    }
+  component: 'FontAwesome',
+  icons: {
+    solid: [
+      'book',
+      'user',
+      'headset',
+      'handshake',
+      'address-card',
+      'location-dot',
+      'phone',
+      'envelope',
+      'trash',
+    ],
+    brands: ['facebook-f', 'twitter', 'instagram', 'linkedin-in'],
+    regular: ['envelope'],
   },
+},
+
+
   app:{
     head:{
       title:"website",
@@ -54,9 +49,16 @@ fontawesome: {
 
   image: {
   domains: ['fakestoreapi.com']
-}
+},
+toast: {
+  duration: 3000,
+  className: 'rounded-full shadow-lg bg-green-50 text-green-800 font-bold text-xl',
+  keepOnHover: true
+} as any,
 
-,
+
+
+
   devtools: { enabled: true },
   modules: [
     "@nuxtjs/tailwindcss",
@@ -64,6 +66,10 @@ fontawesome: {
     "@nuxt/image",
     "@pinia/nuxt",
     "nuxt-swiper",
-    "@vesp/nuxt-fontawesome"
+    "@vesp/nuxt-fontawesome",
+    'nuxt-toast',
+    'nuxt-authorization'
   ]
+
+  
 })

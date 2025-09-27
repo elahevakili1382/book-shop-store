@@ -68,10 +68,15 @@ export interface Product {
   image: string
   rating?: number
   category: string
-    originalId?: string // اضافه برای نگه داشتن id اصلی openlibrary
-     openLibraryId?: string 
-
+  originalId?: string
+  openLibraryId?: string
+  author?: string
+  summary?: string
+  pages?: number
+  format?: string
+  firstPublish?: string
 }
+
 // --- Work detail (works/{id}.json)
 export interface WorkDetail {
   key: string

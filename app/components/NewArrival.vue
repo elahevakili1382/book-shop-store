@@ -52,9 +52,7 @@
     :key="product.id"
     class="flex justify-center"
   >
-    <NuxtLink :to="`/product/${product.id}`" class="w-full max-w-[300px]">
       <ProductCard :product="product" />
-    </NuxtLink>
   </SwiperSlide>
 </Swiper>
 

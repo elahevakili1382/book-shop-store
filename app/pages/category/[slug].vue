@@ -11,7 +11,6 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute, useRouter } from 'vue-router'
 import { ref, computed, onMounted } from 'vue'
 import { useCategoryStore } from '@/stores/categories'
 import { useProductStore } from '@/stores/productStore'
