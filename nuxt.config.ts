@@ -24,6 +24,7 @@ fontawesome: {
       'phone',
       'envelope',
       'trash',
+      'search',
     ],
     brands: ['facebook-f', 'twitter', 'instagram', 'linkedin-in'],
     regular: ['envelope'],
