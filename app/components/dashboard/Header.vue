@@ -1,19 +1,21 @@
 <template>
-    <header class="flex items-center justify-between bg-white px-6 py-4 shadow-sm sticky top-0 z-10">
-        <h1 class="text-lg font-semibold">Admin Dashboard</h1>
-
-        <div class="flex items-center gap-4">
-            <button class="relative">
-                <Bell class="w-5 h-5 "/>
-        <span class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-            <div class="flex items-center gap-2 cursor-pointer">
-        <img src="https://i.pravatar.cc/40" alt="User" class="w-8 h-8 rounded-full" />
-        <span class="text-sm font-medium">مدیر</span>
-      </div>
-        </div>
-    </header>
+  <header class="flex items-center justify-between px-6 py-4 shadow sticky top-0 z-10 bg-white rounded-lg">
+    <div class="flex-1 max-w-md relative">
+      <input
+        type="text"
+        placeholder="جستجو..."
+        class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-200 outline-none"
+      />
+      <svg
+        class="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M21 21l-4.35-4.35M5 11a6 6 0 1112 0 6 6 0 01-12 0z" />
+      </svg>
+    </div>
+  </header>
 </template>
-<script setup lang="ts">
-import{Bell} from   'lucide-vue-next'
-</script>
