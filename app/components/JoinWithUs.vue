@@ -3,7 +3,7 @@
     class="w-full min-h-[400px] md:min-h-[300px] bg-gray-vector flex items-center justify-center overflow-hidden mb-10 py-12 px-4"
   >
     <div
-      class="flex flex-col md:flex-row justify-center items-center gap-8 p-8 w-full max-w-[920px] rounded-[40px] backdrop-blur-[30px] border border-gray-300 shadow-lg"
+      class="flex flex-col md:flex-row justify-center items-center gap-8 p-8 w-full max-w-[920px] rounded-[40px] backdrop-blur-[30px] shadow-lg"
     >
       <!-- تصویر بدون div اضافی -->
       <NuxtImg
@@ -24,7 +24,7 @@
             v-model="email"
             type="email"
             placeholder="ایمیل خود را وارد کنید"
-            class="w-full pr-28 px-14 py-3 rounded-[50px] border border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#DCF763] transition"
+            class="w-full pr-28 px-14 py-3 rounded-[50px] focus:outline-none focus:ring-2 focus:ring-[#DCF763] transition"
           />
           <NuxtImg
             src="/images/email-icon.svg"

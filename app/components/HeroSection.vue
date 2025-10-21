@@ -47,7 +47,7 @@
 
   <!-- بخش جستجو -->
   <section
-    class="w-full max-w-5xl mx-auto bg-white/45 border border-gray-100 backdrop-blur-lg rounded-3xl p-3 md:p-6 shadow-2xl"
+    class="w-full max-w-5xl mx-auto bg-white/45 backdrop-blur-lg rounded-3xl p-3 md:p-6 shadow-2xl"
   >
     <div class="flex flex-col items-center">
       <div class="w-full max-w-xl mb-6">
@@ -81,7 +81,7 @@
           <input
             type="text"
             placeholder="جستجو..."
-            class="w-full rounded-full pl-10 pr-10 py-3 border border-gray-300 focus:outline-none focus:border-blue-600 placeholder-gray-400 transition-all duration-300 shadow-md text-right font-bold"
+            class="w-full rounded-full pl-10 pr-10 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white placeholder-gray-400 shadow-md text-right font-bold"
             required
           />
 

@@ -23,6 +23,7 @@
     "@vesp/nuxt-fontawesome": "^2.0.0",
     "axios": "^1.12.1",
     "izitoast": "^1.4.0",
+    "lucide-vue-next": "^0.546.0",
     "nuxt": "^4.1.1",
     "nuxt-authorization": "^0.3.5",
     "nuxt-swiper": "^2.0.1",
@@ -30,6 +31,7 @@
     "pinia": "^3.0.3",
     "swiper": "^11.2.10",
     "vue": "^3.5.20",
+    "vue-click-outside": "^1.1.0",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {

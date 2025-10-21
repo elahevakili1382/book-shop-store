@@ -1,110 +1,118 @@
 <template>
-  <section class="container mx-auto py-10 px-4">
-    <h1 class="text-2xl font-bold mb-6">سبد خرید</h1>
+  <section class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-12 px-4">
+    <div class="container mx-auto">
 
-    <!-- وقتی خالیه -->
-    <div v-if="cart.cartItems.length === 0" class="text-gray-500 text-center py-10">
-      سبد خرید شما خالی است.
-    </div>
+      <!-- عنوان -->
+      <h1 class="text-3xl font-bold mb-10 text-gray-900">سبد خرید</h1>
 
-    <!-- وقتی آیتم داره -->
-    <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- ستون آیتم‌ها -->
-      <div class="md:col-span-2 space-y-4">
-        <div
-          v-for="item in cart.cartItems"
-          :key="item.uniqueId"
-          class="grid grid-cols-12 items-center border rounded-lg p-4 gap-4 bg-white shadow-sm hover:shadow-md transition"
-        >
-          <!-- تصویر و اطلاعات -->
-          <div class="col-span-6 flex items-center gap-4">
-            <NuxtImg :src="item.image" class="w-16 h-16 object-cover rounded-lg border" />
-            <div>
-              <p class="font-medium text-gray-800">{{ item.name }}</p>
-              <p class="text-sm text-gray-600">
+      <!-- وقتی خالیه -->
+      <div v-if="cart.cartItems.length === 0" class="text-gray-500 text-center py-20 text-lg">
+        سبد خرید شما خالی است.
+      </div>
+
+      <!-- وقتی آیتم دارد -->
+      <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- ستون آیتم‌ها -->
+        <div class="lg:col-span-2 space-y-6">
+          <div
+            v-for="item in cart.cartItems"
+            :key="item.uniqueId"
+            class="flex items-center gap-4 p-6 rounded-2xl bg-white shadow-md hover:shadow-lg transition"
+          >
+            <!-- تصویر -->
+            <NuxtImg
+              :src="item.image"
+              class="w-24 h-24 object-cover rounded-lg"
+            />
+            
+            <!-- اطلاعات محصول -->
+            <div class="flex-1">
+              <p class="font-semibold text-gray-900 text-lg">{{ item.name }}</p>
+              <p class="text-gray-500 mt-1">
                 {{ item.quantity }} × {{ new Intl.NumberFormat('fa-IR').format(item.price) }} تومان
               </p>
             </div>
-          </div>
 
-          <!-- کنترل تعداد -->
-          <div class="col-span-4 flex items-center gap-2 justify-center">
-            <button
-              @click="cart.updateQuantity(item.uniqueId, item.quantity - 1)"
-              class="w-10 h-10 flex items-center justify-center rounded-full border bg-gray-50 hover:bg-gray-100 text-lg"
-            >-</button>
+            <!-- کنترل تعداد -->
+            <div class="flex items-center gap-2">
+              <button
+                @click="cart.updateQuantity(item.uniqueId, item.quantity - 1)"
+                class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition text-lg"
+              >-</button>
 
-            <span class="font-medium">{{ item.quantity }}</span>
+              <span class="font-medium text-gray-700">{{ item.quantity }}</span>
 
-            <button
-              @click="cart.updateQuantity(item.uniqueId, item.quantity + 1)"
-              class="w-10 h-10 flex items-center justify-center rounded-full border bg-gray-50 hover:bg-gray-100 text-lg"
-            >+</button>
-          </div>
+              <button
+                @click="cart.updateQuantity(item.uniqueId, item.quantity + 1)"
+                class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition text-lg"
+              >+</button>
+            </div>
 
-          <!-- حذف -->
-          <div class="col-span-2 flex justify-end">
+            <!-- حذف -->
             <button
               @click="cart.removeFromCart(item.uniqueId)"
-              class="text-red-500 hover:text-red-700"
+              class="ml-4 text-red-500 hover:text-red-700 transition"
               title="حذف"
             >
               <FontAwesome :icon="['fas','trash']" class="w-5 h-5" />
             </button>
           </div>
         </div>
-      </div>
 
-      <!-- ستون جمع کل و سایر بخش‌ها -->
-      <div class="space-y-6">
-        <!-- جمع کل -->
-        <div class="p-4 border rounded-lg bg-gray-50 shadow-sm">
-          <p class="font-bold text-lg mb-2 text-gray-800">
-            جمع کل: {{ new Intl.NumberFormat("fa-IR").format(cart.cartTotal) }} تومان
-          </p>
-          <button
-            class="w-full bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition"
-          >
-            ادامه خرید / تسویه حساب
-          </button>
-        </div>
+        <!-- ستون جمع کل و سایر بخش‌ها -->
+        <div class="space-y-6">
 
-        <!-- آدرس حمل و نقل -->
-        <div class="p-4 border rounded-lg bg-gray-50 shadow-sm">
-          <h2 class="font-bold mb-2">آدرس حمل و نقل</h2>
-          <textarea
-            placeholder="آدرس خود را وارد کنید..."
-            class="w-full p-2 border rounded focus:ring focus:ring-green-200 outline-none"
-            rows="3"
-          ></textarea>
-        </div>
+          <!-- جمع کل -->
+          <div class="p-6 rounded-2xl bg-white shadow-md">
+            <p class="font-bold text-lg mb-4 text-gray-900">
+              جمع کل: {{ new Intl.NumberFormat("fa-IR").format(cart.cartTotal) }} تومان
+            </p>
+            <button
+              class="w-full py-3 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold transition shadow-md"
+            >
+              ادامه خرید / تسویه حساب
+            </button>
+          </div>
 
-        <!-- قوانین حمل و نقل -->
-        <div class="p-4 border rounded-lg bg-gray-50 text-sm text-gray-700 shadow-sm">
-          <h2 class="font-bold mb-2">قوانین حمل و نقل</h2>
-          <p>
-            سفارشات شما طی ۳ تا ۵ روز کاری ارسال خواهند شد. لطفاً قبل از ثبت
-            نهایی اطلاعات خود را بررسی کنید.
-          </p>
-        </div>
+          <!-- آدرس حمل و نقل -->
+          <div class="p-6 rounded-2xl bg-white shadow-md">
+            <h2 class="font-bold mb-2 text-gray-900">آدرس حمل و نقل</h2>
+            <textarea
+              placeholder="آدرس خود را وارد کنید..."
+              class="w-full p-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-green-200 outline-none resize-none"
+              rows="3"
+            ></textarea>
+          </div>
 
-        <!-- روش‌های پرداخت -->
-        <div class="p-4 border rounded-lg bg-gray-50 shadow-sm">
-          <h2 class="font-bold mb-2">روش‌های پرداخت</h2>
-          <ul class="space-y-2">
-            <li>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="payment" value="online" checked />
-                پرداخت آنلاین
-              </label>
-            </li>
-            <li>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input type="radio" name="payment" value="delivery" />
-                پرداخت در محل
-              </label>
-            </li>
-          </ul>
+          <!-- قوانین حمل و نقل -->
+          <div class="p-6 rounded-2xl bg-white shadow-md text-gray-700 text-sm">
+            <h2 class="font-bold mb-2 text-gray-900">قوانین حمل و نقل</h2>
+            <p>
+              سفارشات شما طی ۳ تا ۵ روز کاری ارسال خواهند شد. لطفاً قبل از ثبت
+              نهایی اطلاعات خود را بررسی کنید.
+            </p>
+          </div>
+
+          <!-- روش‌های پرداخت -->
+          <div class="p-6 rounded-2xl bg-white shadow-md">
+            <h2 class="font-bold mb-2 text-gray-900">روش‌های پرداخت</h2>
+            <ul class="space-y-3">
+              <li>
+                <label class="flex items-center gap-3 cursor-pointer text-gray-700">
+                  <input type="radio" name="payment" value="online" checked class="accent-green-600" />
+                  پرداخت آنلاین
+                </label>
+              </li>
+              <li>
+                <label class="flex items-center gap-3 cursor-pointer text-gray-700">
+                  <input type="radio" name="payment" value="delivery" class="accent-green-600" />
+                  پرداخت در محل
+                </label>
+              </li>
+            </ul>
+          </div>
+
         </div>
       </div>
     </div>

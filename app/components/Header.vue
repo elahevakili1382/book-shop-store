@@ -32,7 +32,7 @@
           @keyup.enter="handleSearch"
           type="text"
           placeholder="جست و جو..."
-          class="w-full border border-gray-300 rounded-lg pr-10 pl-3 py-2 focus:outline-none focus:ring-1 focus:ring-gray-800 bg-white"
+          class="w-full rounded-lg pr-10 pl-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
         />
         <FontAwesome icon="search" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-800" />
 
@@ -99,7 +99,7 @@
         @keyup.enter="handleSearch"
         type="text"
         placeholder="جست‌وجو..."
-        class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white shadow-md"
+        class="w-full rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white shadow-md"
         />
 
       <!-- Dropdown نتایج موبایل -->
@@ -153,7 +153,7 @@
 
       <!-- آیکون سبد و علاقه‌مندی‌ها -->
       <div class="hidden md:flex items-center gap-2">
-        <NuxtLink to="/cart" class="relative w-10 h-10 flex items-center justify-center rounded-full bg-gray-700">
+        <NuxtLink to="/cart" class="bg-[#1C2B36] relative w-10 h-10 flex items-center justify-center rounded-full">
           <NuxtImg src="/images/shopping-bag-minus.svg" alt="سبد خرید" width="20" height="20" />
           <span v-if="cart.cartCount" class="absolute -bottom-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">{{ cart.cartCount }}</span>
         </NuxtLink>
