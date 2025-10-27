@@ -6,7 +6,8 @@ export default defineNuxtConfig({
     compatibilityVersion:4,
   },
     css: [
-    "@fontsource/vazir/index.css"
+    "@fontsource/vazir/index.css",
+    '@fortawesome/fontawesome-svg-core/styles.css',
   ],
   // plugins:['~/plugins/swiper.client.ts'],
   

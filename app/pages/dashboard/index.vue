@@ -1,56 +1,40 @@
 <!-- pages/dashboard/index.vue -->
 <template>
-  <div class="space-y-6">
-    <h2 class="text-2xl font-bold text-gray-800">خوش آمدید 👋</h2>
+  <progressCard />
 
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
 
-      <!-- کارت 1 -->
-      <div
-        class="rounded-2xl shadow-md transition p-6 bg-white
-               hover:bg-gradient-to-br hover:from-blue-600 hover:via-blue-700 hover:to-blue-800
-               hover:text-white hover:shadow-xl"
-      >
-        <h3 class="font-medium mb-2">تعداد کتاب‌ها</h3>
-        <p class="text-3xl font-bold">120</p>
-      </div>
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-6 mb-8">
+  <!-- کارت دو سوم -->
+  <div class="col-span-2">
+    <ProjectAnalytics title="Total Projects" value="24" growth="+12%" />
+  </div>
 
-      <!-- کارت 2 -->
-      <div
-        class="rounded-2xl shadow-md transition p-6 bg-white
-               hover:bg-gradient-to-br hover:from-blue-600 hover:via-blue-700 hover:to-blue-800
-               hover:text-white hover:shadow-xl"
-      >
-        <h3 class="font-medium mb-2">کاربران فعال</h3>
-        <p class="text-3xl font-bold">86</p>
-      </div>
-
-      <!-- کارت 3 -->
-      <div
-        class="rounded-2xl shadow-md transition p-6 bg-white
-               hover:bg-gradient-to-br hover:from-blue-600 hover:via-blue-700 hover:to-blue-800
-               hover:text-white hover:shadow-xl"
-      >
-        <h3 class="font-medium mb-2">سفارشات امروز</h3>
-        <p class="text-3xl font-bold">24</p>
-      </div>
-
-      <!-- کارت 4 -->
-      <div
-        class="rounded-2xl shadow-md transition p-6 bg-white
-               hover:bg-gradient-to-br hover:from-blue-600 hover:via-blue-700 hover:to-blue-800
-               hover:text-white hover:shadow-xl"
-      >
-        <h3 class="font-medium mb-2">سفارشات امروز</h3>
-        <p class="text-3xl font-bold">24</p>
-      </div>
-
+  <!-- کارت یک سوم -->
+  <div class="col-span-1">
+    <!-- میتونی کارت دیگه یا Reminder اینجا بذاری -->
+    <div class="bg-white rounded-xl shadow p-6 mt-8">
+      <h3 class="text-lg font-medium mb-2">Reminders</h3>
+      <p class="text-gray-500">Meeting with Arc Company</p>
+      <p class="text-sm text-gray-400">2:00 pm - 4:00 pm</p>
+      <button class="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700">
+        Start Meeting
+      </button>
     </div>
   </div>
+</div>
+
+
+  
+  
 </template>
 
 <script setup lang="ts">
+import ProjectAnalytics from '~/components/dashboard/ProjectAnalytics.vue'
+import progressCard from '~/components/dashboard/progressCard.vue';
+
+
 definePageMeta({
+  title:'داشبورد ادمین',
   layout: 'dashboard',
 });
 </script>

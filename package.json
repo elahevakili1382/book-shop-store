@@ -12,15 +12,18 @@
   },
   "dependencies": {
     "@fontsource/vazir": "^4.5.4",
-    "@fortawesome/free-brands-svg-icons": "^7.0.1",
-    "@fortawesome/free-regular-svg-icons": "^7.0.1",
-    "@fortawesome/free-solid-svg-icons": "^7.0.1",
+    "@fortawesome/fontawesome-svg-core": "^7.1.0",
+    "@fortawesome/free-brands-svg-icons": "^7.1.0",
+    "@fortawesome/free-regular-svg-icons": "^7.1.0",
+    "@fortawesome/free-solid-svg-icons": "^7.1.0",
+    "@fortawesome/vue-fontawesome": "^3.1.2",
     "@nuxt/icon": "^2.0.0",
     "@nuxt/image": "^1.11.0",
     "@nuxtjs/google-fonts": "^3.2.0",
     "@nuxtjs/tailwindcss": "^6.14.0",
     "@pinia/nuxt": "^0.11.2",
     "@vesp/nuxt-fontawesome": "^2.0.0",
+    "apexcharts": "^5.3.5",
     "axios": "^1.12.1",
     "izitoast": "^1.4.0",
     "lucide-vue-next": "^0.546.0",
@@ -32,7 +35,8 @@
     "swiper": "^11.2.10",
     "vue": "^3.5.20",
     "vue-click-outside": "^1.1.0",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "vue3-apexcharts": "^1.10.0"
   },
   "devDependencies": {
     "@nuxt/types": "^2.18.1",
