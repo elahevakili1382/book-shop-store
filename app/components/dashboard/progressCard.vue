@@ -1,6 +1,6 @@
 <template>
       <div class="space-y-6">
-    <h2 class="text-2xl font-bold text-gray-800">خوش آمدید 👋</h2>
+    <h2 class="text-2xl font-bold text-gray-800">داشبورد ادمین 🆔</h2>
 
    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
 

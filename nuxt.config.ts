@@ -26,6 +26,7 @@ fontawesome: {
       'envelope',
       'trash',
       'search',
+      'camera',
     ],
     brands: ['facebook-f', 'twitter', 'instagram', 'linkedin-in'],
     regular: ['envelope'],

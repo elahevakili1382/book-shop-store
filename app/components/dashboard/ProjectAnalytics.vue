@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full bg-white rounded-2xl shadow p-6 mt-8">
+<div class="w-full max-w-[800px] bg-white rounded-3xl shadow p-6 mt-8">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-semibold text-gray-700">Project Analytics</h3>
     </div>
@@ -7,7 +7,7 @@
     <client-only>
       <ApexChart
         type="bar"
-        height="220"
+           class="w-full"
         :options="chartOptions"
         :series="series"
       />
@@ -19,12 +19,14 @@
 import { ref, watchEffect, onMounted } from 'vue'
 import { useDashboardStore } from '~/stores/dashboard'
 import { storeToRefs } from 'pinia'
-import ApexChart from "vue3-apexcharts"
+import type { ApexOptions } from 'apexcharts'
+import { data } from 'autoprefixer'
 
 
 // دسترسی به استور
 const dashboard = useDashboardStore()
 const { products, loading } = storeToRefs(dashboard)
+const ApexChart  = defineAsyncComponent(() => import('vue3-apexcharts'))
 
 // واکشی داده‌ها
 onMounted(() => {
@@ -34,15 +36,21 @@ onMounted(() => {
 })
 
 // ساخت دیتا برای چارت
-const series = ref([
+type ChartSeries = {name:string; data: number[] }
+const series = ref<ChartSeries[]>([
   {
     name: 'Progress',
     data: [40, 60, 75, 50, 80, 55, 30] // تا بعداً با API جایگزین بشه
   }
 ])
 
-// تنظیمات چارت
-const chartOptions = {
+// watchEffect(() =>{
+// if (series.value[0]) {
+//   series.value[0].data = products.value.slice(0, 7).map(p => p.price)
+// }
+// })
+
+const chartOptions: ApexOptions = {
   chart: {
     toolbar: { show: false },
     sparkline: { enabled: false },
