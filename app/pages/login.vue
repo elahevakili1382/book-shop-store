@@ -131,24 +131,25 @@ const signupData = reactive({ name: '', email: '', password: '' })
 
 const handleLogin = async () => {
   try {
-    const user = { id: '1', name: 'کاربر تست', email: loginData.email }
 
-    // اگر پلاگین وجود دارد و تابع دارد آن را فراخوانی کنید
-    if ($authorization && typeof $authorization.resolveClientUser === 'function') {
-      $authorization.resolveClientUser(user)
-    } else {
-      // fallback ساده با useState (بدون نیاز به پلاگین)
-const userState = useState<User | null>("clientUser", () => null)
-      userState.value = user
-    }
+    const res = await $fetch('/api/auth/login', {
+      method:'POST',
+      body:{
+        email: loginData.email,
+        password: loginData.password
+      }
+    })
 
+    console.log('login response', res);
+
+    
     toast.success({
       title: 'موفق',
-      message: `${user.name} خوش آمدید `,
+      message: 'ورود موفق',
       position: 'topRight',
     })
   } catch (err: any) {
-    toast.error(err.message || 'خطا در ورود')
+    toast.error(err?.statusMessage||err?.message || 'خطا در ورود')
   }
 }
 

@@ -1,4 +1,5 @@
 export default defineNuxtConfig({
+  
   compatibilityDate:"2025-07-09",
    components: true,
 
@@ -9,8 +10,14 @@ export default defineNuxtConfig({
     "@fontsource/vazir/index.css",
     '@fortawesome/fontawesome-svg-core/styles.css',
   ],
-  // plugins:['~/plugins/swiper.client.ts'],
   
+  // plugins:['~/plugins/swiper.client.ts'],
+  runtimeConfig: {
+  apiSecret: '',
+  public: {
+    externalApiBase: 'https://reqres.in/api'
+  }
+},
 
 fontawesome: {
   component: 'FontAwesome',
@@ -59,7 +66,11 @@ toast: {
   keepOnHover: true
 } as any,
 
-
+ nitro: {
+    routeRules: {
+      '/archive/**': { proxy: 'https://archive.org/**' }
+    }
+  },
 
 
   devtools: { enabled: true },

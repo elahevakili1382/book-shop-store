@@ -21,7 +21,8 @@
       </div>
 
       <button
-    class="flex items-center justify-center gap-2 mt-6 bg-[#100641] text-white px-4 py-6 rounded-full text-lg font-medium hover:bg-[#261A7F] transition"
+    class="flex items-center justify-center gap-2 mt-6 bg-[#100641] text-white px-4 py-6 rounded-full text-lg
+     font-medium hover:bg-[#261A7F] transition"
   >
     <FontAwesome :icon="['fas', 'camera']" class="w-4 h-4 text-white" />
     شروع ملاقات

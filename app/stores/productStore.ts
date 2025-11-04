@@ -52,7 +52,6 @@ export const useProductStore = defineStore("productStore", () => {
     isLoading.value = true
     error.value = null
     const apiKey = categoryMap[categoryKey] || "biography"
-
     try {
       const data = await $fetch<SubjectResponse>(`/api/subjects/${apiKey}?limit=20`)
       products.value = data.works
