@@ -1,7 +1,7 @@
 <template>
-<div class="w-full max-w-[800px] bg-white rounded-3xl shadow p-6 mt-8">
+<div class="w-full max-w-[800px] bg-white rounded-3xl shadow p-3 mt-[60px]">
     <div class="flex items-center justify-between mb-4">
-      <h3 class="text-lg font-semibold text-gray-700">Project Analytics</h3>
+      <h3 class="text-lg font-semibold text-gray-700">چارت فروش</h3>
     </div>
 
     <client-only>
@@ -44,11 +44,7 @@ const series = ref<ChartSeries[]>([
   }
 ])
 
-// watchEffect(() =>{
-// if (series.value[0]) {
-//   series.value[0].data = products.value.slice(0, 7).map(p => p.price)
-// }
-// })
+
 
 const chartOptions: ApexOptions = {
   chart: {

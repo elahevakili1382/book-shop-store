@@ -1,9 +1,7 @@
 <!-- pages/dashboard/index.vue -->
 <template>
   <progressCard />
-
-
-  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 mb-8 gap-5">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-5">
   <!-- کارت دو سوم -->
   <div class="md:col-span-2">
     <ProjectAnalytics title="Total Projects" value="24" growth="+12%" />
@@ -21,15 +19,32 @@
       </div>
 
       <button
-    class="flex items-center justify-center gap-2 mt-6 bg-[#100641] text-white px-4 py-6 rounded-full text-lg
+    class="flex items-center justify-center gap-2 mt-6 bg-[#2408af] text-white px-2 py-3 rounded-full text-lg
      font-medium hover:bg-[#261A7F] transition"
   >
     <FontAwesome :icon="['fas', 'camera']" class="w-4 h-4 text-white" />
     شروع ملاقات
   </button>
     </div>
+    <projectsList/>
+  </div>
+  
+  <!-- ستون اول: تیم -->
+  <div class="col-span-1">
+    <TeamCollaboration />
+  </div>
+
+  <!-- ستون دوم: پراگرس -->
+  <div class="col-span-1">
+    <ProjectProgress />
+  </div>
+  <div class="col-span-1">
+    <TimeTracker />
   </div>
 </div>
+
+
+
 
 
   
@@ -39,6 +54,10 @@
 <script setup lang="ts">
 import ProjectAnalytics from '~/components/dashboard/ProjectAnalytics.vue'
 import progressCard from '~/components/dashboard/progressCard.vue';
+import projectsList from '~/components/dashboard/projectsList.vue';
+import TeamCollaboration from '~/components/dashboard/TeamCollaboration.vue';
+import ProjectProgress from '~/components/dashboard/ProjectProgress.vue';
+import TimeTracker from '~/components/dashboard/TimeTracker.vue';
 
 
 definePageMeta({

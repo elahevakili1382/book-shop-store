@@ -1,9 +1,9 @@
 <template>
-  <div class="min-h-screen flex">
+  <div class="min-h-screen flex" >
     <!-- ستون تصویر -->
     <div
       class="hidden md:flex w-1/2 bg-cover bg-center"
-      style="background-image: url('/images/6870525.jpg')"
+      style="background-image: url('/images/6870525.jpg')";
     >
       <!-- لایه نیمه شفاف روی عکس -->
       <!-- <div class="w-full h-full bg-black/30 flex items-center justify-center">
@@ -14,7 +14,7 @@
     <!-- ستون فرم -->
     <div class="flex-1 flex flex-col justify-center items-center px-6 sm:px-12 py-12 bg-gray-50">
       <!-- لوگو یا عنوان -->
-      <h1 class="text-3xl font-bold mb-8 text-gray-800"> ثبت‌نام</h1>
+      <h1 class="text-3xl font-bold mb-8 text-gray-800"> ورود | ثبت نام</h1>
 
       <!-- تب‌ها -->
       <div class="flex mb-8 border-b w-full max-w-md">
@@ -116,12 +116,8 @@ const userState = useState<User | null>("clientUser", () => null)
 const toast = useToast()
 const nuxtApp = useNuxtApp()
 
-interface AuthorizationPlugin {
-  // بهتر resolveClientUser یک تابع بپذیرد که user را دریافت کند
-  resolveClientUser?: (user: any) => void
-}
 
-const $authorization = nuxtApp.$authorization as AuthorizationPlugin | undefined
+
 
 const activeTab = ref<'login'|'signup'>('login')
 
@@ -131,50 +127,64 @@ const signupData = reactive({ name: '', email: '', password: '' })
 
 const handleLogin = async () => {
   try {
-
     const res = await $fetch('/api/auth/login', {
-      method:'POST',
-      body:{
+      method: 'POST',
+      body: {
         email: loginData.email,
-        password: loginData.password
-      }
+        password: loginData.password,
+      },
     })
 
-    console.log('login response', res);
+    console.log('login response', res)
 
-    
-    toast.success({
-      title: 'موفق',
-      message: 'ورود موفق',
-      position: 'topRight',
-    })
+    if ((res as any).ok) {
+      userState.value = (res as any).user
+
+      toast.success({
+        title: 'موفق',
+        message: 'ورود موفقیت‌آمیز بود',
+        position: 'topRight',
+      })
+
+      navigateTo('/dashboard')
+    }
   } catch (err: any) {
-    toast.error(err?.statusMessage||err?.message || 'خطا در ورود')
+    toast.error(err?.statusMessage || err?.message || 'خطا در ورود')
   }
 }
 
+
 const handleSignup = async () => {
   try {
-    const user = { id: '1', name: signupData.name, email: signupData.email }
-
-    if ($authorization && typeof $authorization.resolveClientUser === 'function') {
-      $authorization.resolveClientUser(user)
-    } else {
-const userState = useState<User | null>("clientUser", () => null)
-      userState.value = user
-    }
-
-    toast.success({
-      title: 'موفق',
-      message: `${user.name} جان خوش آمدید `,
-      position: 'topRight',
+    const res = await $fetch('/api/auth/register', {
+      method: 'POST',
+      body: {
+        name: signupData.name,
+        email: signupData.email,
+        password: signupData.password,
+      },
     })
 
-    activeTab.value = 'login'
+    if ((res as any).ok) {
+      toast.success({
+        title: 'ثبت‌نام موفق',
+        message: `${signupData.name} عزیز، خوش آمدی!`,
+        position: 'topRight',
+      })
+
+      // بعد از ثبت نام، مستقیم وارد شو
+      await handleLogin()
+    }
   } catch (err: any) {
-    toast.error(err.message || 'خطا در ثبت‌نام')
+    toast.error(err?.statusMessage || err?.message || 'خطا در ثبت‌نام')
   }
 }
 
 definePageMeta({ layout: 'auth' })
 </script>
+<style>
+div.bg-cover {
+  min-height: 100vh; /* یا هر ارتفاعی که باید باشه */
+}
+
+</style>

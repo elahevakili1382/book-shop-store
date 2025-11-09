@@ -25,6 +25,7 @@
     "@vesp/nuxt-fontawesome": "^2.0.0",
     "apexcharts": "^5.3.5",
     "axios": "^1.12.1",
+    "bcryptjs": "^3.0.3",
     "izitoast": "^1.4.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-vue-next": "^0.546.0",

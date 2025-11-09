@@ -1,33 +1,46 @@
-import { defineEventHandler,readBody,createError, setCookie, H3Event } from "h3";
-import { useRuntimeConfig } from "#imports";
-import { stat } from "fs";
-export default defineEventHandler(async(event:H3Event) =>{
-    const body = await readBody(event)
+import { defineEventHandler, readBody, createError, setCookie } from 'h3'
+import bcrypt from 'bcryptjs'
+import * as jwt from 'jsonwebtoken'
+import { readUsers } from '../../utils/users'
 
-    try{
-        const externalRes = await $fetch('https://reqres.in/api/login',{
-            method:'POST',
-            body,
-        })
+const SECRET = process.env.JWT_SECRET || 'dev_secret'
 
-        const token = (externalRes as any).token
-        if(!token){
-            throw createError({statusCode:401, statusMessage:'Invalid credentials or no token returned'})
-        }
+export default defineEventHandler(async (event) => {
+  const body = await readBody(event)
+  const email = body?.email?.trim().toLowerCase()
+  const password = body?.password
 
-        setCookie(event, 'auth_token', token,{
-            httpOnly:true,
-            secure:process.env.NODE_ENV === 'production',
-            sameSite:'lax', 
-            maxAge: 60 * 60 // 1hour 
-        })
+  if (!email || !password) {
+    throw createError({ statusCode: 400, statusMessage: 'Email and password are required' })
+  }
 
-        return{ok:true, token}
-    }catch(err:any){
-        const status = err?.statusCode || err?.status || 500
-        const message = err?.data?.error || err?.statusMessage || err?.message || 'Login failed'
-        throw createError({statusCode:status, statusMessage:message})
-    }
+  const users = await readUsers()
+  const user = users.find((u) => u.email === email)
 
+  if (!user) {
+    throw createError({ statusCode: 401, statusMessage: 'User not found' })
+  }
 
+  const ok = await bcrypt.compare(password, user.password)
+  if (!ok) {
+    throw createError({ statusCode: 401, statusMessage: 'Invalid password' })
+  }
+
+  const token = jwt.sign(
+    { id: user.id, email: user.email, name: user.name },
+    SECRET,
+    { expiresIn: '1h' }
+  )
+
+  setCookie(event, 'auth_token', token, {
+    httpOnly: true,
+    sameSite: 'lax',
+    maxAge: 60 * 60, // 1 hour
+  })
+
+  return {
+    ok: true,
+    user: { id: user.id, email: user.email, name: user.name },
+    token,
+  }
 })

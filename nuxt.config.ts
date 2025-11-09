@@ -11,13 +11,13 @@ export default defineNuxtConfig({
     '@fortawesome/fontawesome-svg-core/styles.css',
   ],
   
-  // plugins:['~/plugins/swiper.client.ts'],
-  runtimeConfig: {
+runtimeConfig: {
   apiSecret: '',
   public: {
-    externalApiBase: 'https://reqres.in/api'
+    externalApiBase: 'https://fakestoreapi.com'
   }
 },
+
 
 fontawesome: {
   component: 'FontAwesome',

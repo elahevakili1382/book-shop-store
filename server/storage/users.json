@@ -1,0 +1,30 @@
+[
+  {
+    "id": "u1-001",
+    "name": "Elahe",
+    "email": "elahe@example.com",
+    "password": "$2a$10$Hf3se1pzkPhymA0v1JKMXuwx/0EgoBF4mZ64RmgifgUyILg5e4If6",
+    "createdAt": "2025-11-09T12:00:00.000Z"
+  },
+  {
+    "id": "u1-002",
+    "name": "Sara",
+    "email": "sara@example.com",
+    "password": "$2a$10$Hf3se1pzkPhymA0v1JKMXuwx/0EgoBF4mZ64RmgifgUyILg5e4If6",
+    "createdAt": "2025-11-09T12:10:00.000Z"
+  },
+  {
+    "id": "u1-003",
+    "name": "Ali",
+    "email": "ali@example.com",
+    "password": "$2a$10$Hf3se1pzkPhymA0v1JKMXuwx/0EgoBF4mZ64RmgifgUyILg5e4If6",
+    "createdAt": "2025-11-09T12:20:00.000Z"
+  },
+  {
+    "id": "6e99eaf5-1809-4a72-a223-4b8708259d1d",
+    "name": "mahdi",
+    "email": "mahdi80namvar@gmail.com",
+    "password": "$2b$10$SMBIY.RvIqBNdEe6SzqP6uilGtzaFqun57QUdxpR7N6ICl25sCttS",
+    "createdAt": "2025-11-09T06:56:57.413Z"
+  }
+]
