@@ -1,5 +1,5 @@
 <template>
-<div class="w-full max-w-[800px] bg-white rounded-3xl shadow p-3 mt-[60px]">
+<div class="w-full max-w-[800px] bg-white rounded-3xl shadow p-3 mt-[60px] transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
     <div class="flex items-center justify-between mb-4">
       <h3 class="text-lg font-semibold text-gray-700">چارت فروش</h3>
     </div>

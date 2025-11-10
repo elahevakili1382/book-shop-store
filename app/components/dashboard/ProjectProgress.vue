@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full sm:w-[320px] md:w-[380px] bg-white rounded-2xl shadow p-6 flex flex-col items-center mx-auto ">
+  <div class="w-full sm:w-[320px] md:w-[360px] bg-white rounded-2xl shadow p-6 flex flex-col items-center transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
 
 
      <div class="w-full flex justify-start mb-2">
@@ -28,16 +28,16 @@
 
       <div class="absolute inset-0 flex items-end justify-center pointer-events-none">
         <div class="mb-0 text-center">
-          <div class="text-2xl font-bold text-gray-800">{{ percentClamped }}%</div>
+          <div class="text-2xl font-bold text-gray-800 transition-all duration-500 ease-out">{{ percentClamped }}%</div>
         </div>
       </div>
     </div>
 
-    <div class="mt-3 text-center w-full">
+    <div class="mt-12 text-center w-full">
       <div class="text-sm text-gray-500">واحدهای فروخته‌شده</div>
       <div class="text-base font-semibold text-black">{{ totalUnitsSold }}</div>
 
-      <div class="mt-2 text-xs text-gray-500">هدف:</div>
+      <div class="mt-5 text-xs text-gray-500">هدف:</div>
       <div class="text-sm font-semibold text-black">{{ targetUnits }}</div>
     </div>
 

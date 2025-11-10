@@ -1,5 +1,5 @@
 <template>
-<div class="w-full bg-white rounded-2xl shadow p-4 flex flex-col mx-auto">
+<div class="w-full bg-white rounded-2xl shadow p-4 flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1">
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold text-gray-800">اعضای مجموعه </h3>
       <button class="flex items-center gap-2 border border-blue-600 text-blue-800 px-4 py-2 rounded-2xl hover:bg-blue-800 hover:text-white transition">
@@ -16,7 +16,7 @@
         <div
           v-for="member in members.slice(0, 2)"
           :key="member.id"
-          class="flex items-center p-3 rounded-lg hover:shadow gap-2"
+          class="flex items-center p-3 rounded-lg hover:bg-gray-50 hover:shadow-lg gap-2 transform transition-all duration-300 hover:-translate-y-1"
         >
           <img :src="member.image" alt="image" class="w-24 h-24 object-cover rounded-full" />
           <div class="flex-1">

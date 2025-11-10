@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full sm:w-[320px] md:w-[380px] bg-white rounded-2xl shadow p-6 flex flex-col mx-auto">
+  <div class="w-full sm:w-[320px] md:w-[380px] bg-white rounded-2xl shadow p-6 flex flex-col transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
     <!-- هدر کارت -->
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold text-gray-800">Time Tracker</h3>
@@ -10,12 +10,12 @@
 
     <!-- تایمر -->
     <div class="flex flex-col items-center justify-center mt-2">
-      <div class="text-2xl font-bold text-gray-800">{{ formattedTime }}</div>
+      <div class="text-4xl font-bold text-gray-800">{{ formattedTime }}</div>
       <div class="text-sm text-gray-500 mt-1">{{ currentTask || 'هیچ کاری در حال اجرا نیست' }}</div>
     </div>
 
     <!-- نوار پیشرفت روزانه -->
-    <div class="mt-4 w-full">
+    <div class="mt-12 w-full">
       <div class="flex justify-between mb-1 text-xs text-gray-500">
         <span>پیشرفت امروز</span>
         <span>{{ percentCompleted }}%</span>
@@ -31,19 +31,19 @@
     <!-- کنترل تایمر -->
     <div class="mt-4 flex justify-center gap-3">
       <button
-        class="px-3 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-700 transition text-sm"
+        class="px-3 py-2 bg-blue-800 text-white rounded-lg hover:bg-blue-700 text-sm transition-all duration-500 ease-out hover:scale-110"
         @click="startTimer"
       >
         شروع
       </button>
       <button
-        class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition text-sm"
+        class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 text-sm transition-all duration-500 ease-out hover:scale-110"
         @click="pauseTimer"
       >
         توقف
       </button>
       <button
-        class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-gray-600 transition text-sm"
+        class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-gray-600 text-sm transition-all duration-500 ease-out hover:scale-110"
         @click="resetTimer"
       >
         ریست

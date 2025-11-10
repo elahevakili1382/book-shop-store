@@ -77,9 +77,9 @@ onBeforeUnmount(() => {
 })
 
 const menu: MenuItem[] = [
-  { label: 'خانه', to: '/dashboard', icon: Home },
-  { label: 'تحلیل‌ها', to: '/dashboard/', icon: BarChart },
-  { label: 'تیم', to: '/dashboard/', icon: Users },
+  { label: 'داشبورد', to: '/dashboard', icon: Home },
+  { label: 'فاکتورها', to: '/dashboard/', icon: BarChart },
+  { label: 'تحلیل ها', to: '/dashboard/', icon: Users },
   { label: 'تنظیمات', to: '/dashboard/', icon: Settings },
 ]
 </script>

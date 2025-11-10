@@ -1,55 +1,44 @@
 <!-- pages/dashboard/index.vue -->
 <template>
   <progressCard />
+
   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-5">
-  <!-- کارت دو سوم -->
-  <div class="md:col-span-2">
-    <ProjectAnalytics title="Total Projects" value="24" growth="+12%" />
-  </div>
+    <!-- کارت دو سوم -->
+    <div class="md:col-span-2">
+      <ProjectAnalytics title="Total Projects" value="24" growth="+12%" />
+    </div>
 
-  <!-- کارت یک سوم -->
-  <div class="md:col-span-1">
-    <!-- میتونی کارت دیگه یا Reminder اینجا بذاری -->
-    <div class="bg-white rounded-2xl shadow p-6 mt-8 flex flex-col justify-between">
-      <div>
-            <h3 class="text-lg font-semibold text-gray-800 mb-3">یادآوری</h3>
-                <h2 class="text-gray-700 text-xl font-bold leading-snug">قرار آنلاین با شرکت آرسی</h2>
-                    <p class="text-sm text-gray-500 mt-1">۲:۰۰ ظهر - ۴:۰۰ عصر</p>
+    <!-- کارت یک سوم -->
+    <div class="md:col-span-1">
+      <div class="bg-white rounded-2xl shadow p-6 mt-8 flex flex-col justify-between transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-800 mb-3">یادآوری</h3>
+          <h2 class="text-gray-700 text-xl font-bold leading-snug">
+            قرار آنلاین با شرکت آرسی
+          </h2>
+          <p class="text-sm text-gray-500 mt-1">۲:۰۰ ظهر - ۴:۰۰ عصر</p>
+        </div>
 
+        <button
+          class="flex items-center justify-center gap-2 mt-6 bg-[#2408af] text-white px-2 py-3 rounded-full text-lg font-medium hover:bg-[#261A7F] transition"
+        >
+          <FontAwesome :icon="['fas', 'camera']" class="w-4 h-4 text-white" />
+          شروع ملاقات
+        </button>
       </div>
 
-      <button
-    class="flex items-center justify-center gap-2 mt-6 bg-[#2408af] text-white px-2 py-3 rounded-full text-lg
-     font-medium hover:bg-[#261A7F] transition"
-  >
-    <FontAwesome :icon="['fas', 'camera']" class="w-4 h-4 text-white" />
-    شروع ملاقات
-  </button>
+      <projectsList />
     </div>
-    <projectsList/>
-  </div>
-  
-  <!-- ستون اول: تیم -->
-  <div class="col-span-1">
-    <TeamCollaboration />
   </div>
 
-  <!-- ستون دوم: پراگرس -->
-  <div class="col-span-1">
+  <!-- 🔹 بخش جداگانه برای سه کارت پایین -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5 px-4 mt-8" >
+    <TeamCollaboration />
     <ProjectProgress />
-  </div>
-  <div class="col-span-1">
     <TimeTracker />
   </div>
-</div>
-
-
-
-
-
-  
-  
 </template>
+
 
 <script setup lang="ts">
 import ProjectAnalytics from '~/components/dashboard/ProjectAnalytics.vue'
