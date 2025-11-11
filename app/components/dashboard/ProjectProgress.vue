@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full sm:w-[320px] md:w-[360px] bg-white rounded-2xl shadow p-6 flex flex-col items-center transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+  <div class="w-full bg-white rounded-2xl shadow p-6 flex flex-col items-center transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
 
 
      <div class="w-full flex justify-start mb-2">

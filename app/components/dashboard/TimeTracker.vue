@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full sm:w-[320px] md:w-[380px] bg-white rounded-2xl shadow p-6 flex flex-col transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+  <div class="w-full bg-white rounded-2xl shadow p-6 flex flex-col transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
     <!-- هدر کارت -->
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold text-gray-800">Time Tracker</h3>

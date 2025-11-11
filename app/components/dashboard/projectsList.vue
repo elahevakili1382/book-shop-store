@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full bg-white rounded-2xl shadow p-6 mt-8 flex flex-col transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
+  <div class="w-full bg-white rounded-2xl shadow p-4 flex flex-col transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold text-gray-800">پر فروش ترین ها</h3>
       <button class="flex items-center gap-2 border border-blue-600 text-blue-800 px-4 py-2 rounded-2xl hover:bg-blue-800 hover:text-white transition">
