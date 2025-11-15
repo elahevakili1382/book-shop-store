@@ -1,10 +1,8 @@
 <template>
   <div class="flex min-h-screen bg-gray-100">
-    <!-- Sidebar fixed -->
     <Sidebar />
 
-    <!-- Main content -->
-    <div class="flex-1 flex flex-col pr-[1rem] pl-[1rem] pt-[1rem]"> <!-- 16rem Sidebar + 2rem فاصله -->
+    <div class="flex-1 flex flex-col pr-[1rem] pl-[1rem] pt-[1rem]">
       <Header />
 
       <main class="p-6">

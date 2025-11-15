@@ -1,31 +1,9 @@
 {
+  "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    
-    "paths": {
-      "@/*": ["./app/*"],
-      "#app": [".nuxt/types/app.d.ts"]
-    },
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "types": ["vitest/globals", "node", "@nuxt/types"]
-    
-  },
-  // https://nuxt.com/docs/guide/concepts/typescript
-  "files": [],
-  "references": [
-    {
-      "path": "./.nuxt/tsconfig.app.json"
-    },
-    {
-      "path": "./.nuxt/tsconfig.server.json"
-    },
-    {
-      "path": "./.nuxt/tsconfig.shared.json"
-    },
-    {
-      "path": "./.nuxt/tsconfig.node.json"
-    }
-  ]
+    "types": ["node"]
+  }
 }
