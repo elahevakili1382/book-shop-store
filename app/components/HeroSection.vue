@@ -1,154 +1,130 @@
 <template>
   <!-- بخش معرفی کتاب -->
   <section
-    class="flex flex-col-reverse sm:flex-row justify-center items-center px-4 gap-4 sm:gap-8 mt-3"
-  >
+    class="flex flex-col-reverse sm:flex-row justify-center items-center px-4 gap-10 mt-6
+           animate-fadeIn">
+    
     <!-- عکس دختر و کتاب -->
-    <div class="relative w-48 sm:w-40 md:w-56 lg:w-64">
-      <!-- عکس دختر -->
+    <div class="relative w-48 sm:w-60 lg:w-72 group">
+      <!-- دختر -->
       <NuxtImg
         src="/images/img-girl.png"
         alt="reader"
-       
         format="webp"
-        class="w-full max-w-none object-contain scale-110 md:scale-100 transition-transform duration-300"
+        class="w-full object-contain transform transition-all duration-500
+               group-hover:scale-105 drop-shadow-xl"
       />
 
-      <!-- عکس کتاب داخل div -->
+      <!-- کتاب -->
       <NuxtImg
         src="/images/Slider-image-(1).png"
-        alt="کتاب Marauder"
-       
+        alt="کتاب"
         format="webp"
-        class="book-overlay absolute w-1 sm:w-10 md:w-28 lg:w-32 left-[90%] top-[50%] -translate-y-1/2"
+        class="book-floating absolute w-20 sm:w-24 lg:w-28
+               left-[85%] top-[50%] -translate-y-1/2
+               transform transition-all duration-300
+               "
       />
     </div>
 
     <!-- متن -->
-    <div class="max-w-xs mr-10 sm:mt-0 text-right">
-      <h2 class="text-2xl lg:text-3xl font-bold">کلایو کاسلر</h2>
-      <p class="text-md mt-2 text-gray-500">و بوید موریسون</p>
-      <div class="flex flex-row md:flex-col gap-4 mt-1">
+    <div class="max-w-sm text-right space-y-3 animate-slideUp">
+      <h2 class="text-3xl lg:text-4xl font-extrabold text-[#435058] leading-snug">
+        کلایو کاسلر
+      </h2>
+      <p class="text-lg text-gray-500">و بوید موریسون</p>
+
+      <div class="flex flex-row md:flex-col gap-4 mt-4">
+
         <button
-          class="bg-gray-300 hover:bg-gray-200 text-black px-4 py-2 rounded-full text-md"
-          role="link"
-        >
+          class="px-6 py-3 rounded-full bg-[#e7e7e7] text-gray-800
+                 shadow hover:shadow-lg hover:bg-[#f3f3f3]
+                 transition-all duration-300 active:scale-95">
           اطلاعات بیشتر
         </button>
+
         <button
-          class="bg-lime-400 text-black px-4 py-2 rounded-full text-md hover:bg-lime-600"
-          role="link"
-        >
+          class="px-6 py-3 rounded-full bg-fruit-yellow text-black
+                 shadow-md hover:shadow-lg hover:bg-[#d6f460]
+                 transition-all duration-300 active:scale-95 font-semibold">
           خرید کتاب
         </button>
+
       </div>
     </div>
   </section>
 
   <!-- بخش جستجو -->
   <section
-    class="w-full max-w-5xl mx-auto bg-white/45 backdrop-blur-lg rounded-3xl p-3 md:p-6 shadow-2xl"
-  >
-    <div class="flex flex-col items-center">
-      <div class="w-full max-w-xl mb-6">
-        <form class="relative w-full">
-          <!-- دکمه سرچ -->
-          <button
-            type="submit"
-            aria-label="جستجو"
-            class="absolute left-3 top-1/2 -translate-y-1/2 p-1 text-gray-600 hover:text-gray-800"
-          >
-            <svg
-              width="20"
-              height="20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              role="img"
-              aria-labelledby="search"
-              class="w-5 h-5"
-            >
-              <path
-                d="M9 15a6 6 0 100-12 6 6 0 000 12zM15 15l-3-3"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              ></path>
-            </svg>
-          </button>
+    class="w-full max-w-5xl mx-auto mt-0 p-6
+           bg-white/60 backdrop-blur-xl border border-white/50
+           rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.06)] animate-fadeIn">
 
-          <!-- فیلد ورودی -->
+    <div class="flex flex-col items-center">
+
+      <!-- فیلد جستجو -->
+      <div class="w-full max-w-xl mb-8">
+        <form class="relative w-full">
+          
+          <!-- سرچ -->
+      <button type="submit" class="absolute left-4 top-1/2 -translate-y-1/2 text-black">
+        <FontAwesome icon="search" color="black" />
+      </button>
+
+
           <input
             type="text"
-            placeholder="جستجو..."
-            class="w-full rounded-full pl-10 pr-10 py-3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white placeholder-gray-400 shadow-md text-right font-bold"
-            required
+            placeholder="جستجو میان هزاران کتاب..."
+            class="w-full rounded-full py-3 px-14 pr-6
+                   bg-white/70 backdrop-blur focus:ring-2 focus:ring-fruit-yellow
+                   shadow-md text-right font-medium
+                   transition-all duration-300"
           />
 
-          <!-- دکمه پاک کردن -->
+          <!-- پاک کردن -->
           <button
             type="reset"
-            aria-label="پاک کردن جستجو"
-            class="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-600 hover:text-gray-800"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M6 18L18 6M6 6l12 12"
-              ></path>
-            </svg>
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition">
+            ✕
           </button>
         </form>
       </div>
 
-      <!-- اسلایدر کتاب‌ها -->
-    <ClientOnly>
-  <Swiper
-    :slidesPerView="5"
-    :pagination="{ clickable: true }"
-    :modules="[Pagination]"
-    grab-cursor
-    :breakpoints="{
-      320: { slidesPerView: 3, spaceBetween: 10 },   // موبایل
-      640: { slidesPerView: 4, spaceBetween: 15 },   // تبلت
-      1024: { slidesPerView: 6, spaceBetween: 20 }   // دسکتاپ
-    }"
-    class="w-full max-w-5xl"
-  >
-<SwiperSlide
-  v-for="book in books"
-  :key="book.title"
->
-  <!-- دیو خاکستری -->
-  <div
-    class="flex items-center justify-center
-           w-[116px] h-[117px] sm:w-[100px] sm:h-[105px] md:w-[116px] md:h-[117px]
-           bg-[#cdcdc34a] rounded-md p-1"
-  >
-    <!-- عکس -->
-    <NuxtImg
-      :src="book.cover"
-      :alt="book.title"
-      width="65"
-      height="102"
-      format="webp"
-      class="object-contain"
-    />
-  </div>
-</SwiperSlide>
+      <!-- اسلایدر -->
+      <ClientOnly>
+      <Swiper
+        :slidesPerView="5"
+        grab-cursor
+        :pagination="{ clickable: true }"
+        :modules="[Pagination]"
+        :breakpoints="{
+          320: { slidesPerView: 3, spaceBetween: 10 },
+          640: { slidesPerView: 4, spaceBetween: 15 },
+          1024: { slidesPerView: 6, spaceBetween: 20 }
+        }"
+        class="w-full max-w-5xl"
+      >
+        <SwiperSlide
+          v-for="book in books"
+          :key="book.title"
+        >
+          <div
+            class="flex items-center justify-center
+                   w-[116px] h-[117px] bg-[#e5e5e5]/60
+                   rounded-xl p-2 shadow-sm
+                   hover:shadow-xl hover:-translate-y-1
+                   transition-all duration-300">
+            <NuxtImg
+              :src="book.cover"
+              width="65"
+              height="102"
+              class="object-contain"
+            />
+          </div>
+        </SwiperSlide>
 
-
-  </Swiper>
-</ClientOnly>
-
+      </Swiper>
+      </ClientOnly>
     </div>
   </section>
 </template>
@@ -158,7 +134,6 @@ import { Swiper, SwiperSlide } from 'swiper/vue'
 import { Pagination } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/pagination'
-import { NuxtImg } from '#components'
 
 interface Book {
   title: string
@@ -166,61 +141,43 @@ interface Book {
 }
 
 const books: Book[] = [
-  { title: 'The Hobbit', cover: '/images/b1.png' },
-  { title: 'The Hobbit', cover: '/images/b2.png' },
-  { title: 'The Hobbit', cover: '/images/b3.png' },
-  { title: 'The Hobbit', cover: '/images/b4.png' },
-  { title: 'The Hobbit', cover: '/images/b6.png' },
-  { title: 'The Hobbit', cover: '/images/b5.png' },
+  { title: 'Hobbit', cover: '/images/b1.png' },
+  { title: 'Hobbit', cover: '/images/b2.png' },
+  { title: 'Hobbit', cover: '/images/b3.png' },
+  { title: 'Hobbit', cover: '/images/b4.png' },
+  { title: 'Hobbit', cover: '/images/b6.png' },
+  { title: 'Hobbit', cover: '/images/b5.png' }
 ]
 </script>
 
 <style scoped>
+/* انیمیشن‌ها */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn { animation: fadeIn .7s ease-out; }
+.animate-slideUp { animation: slideUp .8s ease-out; }
 
-/* pagination سفارشی */
-/* .swiper-pagination-bullet {
-  background-color: #aaa;
-  opacity: 1;
-  width: 12px;
-  height: 12px;
-  margin: 0 6px !important;
-  border-radius: 50%;
-  transition: background-color 0.3s;
-} */
+/* کتاب روی دست دختر */
+.book-floating {
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%   { transform: translateY(-50%) }
+  50%  { transform: translateY(-60%) }
+  100% { transform: translateY(-50%) }
+}
+
+/* pagination */
 .swiper-pagination-bullet-active {
-  background-color: #dce763;
+  background-color: #DCF763 !important;
 }
 
-/* تنظیمات responsive کتاب روی دست دختر */
-.book-overlay {
-  transition: all 0.3s ease;
-}
-@media (max-width: 640px) {
-  .book-overlay {
-    left: 55% !important;
-    bottom: 18% !important;
-    width: 5rem !important;
-  }
-}
-@media (min-width: 641px) and (max-width: 1024px) {
-  .book-overlay {
-    left: 58% !important;
-    bottom: 20% !important;
-    width: 7rem !important;
-  }
-}
-@media (min-width: 1025px) {
-  .book-overlay {
-    left: 60% !important;
-    bottom: 20% !important;
-    width: 9rem !important;
-  }
-}
-
-/* راست‌چین کل کامپوننت */
-section,
-input,
-button {
-  direction: rtl;
-}
+/* RTL */
+section, input, button { direction: rtl; }
 </style>

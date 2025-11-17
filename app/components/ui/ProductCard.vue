@@ -1,59 +1,72 @@
 <template>
   <div
-    class="flex flex-col justify-between items-center py-2 sm:py-3 
-           w-[85%] sm:w-full max-w-[300px] transition hover:shadow-xl hover:rounded-1xl hover:scale-105 mx-auto"
+    class="group flex flex-col justify-between rounded-2xl overflow-hidden
+           bg-white shadow-md hover:shadow-xl transition-all duration-300
+           hover:-translate-y-1 cursor-pointer max-w-[300px] w-[85%] sm:w-full mx-auto"
   >
-    <!-- تصویر کتاب -->
-    <NuxtLink :to="productUrl" class="w-full relative">
+    <!-- تصویر -->
+    <NuxtLink :to="productUrl" class="relative w-full overflow-hidden">
       <NuxtImg
         :src="product.image"
         :alt="product.title"
-        class="w-full h-[320px] sm:h-[420px] object-cover rounded-2xl"
-        :sizes="sizes"
+        class="w-full h-[320px] sm:h-[420px] object-cover rounded-t-2xl
+               transition-transform duration-500 group-hover:scale-110"
+        :sizes="sizes"  
         width="280"
         height="420"
         format="webp"
-        priority
+        preload
       />
-    </NuxtLink>
 
-    <!-- امتیاز و تعداد نظر -->
-    <div class="flex items-center gap-2 mt-2 sm:mt-3 mb-2 w-full px-3 sm:px-4">
+      <!-- برچسب امتیاز -->
       <div
-        class="flex items-center gap-1 rounded-2xl px-3 py-1 bg-[#DCF763] border border-[#435058] text-[#435058] text-xs sm:text-sm"
+        class="absolute top-3 left-3 bg-fruit-yellow/85 backdrop-blur px-3 py-1 rounded-full
+               flex items-center gap-1 text-xs shadow-sm"
       >
-        <NuxtImg src="/images/Vector-(3).svg" alt="امتیاز" width="16" height="16" />
-        <span>{{ product.rating || '0.0' }}</span>
+        <NuxtImg src="/images/Vector-(3).svg" width="16" height="16" alt="rating" />
+        <span class="font-semibold">{{ product.rating || '0.0' }}</span>
       </div>
-      <p class="text-[#848C8E] text-xs sm:text-sm">140 نظر</p>
-    </div>
-
-    <!-- نویسنده و عنوان -->
-    <NuxtLink :to="productUrl" class="block w-full px-3 sm:px-4">
-      <p class="text-[#848C8E] text-xs sm:text-sm mb-1 truncate">نویسنده‌ی کتاب</p>
-      <h2 class="text-sm sm:text-lg font-bold mb-1 truncate">{{ product.title }}</h2>
-      <p class="text-[#848C8E] text-xs sm:text-sm mb-2">قیمت کتاب</p>
-      <h2 class="text-sm sm:text-lg font-semibold mb-3 truncate">{{ formattedPrice }}</h2>
     </NuxtLink>
+
+    <!-- متن‌ها -->
+    <div class="px-4 py-3 flex flex-col w-full">
+      <NuxtLink :to="productUrl">
+        <p class="text-gray-500 text-xs sm:text-sm mb-1 truncate">اسم کتاب</p>
+
+        <h2
+          class="text-base sm:text-lg font-bold text-gray-800 leading-6 mb-1 truncate
+                 group-hover:text-[#435058] transition-colors"
+        >
+          {{ product.title }}
+        </h2>
+
+        <p class="text-gray-500 text-xs sm:text-sm mt-1">قیمت</p>
+
+        <h3 class="text-base sm:text-lg font-semibold text-gray-700">
+          {{ formattedPrice }}
+        </h3>
+      </NuxtLink>
+    </div>
 
     <!-- دکمه افزودن -->
-    <div class="w-full flex justify-center">
-      <button
-        @click.stop="addProduct"
-        class="bg-[#435058] rounded-full text-white flex items-center justify-center
-               px-8 sm:px-16 py-2 sm:py-3 hover:bg-[#5b6a6a] transition w-auto max-w-[280px] sm:max-w-[330px]"
-      >
-        افزودن به سبد
-        <NuxtImg src="/images/user.svg" alt="افزودن به سبد خرید" width="18" height="18" />
-      </button>
-    </div>
+    <button
+      @click.stop="addProduct"
+      class="w-[90%] mx-auto mb-4 py-2 sm:py-3 rounded-full bg-[#435058] text-white
+             flex items-center justify-center gap-2 text-sm sm:text-base
+             transition-all duration-300 
+             hover:bg-[#5b6a6a] hover:scale-[1.03] active:scale-95 shadow-lg"
+    >
+      <span>افزودن به سبد</span>
+      <NuxtImg src="/images/user.svg" width="18" height="18" alt="cart" />
+    </button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useCartStore } from '@/stores/cart'
-import { NuxtImg, NuxtLink } from '#components'
+
+// Nuxt Test toast — بدون import
 const toast = useToast()
 
 const props = defineProps<{
@@ -68,10 +81,12 @@ const props = defineProps<{
 
 const cartStore = useCartStore()
 
+// قیمت + کاما + تومان
 const formattedPrice = computed(
   () => new Intl.NumberFormat('fa-IR').format(props.product.price) + ' تومان'
 )
 
+// لینک محصول
 const productUrl = computed(() => `/product/${props.product.id}`)
 
 function addProduct() {
@@ -85,16 +100,19 @@ function addProduct() {
     1
   )
 
-  toast.success({
-    message: `محصول "${props.product.title}" به سبد خرید اضافه شد.`,
-    color: 'green',
-    position: 'topRight',
-  })
+toast.success({
+  message: `«${props.product.title}» به سبد خرید اضافه شد`,
+  position: 'topRight',
+  close: true,
+  timeout: 2400,
+})
 }
 
 const sizes = '(max-width: 640px) 90vw, (max-width: 768px) 250px, 300px'
 </script>
 
 <style scoped>
-button:hover { cursor: pointer; }
+button:hover {
+  cursor: pointer;
+}
 </style>

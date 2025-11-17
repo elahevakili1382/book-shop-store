@@ -11,6 +11,7 @@ content: [
     extend: {
       colors:{
         "fruit-yellow" :"#DCF763",
+        "mello-yellow":"#e7f993",
            "primary": "#1C2B36",
     "secondary": "#10B981",
     "accent": "#DCF763",

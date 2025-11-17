@@ -1,8 +1,8 @@
 <template>
-  <section class="flex flex-col gap-8 relative max-w-[1200px] w-full mx-auto mt-[120px] p-10 bg-[#435058]/[0.08] border border-[#435058]/[0.15] rounded-[40px]">
+  <section class="flex flex-col gap-8 relative max-w-[1200px] w-full mx-auto mt-[80px] p-10 bg-[#dfdcdb] border border-[#435058]/[0.15] rounded-[40px] hover:shadow-2xl">
     <!-- هدر -->
     <div class="flex justify-between items-center">
-      <h1 class="text-2xl font-bold">خرید با دسته‌بندی</h1>
+      <h1 class="text-2xl font-bold">فروش روز</h1>
       <div class="flex gap-2">
         <button
           @click="slidePrev"
@@ -23,7 +23,7 @@
 
     <div class="flex flex-col md:flex-row gap-4">
       <!-- ستون دسته‌بندی -->
-      <div class="bg-white rounded-3xl w-full md:w-72 p-6 flex-col gap-6 shadow-md shrink-0">
+      <div class="bg-white rounded-3xl shadow-2xl w-full md:w-72 p-6 flex-col gap-6 shrink-0">
         <h2 class="font-semibold text-lg mb-4">دسته بندی</h2>
 
         <!-- موبایل (افقی) -->
@@ -33,8 +33,8 @@
             :key="category"
             @click="selectCategory(category)"
             :class="[
-              'cursor-pointer px-4 py-2 rounded-lg whitespace-nowrap border',
-              selectedCategory === category ? 'bg-gray-300 font-bold' : 'bg-white'
+              'cursor-pointer px-4 py-2 rounded-lg whitespace-nowrap border hover:bg-mello-yellow transition-all duration-300 hover:-translate-y-1  hover:font-bold',
+              selectedCategory === category ? 'bg-fruit-yellow font-bold' : 'bg-white border-fruit-yellow'
             ]"
           >
             {{ category }}
@@ -48,8 +48,8 @@
             :key="category"
             @click="selectCategory(category)"
             :class="[
-              'cursor-pointer hover:text-gray-900 hover:font-bold px-4 py-2 rounded-lg',
-              selectedCategory === category ? 'bg-gray-300 font-bold' : ''
+              'cursor-pointer hover:text-gray-800 hover:bg-mello-yellow transition-all duration-300 hover:-translate-y-1 hover:font-bold px-4 py-2 border rounded-lg',
+              selectedCategory === category ? 'bg-fruit-yellow font-bold' : 'border-fruit-yellow'
             ]"
           >
             {{ category }}

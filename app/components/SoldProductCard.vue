@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-row gap-3 p-4 w-full max-w-[350px] sm:max-w-full h-[320px] rounded-xl shadow hover:shadow-lg transition relative bg-gray-100 mx-auto"
+    class="flex flex-row gap-3 p-4 w-full max-w-[350px] sm:max-w-full h-[320px] rounded-xl shadow hover:shadow-lg relative bg-gray-100 mx-auto transition-all duration-300 hover:translate-y-2"
     dir="rtl"
   >
     <!-- تصویر محصول -->
@@ -48,7 +48,8 @@
       <!-- دکمه -->
       <button
         type="button"
-        class="w-full sm:w-auto bg-[#435058] rounded-full text-white flex items-center justify-center gap-2 px-4 sm:px-6 py-1.5 sm:py-2 hover:bg-[#5b6a6a] transition whitespace-nowrap"
+        class="w-full sm:w-auto bg-[#435058] rounded-full text-white flex items-center justify-center gap-2 px-4 sm:px-6 py-1.5 sm:py-2 whitespace-nowrap duration-300 
+             hover:bg-[#5b6a6a] hover:scale-[1.03] active:scale-95 shadow-lg"
       >
         افزودن به سبد
         <img src="/images/user.svg" alt="add to cart icon" class="w-3 h-3 sm:w-4 sm:h-4" />

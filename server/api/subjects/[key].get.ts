@@ -1,16 +1,31 @@
 import type { SubjectResponse } from '../../../types/types'
-import type { H3Event } from 'h3'
 
-export default defineEventHandler(async (event: H3Event): Promise<SubjectResponse> => {
+export default defineEventHandler(async (event) => {
   const key = event.context.params?.key as string
   const limit = (getQuery(event).limit as string) || '10'
 
+  if (!key) {
+    throw createError({
+      statusCode: 400,
+      message: 'Subject key is required'
+    })
+  }
+
   try {
-    const data = await $fetch<SubjectResponse>(
-      `https://openlibrary.org/subjects/${key}.json?limit=${limit}`
-    )
+    const url = `https://openlibrary.org/subjects/${key}.json?limit=${limit}`
+
+    const data = await $fetch<SubjectResponse>(url)
+
+    // اگر API خالی برگرداند → Crash نکن
+    if (!data || !data.works) {
+      return { works: [] }
+    }
+
     return data
   } catch (err) {
-    throw createError({ statusCode: 500, statusMessage: 'خطا در دریافت دسته بندی' })
+    console.error('OpenLibrary Subject Error:', err)
+
+    // هرگز صراحتاً 500 نده → خروجی خالی بده
+    return { works: [] }
   }
 })

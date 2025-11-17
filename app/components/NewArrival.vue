@@ -95,9 +95,7 @@ const slidePrev = () => swiperInstance.value?.slidePrev()
 onMounted(async () => {
   isLoading.value = true
   try {
-    // فقط برای این کامپوننت fetch می‌کنیم
-    await productStore.searchProducts('programming') 
-    // داده‌ها رو داخل localProducts ذخیره می‌کنیم تا استور global تغییر نکنه
+    await productStore.fetchCategoryProducts("programming")
     localProducts.value = [...productStore.products]
   } finally {
     isLoading.value = false

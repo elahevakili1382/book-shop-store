@@ -20,11 +20,11 @@
     </button>
 
     <!-- منوی دسکتاپ -->
-    <nav class="hidden md:flex items-center space-x-7 rtl:space-x-reverse">
-      <NuxtLink to="/" class="font-bold px-5 py-1 bg-[#435058] rounded-full text-white hover:bg-[#0c161dcb] hover:scale-105">
+    <nav class="hidden md:flex items-center space-x-7 rtl:space-x-reverse gap-1">
+      <NuxtLink to="/" class="font-bold px-4 py-1 ml-2 bg-[#435058] rounded-full text-white hover:bg-[#0c161dcb] hover:scale-105">
         خانه
       </NuxtLink>
-      <NuxtLink to="/new" class="font-bold text-gray-600 hover:text-gray-500">تازه ها</NuxtLink>
+      <NuxtLink to="/new" class="font-bold text-gray-600 hover:text-gray-500 ">تازه ها</NuxtLink>
       <NuxtLink to="/bestseller" class="font-bold text-gray-600 hover:text-gray-500">پرفروش ها</NuxtLink>
       <NuxtLink to="/daily-offers" class="font-bold text-gray-600 hover:text-gray-500">پیشنهاد روز</NuxtLink>
       <NuxtLink to="/about" class="font-bold text-gray-600 hover:text-gray-500">درباره ما</NuxtLink>
@@ -163,7 +163,7 @@
         </span>
       </NuxtLink>
 
-      <NuxtLink to="/" class="w-10 h-10 flex items-center justify-center rounded-full bg-white text-gray-600 outline">
+      <NuxtLink to="/" class="w-10 h-10 flex items-center justify-center rounded-full bg-white">
         <NuxtImg src="/images/favourite.svg" width="20" height="20" />
       </NuxtLink>
 
