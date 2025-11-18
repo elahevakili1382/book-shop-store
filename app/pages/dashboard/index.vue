@@ -2,7 +2,7 @@
 <template>
   <div class="space-y-8"> 
     <!-- 🔹 بخش کارت‌های بالایی -->
-    <progressCard />
+    <ProgressCard />
 
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-5">
       <!-- کارت دو سوم -->
@@ -43,19 +43,21 @@
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 px-2 sm:px-4">
       <TeamCollaboration />
       <ProjectProgress />
-              <projectsList />
+      <ProjectsList />
 
     </div>
+    
   </div>
 </template>
 
 <script setup lang="ts">
-import ProjectAnalytics from '~/components/dashboard/ProjectAnalytics.vue'
-import progressCard from '~/components/dashboard/progressCard.vue'
-import projectsList from '~/components/dashboard/projectsList.vue'
-import TeamCollaboration from '~/components/dashboard/TeamCollaboration.vue'
-import ProjectProgress from '~/components/dashboard/ProjectProgress.vue'
-import TimeTracker from '~/components/dashboard/TimeTracker.vue'
+import TeamCollaboration from '~/components/dashboard/TeamCollaboration.vue';
+import ProjectAnalytics from '~/components/dashboard/ProjectAnalytics.vue';
+import ProgressCard from '~/components/dashboard/ProgressCard.vue';
+import ProjectProgress from '~/components/dashboard/ProjectProgress.vue';
+import ProjectsList from '~/components/dashboard/ProjectsList.vue';
+import TimeTracker from '~/components/dashboard/TimeTracker.vue';
+
 
 definePageMeta({
   title: 'داشبورد ادمین',

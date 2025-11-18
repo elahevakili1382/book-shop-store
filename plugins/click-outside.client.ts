@@ -1,5 +1,7 @@
 import { defineNuxtPlugin } from 'nuxt/app'
 import type { NuxtApp } from 'nuxt/app'
+import type { DirectiveBinding } from 'vue'
+
 
 declare global {
   interface HTMLElement {
@@ -9,7 +11,7 @@ declare global {
 
 export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
   nuxtApp.vueApp.directive('click-outside', {
-    beforeMount(el: HTMLElement, binding: any) {
+    mounted(el: HTMLElement, binding: DirectiveBinding<(event: Event) => void>) {
       const handler: EventListener = (event: Event) => {
         const target = event.target as Node
         if (!(el === target || el.contains(target))) {
@@ -25,6 +27,8 @@ export default defineNuxtPlugin((nuxtApp: NuxtApp) => {
     unmounted(el: HTMLElement) {
       if (el.__clickOutsideHandler__) {
         document.removeEventListener('click', el.__clickOutsideHandler__)
+            delete el.__clickOutsideHandler__
+
       }
     }
   })

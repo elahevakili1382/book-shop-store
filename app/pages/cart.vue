@@ -1,5 +1,5 @@
 <template>
-  <section class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-12 px-4">
+  <section class="min-h-screen bg-gradient-to-b py-12 px-4">
     <div class="container mx-auto">
 
       <!-- عنوان -->

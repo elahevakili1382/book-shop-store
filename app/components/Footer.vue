@@ -1,105 +1,96 @@
 <template>
- <footer class="bg-[#F1F2EE] text-right mt-5 p-8 md:p-10 rounded-xl shadow-lg">
-  <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 md:gap-8">
-    <!-- ستون ۱ -->
-    <div class="hover:scale-[1.02] transition-transform duration-200">
-      <h2 class="flex items-center gap-2 text-2xl font-bold mb-3 text-[#323a40]">
-        <FontAwesome icon="fa-solid fa-book" class="text-[#6b8e23]" />
-        انتشارات بوکز
-      </h2>
-      <ul class="space-y-2 text-lg text-[#435058]">
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">درباره ما</NuxtLink></li>
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">انتشارات ما</NuxtLink></li>
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">کتاب‌های پرفروش</NuxtLink></li>
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">همکاری با ما</NuxtLink></li>
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">تماس با ما</NuxtLink></li>
-      </ul>
-    </div>
+  <footer class="bg-[#F1F2EE] mt-10 py-12 px-6 rounded-xl shadow-md">
 
-    <!-- ستون ۲ -->
-    <div class="hover:scale-[1.02] transition-transform duration-200">
-      <h2 class="flex items-center gap-2 text-2xl font-bold mb-3 text-[#323a40]">
-        <FontAwesome icon="fa-solid fa-user" class="text-[#6b8e23]" />
-        حساب من
-      </h2>
-      <ul class="space-y-2 text-lg text-[#435058]">
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">سفارشات من</NuxtLink></li>
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">کتابخانه شخصی</NuxtLink></li>
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">اطلاعات کاربری</NuxtLink></li>
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">تنظیمات امنیت</NuxtLink></li>
-      </ul>
-    </div>
+    <!-- گرید ۴ ستونه -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-7">
 
-    <!-- ستون ۳ -->
-    <div class="hover:scale-[1.02] transition-transform duration-200">
-      <h2 class="flex items-center gap-2 text-2xl font-bold mb-3 text-[#323a40]">
-        <FontAwesome icon="fa-solid fa-headset" class="text-[#6b8e23]" />
-        پشتیبانی
-      </h2>
-      <ul class="space-y-2 text-lg text-[#435058]">
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">راهنمای خرید</NuxtLink></li>
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">سوالات متداول</NuxtLink></li>
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">شرایط بازگشت</NuxtLink></li>
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">تماس با پشتیبانی</NuxtLink></li>
-      </ul>
-    </div>
-
-    <!-- ستون ۴ -->
-    <div class="hover:scale-[1.02] transition-transform duration-200">
-      <h2 class="flex items-center gap-2 text-3xl font-bold mb-3 text-[#323a40]">
-        <FontAwesome icon="fa-solid fa-handshake" class="text-[#6b8e23]" />
-        خدمات
-      </h2>
-      <ul class="space-y-2 text-lg text-[#435058]">
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">انتشار کتاب</NuxtLink></li>
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">کتاب‌های دیجیتال</NuxtLink></li>
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">عضویت ویژه</NuxtLink></li>
-        <li><NuxtLink to="/" class="hover:text-[#6b8e23] transition-colors">مشاوره چاپ</NuxtLink></li>
-      </ul>
-    </div>
-
-    <!-- ستون ۵: اطلاعات تماس و شبکه‌های اجتماعی -->
-    <div class="col-span-2 sm:col-span-2 md:col-span-1 flex flex-col justify-between bg-gradient-to-t from-[#f1f2ee] to-[#e2e5e2] p-4 rounded-lg shadow-inner hover:shadow-lg transition-shadow duration-300">
-      <NuxtImg src="/images/brand-logo-(2).png" alt="لوگوی انتشارات بوکز" class="mb-4 w-[120px] h-auto" />
-
-      <h2 class="flex items-center gap-2 text-2xl font-bold mb-3 text-[#323a40]">
-        <FontAwesome icon="fa-solid fa-address-card" class="text-[#6b8e23]" />
-        اطلاعات تماس
-      </h2>
-      <ul class="space-y-2 text-lg font-semibold text-[#435058]">
-        <li class="flex items-center gap-2">
-          <FontAwesome icon="fa-solid fa-location-dot" class="text-[#6b8e23]" />
-          <span>تهران، میدان انقلاب، کوچه نور</span>
-        </li>
-        <li class="flex items-center gap-2">
-          <FontAwesome icon="fa-solid fa-phone" class="text-[#6b8e23]" />
-          <a href="tel:+9194038XXXX" class="hover:text-[#6b8e23] transition-colors">+91 94038 XXXX</a>
-        </li>
-        <li class="flex items-center gap-2">
-          <FontAwesome icon="fa-regular fa-envelope" class="text-[#6b8e23]" />
-          <a href="mailto:elahevakili8@gmail.com" class="hover:text-[#6b8e23] transition-colors">
-            elahevakili8@gmail.com
-          </a>
-        </li>
-      </ul>
-
-      <h3 class="text-lg font-bold mb-3 mt-6 text-[#323a40]">ما را دنبال کنید</h3>
-      <div class="flex gap-3 flex-wrap">
-        <a href="#" class="flex items-center justify-center w-10 h-10 rounded-full bg-[#4267B2] text-white hover:bg-[#365899] transition-colors" aria-label="Facebook">
-          <FontAwesome icon="fa-brands fa-facebook-f" />
-        </a>
-        <a href="#" class="flex items-center justify-center w-10 h-10 rounded-full bg-[#1DA1F2] text-white hover:bg-[#0d95e8] transition-colors" aria-label="Twitter">
-          <FontAwesome icon="fa-brands fa-twitter" />
-        </a>
-        <a href="#" class="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-tr from-[#833ab4] via-[#fd1d1d] to-[#fcb045] text-white hover:opacity-90 transition-all" aria-label="Instagram">
-          <FontAwesome icon="fa-brands fa-instagram" />
-        </a>
-        <a href="#" class="flex items-center justify-center w-10 h-10 rounded-full bg-[#0077b5] text-white hover:bg-[#005582] transition-colors" aria-label="LinkedIn">
-          <FontAwesome icon="fa-brands fa-linkedin-in" />
-        </a>
+      <!-- ستون ۱ -->
+      <div class="transition hover:scale-[1.03]">
+        <h2 class="flex items-center gap-2 text-2xl font-bold mb-4 text-[#323a40]">
+          <FontAwesome icon="fa-solid fa-book" class="text-[#6b8e23]" />
+          انتشارات بوکز
+        </h2>
+        <ul class="space-y-2 text-lg text-[#435058] font-medium">
+          <li><NuxtLink class="footer-link" to="/">درباره ما</NuxtLink></li>
+          <li><NuxtLink class="footer-link" to="/">انتشارات</NuxtLink></li>
+          <li><NuxtLink class="footer-link" to="/">پرفروش‌ها</NuxtLink></li>
+          <li><NuxtLink class="footer-link" to="/">همکاری</NuxtLink></li>
+          <li><NuxtLink class="footer-link" to="/">تماس با ما</NuxtLink></li>
+        </ul>
       </div>
-    </div>
-  </div>
-</footer>
 
+      <!-- ستون ۲ -->
+      <div class="transition hover:scale-[1.03]">
+        <h2 class="flex items-center gap-2 text-2xl font-bold mb-4 text-[#323a40]">
+          <FontAwesome icon="fa-solid fa-user" class="text-[#6b8e23]" />
+          حساب من
+        </h2>
+        <ul class="space-y-2 text-lg text-[#435058] font-medium">
+          <li><NuxtLink class="footer-link" to="/">سفارشات</NuxtLink></li>
+          <li><NuxtLink class="footer-link" to="/">کتابخانه</NuxtLink></li>
+          <li><NuxtLink class="footer-link" to="/">اطلاعات کاربری</NuxtLink></li>
+          <li><NuxtLink class="footer-link" to="/">امنیت</NuxtLink></li>
+        </ul>
+      </div>
+
+      <!-- ستون ۳ -->
+      <div class="transition hover:scale-[1.03]">
+        <h2 class="flex items-center gap-2 text-2xl font-bold mb-4 text-[#323a40]">
+          <FontAwesome icon="fa-solid fa-headset" class="text-[#6b8e23]" />
+          پشتیبانی
+        </h2>
+        <ul class="space-y-2 text-lg text-[#435058] font-medium">
+          <li><NuxtLink class="footer-link" to="/">راهنمای خرید</NuxtLink></li>
+          <li><NuxtLink class="footer-link" to="/">سوالات متداول</NuxtLink></li>
+          <li><NuxtLink class="footer-link" to="/">بازگشت کالا</NuxtLink></li>
+          <li><NuxtLink class="footer-link" to="/">پشتیبانی</NuxtLink></li>
+        </ul>
+      </div>
+
+      <!-- ستون ۴ -->
+      <div class="transition hover:scale-[1.03]">
+        <h2 class="flex items-center gap-2 text-2xl font-bold mb-4 text-[#323a40]">
+          <FontAwesome icon="fa-solid fa-address-card" class="text-[#6b8e23]" />
+          اطلاعات تماس
+        </h2>
+        <ul class="space-y-2 text-lg text-[#435058] font-medium">
+          <li class="flex items-center gap-2">
+            <FontAwesome icon="fa-solid fa-location-dot" class="text-[#6b8e23]" />
+            تهران، میدان انقلاب
+          </li>
+          <li class="flex items-center gap-2">
+            <FontAwesome icon="fa-solid fa-phone" class="text-[#6b8e23]" />
+            <a href="tel:+9194038XXXX" class="footer-link">+91 94038 XXXX</a>
+          </li>
+          <li class="flex items-center gap-2">
+            <FontAwesome icon="fa-regular fa-envelope" class="text-[#6b8e23]" />
+            <a href="mailto:elahevakili8@gmail.com" class="footer-link">
+              elahevakili8@gmail.com
+            </a>
+          </li>
+        </ul>
+
+        <div class="flex gap-3 mt-5">
+          <a class="social-icon bg-[#4267B2]"><FontAwesome icon="fa-brands fa-facebook-f" /></a>
+          <a class="social-icon bg-[#1DA1F2]"><FontAwesome icon="fa-brands fa-twitter" /></a>
+          <a class="social-icon bg-gradient-to-tr from-[#833ab4] via-[#fd1d1d] to-[#fcb045]">
+            <FontAwesome icon="fa-brands fa-instagram" />
+          </a>
+          <a class="social-icon bg-[#0077b5]"><FontAwesome icon="fa-brands fa-linkedin-in" /></a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
 </template>
+
+<style scoped lang="postcss">
+.footer-link {
+  @apply hover:text-[#6b8e23] transition-colors cursor-pointer;
+}
+
+.social-icon {
+  @apply w-9 h-9 flex items-center justify-center rounded-full text-white text-base 
+         hover:brightness-110 transition-all cursor-pointer;
+}
+</style>
