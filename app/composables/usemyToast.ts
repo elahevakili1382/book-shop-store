@@ -12,7 +12,7 @@ interface Toast {
 const toasts = ref<Toast[]>([])
 let counter = 1
 
-export function useMyToast() {
+export function useToast() {
   const add = (toast: {
     type?: ToastType
     title?: string
