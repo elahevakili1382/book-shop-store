@@ -1,6 +1,7 @@
 <template>
     <div class="bg-custom-gradient">
         <NuxtLayout>
+          <ToastContainer/>
             <NuxtPage/>
         </NuxtLayout>
     </div>
