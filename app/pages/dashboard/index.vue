@@ -55,7 +55,7 @@ import TeamCollaboration from '~/components/dashboard/TeamCollaboration.vue';
 import ProjectAnalytics from '~/components/dashboard/ProjectAnalytics.vue';
 import ProjectProgress from '~/components/dashboard/ProjectProgress.vue';
 import TimeTracker from '~/components/dashboard/TimeTracker.vue';
-import ProjectsList from '~/components/dashboard/ProjectsList.vue';
+import ProjectsList from '~/components/dashboard/ProjectsList.vue'
 import ProgressCard from '~/components/dashboard/ProgressCard.vue';
 
 
