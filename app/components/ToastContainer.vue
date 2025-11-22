@@ -26,9 +26,9 @@
 </template>
 
 <script setup lang="ts">
-import { useToast } from '@/composables/useToast'
+import { useMyToast } from '~/composables/usemyToast'
 
-const { toasts, remove } = useToast()
+const { toasts, remove } = useMyToast()
 
 const bg = (type: string) => {
   return {

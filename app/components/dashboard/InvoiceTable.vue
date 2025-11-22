@@ -80,10 +80,10 @@ import { ref, computed, onMounted } from 'vue'
 import { useInvoiceStore } from '~/stores/useInvoiceStore'
 import EditInvoiceModal from '~/components/dashboard/EditInvoiceModal.vue'
 import ToastContainer from '@/components/ToastContainer.vue'
-import { useToast } from '~/composables/useToast'
+import { useMyToast } from '~/composables/usemyToast'
 
 const invoiceStore = useInvoiceStore()
-const toast = useToast()
+const toast = useMyToast()
 onMounted(() => invoiceStore.fetchInvoices())
 
 // Tabs

@@ -53,7 +53,7 @@
 <script setup lang="ts">
 import TeamCollaboration from '~/components/dashboard/TeamCollaboration.vue';
 import ProjectAnalytics from '~/components/dashboard/ProjectAnalytics.vue';
-import ProgressCard from '@/components/dashboard/ProgressCard.vue';
+import ProgressCard from '~/components/dashboard/ProgressCard.vue';
 import ProjectProgress from '~/components/dashboard/ProjectProgress.vue';
 import ProjectsList from '~/components/dashboard/ProjectsList.vue';
 import TimeTracker from '~/components/dashboard/TimeTracker.vue';
