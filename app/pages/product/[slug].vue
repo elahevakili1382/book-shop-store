@@ -62,9 +62,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+// ✅ درست: useRoute از nuxt/navigation
+import { useRoute, useRouter } from '#app'  
 import { NuxtImg, NuxtLink } from '#components'
 import { useCartStore } from '@/stores/cart'
+import type { ProductDetail } from '@/stores/productStore'
 import { useProductStore } from '@/stores/productStore'
 
 const cartStore = useCartStore()
@@ -72,23 +75,41 @@ const quantity = ref(1)
 const toast = useToast()
 
 const route = useRoute()
+const router = useRouter()
 const productStore = useProductStore()
-const productId = route.params.id as string
 
-const product = ref<Product | null>(null)
+const slug = ref(route.params.slug as string)
+const product = ref<ProductDetail | null>(null)
 const isLoading = ref(true)
 const error = ref<string | null>(null)
 
-onMounted(async () => {
+// Computed: safe URL
+const productUrl = computed(() => `/product/${slug.value}`)
+
+// Fetch product by slug -> map to id
+async function fetchProduct() {
+  isLoading.value = true
+  error.value = null
   try {
-    const data = await productStore.fetchProductById(productId)
-    if (!data) throw new Error('محصول مورد نظر یافت نشد')
+    const allProducts = await productStore.fetchAllCategoriesProducts()
+    const found = allProducts.find(p => p.title.toLowerCase().replace(/\s+/g, '-') === slug.value.toLowerCase())
+    if (!found) throw new Error('محصول مورد نظر یافت نشد')
+    const data = await productStore.fetchProductById(found.id)
+    if (!data) throw new Error('جزئیات محصول یافت نشد')
     product.value = data
   } catch (err: any) {
     error.value = err.message
   } finally {
     isLoading.value = false
   }
+}
+
+onMounted(fetchProduct)
+
+// اگر slug تغییر کرد، دوباره fetch کن
+watch(() => route.params.slug, (newSlug) => {
+  slug.value = newSlug as string
+  fetchProduct()
 })
 
 const formattedPrice = computed(() =>
@@ -109,15 +130,14 @@ const addToCart = () => {
     },
     quantity.value
   )
-
-toast.success({
-  message: `محصول "${product.value?.title}" به سبد خرید اضافه شد.`,
-  color: 'green',
-  position: 'topRight',
-})
-
+  toast.success({
+    message: `محصول "${product.value?.title}" به سبد خرید اضافه شد.`,
+    color: 'green',
+    position: 'topRight',
+  })
 }
 </script>
+
 
 <style scoped>
 button:hover { cursor: pointer; }

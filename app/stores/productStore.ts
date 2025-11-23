@@ -78,6 +78,78 @@ const inflightDetail = new Map<string, Promise<ProductDetail | null>>()
     for (const p of products.value) m.set(p.id, p)
     return m
   })
+/** --- fetchProductBySlug (SSR-friendly, cache + safe) --- */
+async function fetchProductBySlug(slug: string): Promise<ProductDetail | null> {
+  if (!slug) return null
+
+  // چک کردن کش
+  const cached = getCache(detailCache, slug)
+  if (cached) return cached
+
+  // جستجو در لیست محصولات فعلی
+  let product = products.value.find(p => p.openLibraryId.endsWith(slug) || p.title === slug)
+  let openId = product?.openLibraryId ?? slug
+
+  // حذف اسلش اضافه اول
+  openId = openId.replace(/^\//, '')
+
+  const inflightKey = openId
+  if (inflightDetail.has(inflightKey)) return inflightDetail.get(inflightKey)!
+
+  const p = (async () => {
+    isLoading.value = true
+    error.value = null
+    try {
+      // fetch work detail
+      const workData = await $fetch<WorkDetail>(`/api/works/${openId}`)
+
+      let authorName: string | undefined
+      if (workData.authors?.length && workData.authors[0]?.author?.key) {
+        const authorRes = await $fetch<{ name: string }>(`/api/authors${workData.authors[0].author.key}`)
+        authorName = authorRes.name
+      }
+
+      const subjects: string[] = workData.subjects?.slice(0, 3) || []
+      const firstPublish: string | undefined = workData.first_publish_date
+
+      let editionData: EditionEntry | undefined
+      try {
+        const editions = await $fetch<EditionResponse>(`/api/works/${workData.key}/editions?limit=5`)
+        editionData = editions.entries.find(
+          (e) => e.number_of_pages || e.physical_format || e.languages || e.publishers
+        ) ?? editions.entries[0] ?? undefined
+      } catch {
+        editionData = undefined
+      }
+
+      const detailedProduct: ProductDetail = {
+        ...(product ?? { id: openId, openLibraryId: openId, title: workData.title ?? 'بدون عنوان', price: DEFAULT_PRICE(), image: '/images/default-book.jpg', rating: 0, category: 'نامشخص', firstPublishYear: 0 }),
+        openLibraryId: openId,
+        author: authorName,
+        summary: typeof workData.description === 'string' ? workData.description : workData.description?.value,
+        subjects,
+        firstPublish,
+        pages: editionData?.number_of_pages,
+        format: editionData?.physical_format,
+        language: editionData?.languages?.[0]?.key.replace('/languages/', ''),
+        publisher: editionData?.publishers?.[0],
+        publishDate: editionData?.publish_date,
+      }
+
+      setCache(detailCache, openId, detailedProduct)
+      return detailedProduct
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'خطا در دریافت اطلاعات محصول'
+      return null
+    } finally {
+      isLoading.value = false
+      inflightDetail.delete(inflightKey)
+    }
+  })()
+
+  inflightDetail.set(inflightKey, p)
+  return p
+}
 
   /** util: transform API doc -> Product */
   function mapWorkToProduct(book: Work | Doc, idx: number, categoryKey?: string): Product {
@@ -219,83 +291,95 @@ const inflightDetail = new Map<string, Promise<ProductDetail | null>>()
   }
 
   /** --- fetchProductById (SSR-friendly, cache + safe) --- */
-  async function fetchProductById(id: string): Promise<ProductDetail | null> {
-    // try from current products
-    const existing = productsMapById.value.get(id)
-    if (existing) {
-      // if we have basic product and cached detail -> return detail
-      const cached = getCache(detailCache, existing.openLibraryId)
+/** --- fetchProductById (SSR-friendly, cache + safe) --- */
+async function fetchProductById(idOrSlug: string): Promise<ProductDetail | null> {
+  const inflightKey = idOrSlug
+  if (inflightDetail.has(inflightKey)) return inflightDetail.get(inflightKey)!
+
+  const p = (async () => {
+    isLoading.value = true
+    error.value = null
+    try {
+      // پیدا کردن محصول از لیست فعلی
+      const product = products.value.find((p) => p.id === idOrSlug || p.openLibraryId.endsWith(idOrSlug))
+
+      let openId = product?.openLibraryId ?? idOrSlug
+openId = openId.replace(/^\/+/, '')
+openId = openId.replace(/^works\/works\//, 'works/') // اگر دوبار اضافه شد، اصلاح کن
+if (!openId.startsWith('works/')) {
+  openId = `works/${openId}`
+}
+
+      // cache hit
+      const cached = getCache(detailCache, openId)
       if (cached) return cached
-    }
 
-    // find by complex key: if id format included category-index (created by fetchAll) store id as is
-    // We'll map by openLibraryId when possible
-    // If we already have detail inflight, reuse
-    const inflightKey = id
-    if (inflightDetail.has(inflightKey)) return inflightDetail.get(inflightKey)!
+      // fetch work
+      const workData = await $fetch<WorkDetail>(`/api/${openId}`)
 
-    const p = (async () => {
-      isLoading.value = true
-      error.value = null
+      // نویسنده
+      let authorName: string | undefined
+     if (workData.authors?.length && workData.authors[0]?.author?.key) {
+  // حذف پیشوند "/authors/" اگر وجود دارد
+  const authorId = workData.authors[0].author.key.replace(/^\/authors\//, '')
+  const authorRes = await $fetch<{ name: string }>(`/api/authors/${authorId}`)
+  authorName = authorRes.name
+}
+
+
+      // موضوعات و اولین انتشار
+      const subjects: string[] = workData.subjects?.slice(0, 3) || []
+      const firstPublish: string | undefined = workData.first_publish_date
+
+      // editions
+      let editionData: EditionEntry | undefined
       try {
-        // Try to resolve openLibraryId first:
-        const product = products.value.find((p) => p.id === id)
-        const openId = product?.openLibraryId ?? id // fallback to id if it already is openLibraryId
-
-        // cache hit
-        const cached = getCache(detailCache, openId)
-        if (cached) return cached
-
-        // fetch work
-        const workData = await $fetch<WorkDetail>(`/api/works/${openId}`)
-        // author
-        let authorName: string | undefined
-        if (workData.authors?.length && workData.authors[0]?.author?.key) {
-          const authorRes = await $fetch<{ name: string }>(`/api/authors${workData.authors[0].author.key}`)
-          authorName = authorRes.name
-        }
-        const subjects: string[] = workData.subjects?.slice(0, 3) || []
-        const firstPublish: string | undefined = workData.first_publish_date
-
-        // editions
-        let editionData: EditionEntry | undefined
-        try {
-          const editions = await $fetch<EditionResponse>(`/api/works/${workData.key}/editions?limit=5`)
-          editionData = editions.entries.find(
-            (e) => e.number_of_pages || e.physical_format || e.languages || e.publishers
-          ) ?? editions.entries[0] ?? undefined
-        } catch {
-          editionData = undefined
-        }
-
-        const detailedProduct: ProductDetail = {
-          ... (product ?? { id: openId, openLibraryId: openId, title: workData.title ?? 'بدون عنوان', price: DEFAULT_PRICE(), image: '/images/default-book.jpg', rating: 0, category: 'نامشخص', firstPublishYear: 0 }),
-          openLibraryId: openId,
-          author: authorName,
-          summary: typeof workData.description === 'string' ? workData.description : workData.description?.value,
-          subjects,
-          firstPublish,
-          pages: editionData?.number_of_pages,
-          format: editionData?.physical_format,
-          language: editionData?.languages?.[0]?.key.replace('/languages/', ''),
-          publisher: editionData?.publishers?.[0],
-          publishDate: editionData?.publish_date,
-        }
-
-        setCache(detailCache, openId, detailedProduct)
-        return detailedProduct
-      } catch (err) {
-        error.value = err instanceof Error ? err.message : 'خطا در دریافت اطلاعات محصول'
-        return null
-      } finally {
-        isLoading.value = false
-        inflightDetail.delete(inflightKey)
+        const editions = await $fetch<EditionResponse>(`/api/works/${workData.key}/editions?limit=5`)
+        editionData = editions.entries.find(
+          (e) => e.number_of_pages || e.physical_format || e.languages || e.publishers
+        ) ?? editions.entries[0] ?? undefined
+      } catch {
+        editionData = undefined
       }
-    })()
 
-    inflightDetail.set(inflightKey, p)
-    return p
-  }
+      const detailedProduct: ProductDetail = {
+        ...(product ?? {
+          id: openId,
+          openLibraryId: openId,
+          title: workData.title ?? 'بدون عنوان',
+          price: DEFAULT_PRICE(),
+          image: '/images/default-book.jpg',
+          rating: 0,
+          category: 'نامشخص',
+          firstPublishYear: 0
+        }),
+        openLibraryId: openId,
+        author: authorName,
+        summary: typeof workData.description === 'string' ? workData.description : workData.description?.value,
+        subjects,
+        firstPublish,
+        pages: editionData?.number_of_pages,
+        format: editionData?.physical_format,
+        language: editionData?.languages?.[0]?.key.replace('/languages/', ''),
+        publisher: editionData?.publishers?.[0],
+        publishDate: editionData?.publish_date,
+      }
+
+      setCache(detailCache, openId, detailedProduct)
+      return detailedProduct
+    } catch (err) {
+      error.value = err instanceof Error ? err.message : 'خطا در دریافت اطلاعات محصول'
+      return null
+    } finally {
+      isLoading.value = false
+      inflightDetail.delete(inflightKey)
+    }
+  })()
+
+  inflightDetail.set(inflightKey, p)
+  return p
+}
+
 
   /** --- fetchAllCategoriesProducts (parallel with limit) --- */
   async function fetchAllCategoriesProducts(limitPerCategory = 8) {
@@ -346,7 +430,7 @@ const inflightDetail = new Map<string, Promise<ProductDetail | null>>()
     searchProducts,
     fetchProductById,
     fetchAllCategoriesProducts,
-
+fetchProductBySlug,
     // helpers
     clearCaches,
   }

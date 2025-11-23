@@ -12,7 +12,9 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const url = `https://openlibrary.org/works/${id}/editions.json?limit=${limit}`
+let cleanId = id.replace(/^\/?works\//, "") // حذف works/ از اول
+
+const url = `https://openlibrary.org/works/${cleanId}/editions.json`
     const data = await $fetch<EditionResponse>(url)
 
     // داده نداشت → خروجی خالی

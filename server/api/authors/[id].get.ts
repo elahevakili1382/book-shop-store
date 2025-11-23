@@ -1,10 +1,12 @@
 export default defineEventHandler(async (event) => {
-  const id = event.context.params?.id as string
+const id = event.context.params?.id
+if (!id) throw createError({ statusCode: 400, statusMessage: 'Missing author id' })
 
-  try {
-    const data = await $fetch<{ name: string }>(`https://openlibrary.org${id}.json`)
-    return data
-  } catch (err) {
-    throw createError({ statusCode: 500, statusMessage: 'خطا در دریافت نویسنده' })
-  }
+try {
+  const res = await $fetch(`https://openlibrary.org/authors/${id}.json`)
+  return res
+} catch (err) {
+  throw createError({ statusCode: 500, statusMessage: 'Failed to fetch author', cause: err })
+}
+
 })
