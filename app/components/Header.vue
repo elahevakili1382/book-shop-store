@@ -45,9 +45,11 @@
       />
 
       <!-- آیکون سرچ -->
-      <FontAwesome icon="search" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-800" />
+   <AppIcon
+  icon="fa-solid:magnifying-glass"
+  class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-800"
+        />
 
-      <!-- اگر عبارت وارد شده و نیاز به پاک کردن بود -->
       <button
         v-if="searchQuery"
         @click="clearSearch"
@@ -109,7 +111,7 @@
       <button
         @click="isMobileSearchOpen = !isMobileSearchOpen"
         class="p-2 text-gray-700">
-        <FontAwesome icon="search" class="w-6 h-6" />
+<AppIcon icon="mdi:magnify" class="w-6 h-6" />
       </button>
 
       <transition name="fade">
@@ -164,16 +166,19 @@
 
     <!-- آیکون سبد + علاقه‌مندی -->
     <div class="hidden md:flex items-center gap-2">
-      <NuxtLink to="/cart" class="bg-[#1C2B36] relative w-10 h-10 flex items-center justify-center rounded-full">
-        <ClientOnly>
-                  <NuxtImg src="/images/shopping-bag-minus.svg" width="20" height="20" />
+   <NuxtLink to="/cart" class="bg-[#1C2B36] relative w-10 h-10 flex items-center justify-center rounded-full">
+  
+  <ClientOnly>
+    <NuxtImg src="/images/shopping-bag-minus.svg" width="20" height="20" />
 
-        </ClientOnly>
-        <span v-if="cart.cartCount"
-          class="absolute -bottom-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-          {{ cart.cartCount }}
-        </span>
-      </NuxtLink>
+    <span v-if="cart.cartCount"
+      class="absolute -bottom-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
+      {{ cart.cartCount }}
+    </span>
+  </ClientOnly>
+
+</NuxtLink>
+
 
       <NuxtLink to="/" class="w-10 h-10 flex items-center justify-center rounded-full bg-white">
         <ClientOnly>
@@ -242,9 +247,9 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue"
-import { useCartStore } from "@/stores/cart"
-import { useProductStore } from "@/stores/productStore"
-import { useUIStore } from "@/stores/ui"
+import { useCartStore } from "../../stores/cart"
+import { useProductStore } from "../../stores/productStore"
+import { useUIStore } from "../../stores/ui"
 import { useRouter } from "vue-router"
 
 const ui = useUIStore()

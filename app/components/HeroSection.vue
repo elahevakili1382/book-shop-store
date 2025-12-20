@@ -68,7 +68,7 @@
           
           <!-- سرچ -->
       <button type="submit" class="absolute left-4 top-1/2 -translate-y-1/2 text-black">
-        <FontAwesome icon="search" color="black" />
+<AppIcon icon="mdi:magnify" class="w-6 h-6" />
       </button>
 
 

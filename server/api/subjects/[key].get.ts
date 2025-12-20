@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const url = `https://openlibrary.org/subjects/${key}.json?limit=${limit}`
+    const url = ("/api/openlibrary/subjects/programming.json?limit=20")
 
     const data = await $fetch<SubjectResponse>(url)
 

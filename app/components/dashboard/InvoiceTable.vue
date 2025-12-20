@@ -77,13 +77,13 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useInvoiceStore } from '~/stores/useInvoiceStore'
-import EditInvoiceModal from '~/components/dashboard/EditInvoiceModal.vue'
-import ToastContainer from '@/components/ToastContainer.vue'
-import { useToast } from '~/composables/usemyToast'
+import { useInvoiceStore } from '../../stores/useInvoiceStore'
+import EditInvoiceModal from '../../components/dashboard/EditInvoiceModal.vue'
+import ToastContainer from '../../components/ToastContainer.vue'
+import { useMyToast } from '../../composables/usemyToast'
 
 const invoiceStore = useInvoiceStore()
-const toast = useToast()
+const toast = useMyToast()
 onMounted(() => invoiceStore.fetchInvoices())
 
 // Tabs

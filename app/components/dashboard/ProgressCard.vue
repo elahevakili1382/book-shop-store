@@ -20,7 +20,7 @@
 
 </template>
 <script lang="ts" setup>
-import { useDashboardStore } from '@/stores/dashboard';
+import { useDashboardStore } from '../../stores/dashboard';
 const dashboardStore = useDashboardStore()
 dashboardStore.fetchDashboardData()
 

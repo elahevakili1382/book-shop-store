@@ -1,14 +1,21 @@
 export default defineNuxtConfig({
   
   compatibilityDate:"2025-07-09",
-   components: true,
+    components: {
+      
+
+    dirs: [
+      '~/components',
+      '~/app/components',
+      
+    ]
+  },
 
   future:{
     compatibilityVersion:4,
   },
     css: [
     "@fontsource/vazir/index.css",
-    '@fortawesome/fontawesome-svg-core/styles.css',
   ],
   
 runtimeConfig: {
@@ -17,29 +24,6 @@ runtimeConfig: {
     externalApiBase: 'https://fakestoreapi.com'
   }
 },
-
-
-fontawesome: {
-  component: 'FontAwesome',
-  icons: {
-    solid: [
-      'book',
-      'user',
-      'headset',
-      'handshake',
-      'address-card',
-      'location-dot',
-      'phone',
-      'envelope',
-      'trash',
-      'search',
-      'camera',
-    ],
-    brands: ['facebook-f', 'twitter', 'instagram', 'linkedin-in'],
-    regular: ['envelope'],
-  },
-},
-
 
   app:{
     head:{
@@ -80,7 +64,6 @@ toast: {
     "@nuxt/image",
     "@pinia/nuxt",
     "nuxt-swiper",
-    "@vesp/nuxt-fontawesome",
     'nuxt-toast',
     'nuxt-authorization'
   ]

@@ -1,6 +1,6 @@
 // plugins/authorization-resolver.ts
-import { defineNuxtPlugin } from '#app'
-import { useUserSession } from '@/composables/useUserSession' // فرضی: تابعی که user session رو مدیریت میکنه
+import { defineNuxtPlugin } from 'nuxt/app'
+import { useUserSession } from '../composables/useUserSession' // فرضی: تابعی که user session رو مدیریت میکنه
 
 export default defineNuxtPlugin({
   name: 'authorization-resolver',

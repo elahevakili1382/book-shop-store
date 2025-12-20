@@ -4,7 +4,7 @@
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold text-gray-800">Time Tracker</h3>
       <button class="flex items-center gap-2 border border-blue-600 text-blue-800 px-3 py-1 rounded-full hover:bg-blue-800 hover:text-white transition text-sm">
-        <FontAwesome :icon="['fas','plus']" class="w-3 h-3" /> افزودن
+<AppIcon icon="mdi:plus" class="w-4 h-4" /> افزودن
       </button>
     </div>
 

@@ -5,6 +5,7 @@
       <!-- عنوان -->
       <h1 class="text-3xl font-bold mb-10 text-gray-900">سبد خرید</h1>
 
+      <div v-if="isMounted">
       <!-- وقتی خالیه -->
       <div v-if="cart.cartItems.length === 0" class="text-gray-500 text-center py-20 text-lg">
         سبد خرید شما خالی است.
@@ -18,7 +19,7 @@
           <div
             v-for="item in cart.cartItems"
             :key="item.uniqueId"
-            class="flex items-center gap-4 p-6 rounded-2xl bg-white shadow-md hover:shadow-lg transition"
+            class="flex items-center gap-4 p-6 rounded-2xl bg-white shadow-md hover:shadow-lg transition-all hover:-translate-y-1 hover:scale-105"
           >
             <!-- تصویر -->
             <NuxtImg
@@ -115,12 +116,22 @@
 
         </div>
       </div>
+      </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+import {ref,onMounted} from 'vue'
 import { useCartStore } from "@/stores/cart";
+
 const cart = useCartStore();
-cart.loadCart();
+
+const isMounted = ref(false)
+
+onMounted(() => {
+  cart.loadCart()
+  isMounted.value = true
+})
+
 </script>

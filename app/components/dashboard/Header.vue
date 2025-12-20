@@ -29,7 +29,7 @@
     <div
       class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full hover:bg-gray-200 transition cursor-pointer relative"
     >
-      <FontAwesome :icon="['fas', 'envelope']" class="text-blue-600 w-5 h-5" />
+<AppIcon icon="mdi:email" class="text-blue-600 w-5 h-5" />
       <!-- نوتیف کوچیک -->
       <span
         class="absolute top-1 right-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white"
@@ -37,6 +37,7 @@
     </div>
   </header>
 </template>
+
 
 <style scoped>
 @media (max-width: 640px) {

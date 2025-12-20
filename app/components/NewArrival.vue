@@ -65,8 +65,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import type SwiperClass from 'swiper'
-import ProductCard from '@/components/ui/ProductCard.vue'
-import { useProductStore } from '~/stores/productStore'
+import ProductCard from '../components/ui/ProductCard.vue'
+import { useProductStore } from '../stores/productStore'
 import type { Product } from '../../types/types'
 
 import 'swiper/css'

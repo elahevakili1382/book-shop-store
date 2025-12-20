@@ -3,7 +3,7 @@
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold text-gray-800">پر فروش ترین ها</h3>
       <button class="flex items-center gap-2 border border-blue-600 text-blue-800 px-4 py-2 rounded-2xl hover:bg-blue-800 hover:text-white transition">
-        <FontAwesome :icon="['fas','plus']" class="w-4 h-4" /> جدید
+<AppIcon icon="mdi:plus" class="w-4 h-4" /> جدید
       </button>
     </div>
 

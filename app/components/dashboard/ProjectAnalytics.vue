@@ -49,7 +49,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useDashboardStore } from '~/stores/dashboard'
+import { useDashboardStore } from '../../stores/dashboard'
 import { storeToRefs } from 'pinia'
 import type { ApexOptions } from 'apexcharts'
 

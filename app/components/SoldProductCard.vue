@@ -60,7 +60,6 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { NuxtImg } from '#components'
 
 const props = defineProps<{
   product: {

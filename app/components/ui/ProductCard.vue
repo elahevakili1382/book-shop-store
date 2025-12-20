@@ -9,6 +9,7 @@
       <NuxtImg
         :src="props.product.image || '/images/default-book.jpg'"
         :alt="props.product.title"
+        @error="onImageError"
         class="w-full h-[320px] sm:h-[420px] object-cover rounded-t-2xl
                transition-transform duration-500 group-hover:scale-110"
         :sizes="sizes"  
@@ -34,7 +35,7 @@
       </NuxtLink>
     </div>
 
-    <button @click.stop="addProduct" class="w-[90%] mx-auto mb-4 py-2 sm:py-3 rounded-full bg-[#435058] text-white flex items-center justify-center gap-2 text-sm sm:text-base transition-all duration-300 hover:bg-[#5b6a6a] hover:scale-[1.03] active:scale-95 shadow-lg">
+    <button @click.prevent.stop="addProduct" class="w-[90%] mx-auto mb-4 py-2 sm:py-3 rounded-full bg-[#435058] text-white flex items-center justify-center gap-2 text-sm sm:text-base transition-all duration-300 hover:bg-[#5b6a6a] hover:scale-[1.03] active:scale-95 shadow-lg">
       <span>افزودن به سبد</span>
       <NuxtImg src="/images/user.svg" width="18" height="18" alt="cart" />
     </button>
@@ -43,7 +44,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useCartStore } from '@/stores/cart'
+import { useCartStore } from '../../stores/cart'
 
 const toast = useToast()
 
@@ -57,6 +58,17 @@ const props = defineProps<{
     rating?: number
   }
 }>()
+
+function onImageError(payload:string | Event) {
+  if(typeof payload === 'string') return
+
+  const img = payload.target as HTMLImageElement
+  if(!img) return
+
+  if(img.src.includes('b2')) return
+
+  img.src = '/images/b2.png'
+}
 
 const cartStore = useCartStore()
 

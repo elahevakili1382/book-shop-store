@@ -70,7 +70,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useCategoryStore } from '@/stores/categories'
+import { useCategoryStore } from '../stores/categories'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import type { Swiper as SwiperClass } from 'swiper'
 import 'swiper/css'

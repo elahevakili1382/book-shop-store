@@ -10,20 +10,9 @@ import type {
   WorkDetail,
   EditionEntry,
   EditionResponse,
-} from '../../types/types'
+} from '.../../types/types'
 
-/**
- * Product store - نسخهٔ بازنویسی‌شده و تمیز
- *
- * ویژگی‌ها:
- * - کش محلی (Map) با TTL
- * - dedupe (inflight maps) برای جلوگیری از درخواست‌های موازی یکسان
- * - debounce + AbortController برای search در کلاینت
- * - تابع مقاوم برای ساختن openId (همیشه "works/ID")
- * - توابع fetchCategoryProducts، fetchProductById/Slug، searchProducts تمیز
- */
 
-/* ---------- Types ---------- */
 export interface Product extends BaseProduct {
   id: string
   openLibraryId: string
