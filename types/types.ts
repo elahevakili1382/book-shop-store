@@ -72,6 +72,8 @@ export interface Product {
   openLibraryId?: string
   author?: string
   summary?: string
+  quantity?: number
+  active?:boolean
   pages?: number
   format?: string
   firstPublish?: string

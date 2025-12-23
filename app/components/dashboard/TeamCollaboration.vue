@@ -1,4 +1,5 @@
 <template>
+
 <div class="w-full bg-white rounded-2xl shadow p-4 flex flex-col transition-all duration-300 transform hover:shadow-xl hover:-translate-y-1">
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold text-gray-800">اعضای مجموعه </h3>
@@ -28,11 +29,35 @@
           </div>
         </div>
       </div>
+
+      <!-- modal add member -->
+  <div v-if="showAddModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+      <div class="bg-white rounded-2xl w-full max-w-md p-6">
+        <h3 class="text-lg font-semibold mb-4">عضو جدید</h3>
+        <form @submit.prevent="submitMember" class="space-y-4">
+          <input v-model="form.name" type="text" placeholder="نام" class="w-full border rounded px-3 py-2" required />
+          <input v-model="form.role" type="text" placeholder="سمت" class="w-full border rounded px-3 py-2" required />
+          <input v-model="form.image" type="text" placeholder="آدرس تصویر" class="w-full border rounded px-3 py-2" required />
+
+          <div class="flex justify-end gap-3 pt-4">
+            <button type="button" @click="closeAddModal" class="px-4 py-2 rounded-lg bg-gray-200">انصراف</button>
+            <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">ذخیره</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+
+  import{ref, onMounted} from 'vue'
+
+
 interface Member {
   id: string
   name: string
@@ -53,6 +78,21 @@ onMounted(async () => {
         loading.value = false
     }
 })
+
+const showAddModal = ref(false)
+const form = ref({ name:'', role: '', image: ''})
+
+const openAddModal = () =>{
+  showAddModal.value = true
+  form.value = {name:'', role:'', image:''}
+}
+
+const closeAddModal = () => showAddModal.value = false
+
+const submitMember = () => {
+  members.value.push({...form.value, id:Date.now().toString()})
+  closeAddModal()
+}
 
 
 </script>

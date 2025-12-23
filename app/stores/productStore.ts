@@ -12,21 +12,11 @@ import type {
   EditionResponse,
 } from '../../types/types'
 
-/**
- * Product store - نسخهٔ بازنویسی‌شده و تمیز
- *
- * ویژگی‌ها:
- * - کش محلی (Map) با TTL
- * - dedupe (inflight maps) برای جلوگیری از درخواست‌های موازی یکسان
- * - debounce + AbortController برای search در کلاینت
- * - تابع مقاوم برای ساختن openId (همیشه "works/ID")
- * - توابع fetchCategoryProducts، fetchProductById/Slug، searchProducts تمیز
- */
 
-/* ---------- Types ---------- */
 export interface Product extends BaseProduct {
   id: string
   openLibraryId: string
+    quantity?: number
 }
 
 export interface ProductDetail extends Product {
@@ -342,7 +332,18 @@ export const useProductStore = defineStore('productStore', () => {
     return fetchProductById(slug)
   }
 
-  /* ---------- fetchAllCategoriesProducts (parallel batches) ---------- */
+  function addProduct(product: Product) {
+  products.value.unshift({
+    ...product,
+    quantity: product.quantity ?? 1
+  })
+}
+
+function deleteProduct(id:string) {
+  products.value = products.value.filter(p => p.id !== id)
+}
+
+
   async function fetchAllCategoriesProducts(limitPerCategory = 8): Promise<Product[]> {
     isLoading.value = true
     error.value = null
@@ -368,19 +369,26 @@ export const useProductStore = defineStore('productStore', () => {
     }
   }
 
-  /* ---------- utilities for dev / testing ---------- */
   function clearCaches() {
     categoryCache.clear()
     searchCache.clear()
     detailCache.clear()
   }
 
-  /* ---------- return API ---------- */
+
+  const categories = computed(() =>{
+    return Object.keys(categoryMap)
+  })
+
+
   return {
     products,
     productsMapById,
     isLoading,
     error,
+    categories,
+    addProduct,
+    deleteProduct,
 
     // actions
     fetchCategoryProducts,

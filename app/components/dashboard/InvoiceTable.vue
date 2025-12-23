@@ -58,16 +58,40 @@
               {{ invoice.status }}
             </span>
           </td>
+
           <td class="p-3 flex items-center gap-3">
-            <button @click="openEdit(invoice)" class="text-blue-600 hover:text-blue-900">✏️</button>
+            <button @click="openEditModal(invoice)" class="text-blue-600 hover:text-blue-900">✏️</button>
             <EditInvoiceModal v-model="editing" :invoice="selected" @saved="onSaved" @error="onError" />
             <ToastContainer/>
             <button class="text-red-500 hover:text-red-700" @click="remove(invoice.id)">🗑️</button>
           </td>
+
           <td class="p-3">{{ formatDate(invoice.due) }}</td>
         </tr>
       </tbody>
     </table>
+
+    <div v-if="showEditModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+  <div class="bg-white rounded-2xl p-6 w-full max-w-md">
+    <h3 class="text-lg font-semibold mb-4">ویرایش فاکتور</h3>
+
+    <form @submit.prevent="submitEditInvoice" class="space-y-4">
+      <input v-model="selectedInvoice.client" type="text" placeholder="مشتری" class="w-full border rounded px-3 py-2" required />
+      <input v-model="selectedInvoice.total" type="number" placeholder="مبلغ" class="w-full border rounded px-3 py-2" required />
+      <select v-model="selectedInvoice.status" class="w-full border rounded px-3 py-2">
+        <option value="Paid">Paid</option>
+        <option value="Pending">Pending</option>
+        <option value="Unpaid">Unpaid</option>
+      </select>
+
+      <div class="flex justify-end gap-3 mt-4">
+        <button type="button" class="px-4 py-2 bg-gray-200 rounded" @click="closeEditModal">انصراف</button>
+        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">ذخیره</button>
+      </div>
+    </form>
+  </div>
+</div>
+
   </div>
 </div>
 
@@ -78,7 +102,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useInvoiceStore } from '../../stores/useInvoiceStore'
-import EditInvoiceModal from '../../components/dashboard/EditInvoiceModal.vue'
 import ToastContainer from '../../components/ToastContainer.vue'
 import { useMyToast } from '../../composables/usemyToast'
 
@@ -98,7 +121,33 @@ const activeTab = ref('all')
 // Modal
 const editing = ref(false)
 const selected = ref<any | null>(null)
-const openEdit = (inv: any) => { selected.value = inv; editing.value = true }
+const showEditModal = ref(false)
+const selectedInvoice = ref<any | null>(null)
+
+
+
+  const openEditModal = (invoice: any) => {
+  selectedInvoice.value = { ...invoice } // کپی برای فرم
+  showEditModal.value = true
+}
+
+const closeEditModal = () => {
+  showEditModal.value = false
+  selectedInvoice.value = null
+}
+
+const submitEditInvoice = () => {
+  if (!selectedInvoice.value) return
+
+  const index = invoiceStore.invoices.findIndex(i => i.id === selectedInvoice.value!.id)
+  if (index !== -1) {
+    invoiceStore.invoices[index] = { ...selectedInvoice.value } // ویرایش در استور
+  }
+
+  closeEditModal()
+}
+
+
 const onSaved = (updated: any) => toast.add({ type: 'success', message: 'فاکتور با موفقیت ذخیره شد', title: 'ذخیره' })
 const onError = (msg: string) => toast.add({ type: 'error', message: msg || 'خطا در ذخیره', title: 'خطا' })
 
@@ -165,11 +214,12 @@ tbody tr {
 }
 
 tbody tr:hover {
-  transform: translateY(-2px) scale(1.02);
+  transform: translateY(-2px) scale(1.01);
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 tbody tr::after {
+  opacity: 0;
   content: "";
   position: absolute;
   height: 2px;
@@ -182,8 +232,7 @@ tbody tr::after {
 }
 
 tbody tr:hover::after {
-  width: 100%;
-  left: 0;
+opacity: 1;
 }
 /* هدر جدول */
 thead th {

@@ -7,7 +7,7 @@
     <!-- تصویر و لینک فقط اگر openLibraryId معتبر باشد -->
     <NuxtLink v-if="productUrl" :to="productUrl" class="relative w-full overflow-hidden">
       <NuxtImg
-        :src="props.product.image || '/images/default-book.jpg'"
+        :src="safeImage"
         :alt="props.product.title"
         @error="onImageError"
         class="w-full h-[320px] sm:h-[420px] object-cover rounded-t-2xl
@@ -70,6 +70,20 @@ function onImageError(payload:string | Event) {
   img.src = '/images/b2.png'
 }
 
+const safeImage = computed(() =>{
+  const img = props.product.image
+
+  if(!img) return '/images/b2.png'
+
+  if(
+    img.includes('aechive.org') || 
+    img.includes('ai.')
+  ){
+    return '/images/b2.png'
+  }
+
+  return img
+})
 const cartStore = useCartStore()
 
 // فرمت قیمت
