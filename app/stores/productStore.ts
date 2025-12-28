@@ -16,7 +16,7 @@ import type {
 export interface Product extends BaseProduct {
   id: string
   openLibraryId: string
-    quantity?: number
+    quantity: number
 }
 
 export interface ProductDetail extends Product {
@@ -77,15 +77,18 @@ function mapWorkToProduct(book: Work | Doc, idx: number, categoryKey?: string): 
   const key = (book as any).key || ''  // مثل /works/OL12345W
 
   return {
-    id: key,                     // یکتا و ثابت
-    openLibraryId: key,          // درست
-    title: (book as any).title ?? 'بدون عنوان',
-    price: DEFAULT_PRICE(),
-    image: cover ? `https://covers.openlibrary.org/b/id/${cover}-L.jpg` : '/images/default-book.jpg',
-    rating: (book as any).rating ?? Math.round((Math.random() * 4 + 1) * 10) / 10,
-    category: categoryKey ?? ((book as any).subject?.[0] || 'نامشخص'),
-    firstPublishYear: (book as any).first_publish_year ?? 0,
-  } as Product
+  id: key,
+  openLibraryId: key,
+  title: (book as any).title ?? 'بدون عنوان',
+  price: DEFAULT_PRICE(),
+  image: cover
+    ? `https://covers.openlibrary.org/b/id/${cover}-L.jpg`
+    : '/images/default-book.jpg',
+  rating: (book as any).rating ?? Math.round((Math.random() * 4 + 1) * 10) / 10,
+  category: categoryKey ?? ((book as any).subject?.[0] || 'نامشخص'),
+  quantity: 0,   
+}
+
 }
 
 
@@ -293,7 +296,8 @@ export const useProductStore = defineStore('productStore', () => {
             image: '/images/default-book.jpg',
             rating: 0,
             category: 'نامشخص',
-            firstPublishYear: 0
+            firstPublishYear: 0,
+            quantity:0
           }),
           openLibraryId: openId,
           author: authorName,
@@ -333,11 +337,9 @@ export const useProductStore = defineStore('productStore', () => {
   }
 
   function addProduct(product: Product) {
-  products.value.unshift({
-    ...product,
-    quantity: product.quantity ?? 1
-  })
+  products.value.unshift(product)
 }
+
 
 function deleteProduct(id:string) {
   products.value = products.value.filter(p => p.id !== id)

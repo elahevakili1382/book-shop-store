@@ -79,9 +79,9 @@
       <input v-model="selectedInvoice.client" type="text" placeholder="مشتری" class="w-full border rounded px-3 py-2" required />
       <input v-model="selectedInvoice.total" type="number" placeholder="مبلغ" class="w-full border rounded px-3 py-2" required />
       <select v-model="selectedInvoice.status" class="w-full border rounded px-3 py-2">
-        <option value="Paid">Paid</option>
-        <option value="Pending">Pending</option>
-        <option value="Unpaid">Unpaid</option>
+        <option value="Paid">پرداخت شده</option>
+        <option value="Pending">در انتظار پرداخت </option>
+        <option value="Unpaid">پرداخت نشده</option>
       </select>
 
       <div class="flex justify-end gap-3 mt-4">
@@ -111,11 +111,12 @@ onMounted(() => invoiceStore.fetchInvoices())
 
 // Tabs
 const tabs = [
-  { status: 'all', label: 'All Invoice' },
-  { status: 'Paid', label: 'Paid' },
-  { status: 'Pending', label: 'Pending' },
-  { status: 'Unpaid', label: 'Unpaid' }
+  { status: 'all', label: 'همه فاکتورها' },
+  { status: 'Paid', label: 'پرداخت موفق' },
+  { status: 'Pending', label: 'در انتظار پرداخت' },
+  { status: 'Unpaid', label: 'پرداخت نشده' },
 ]
+
 const activeTab = ref('all')
 
 // Modal

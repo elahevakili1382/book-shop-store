@@ -72,7 +72,7 @@ export interface Product {
   openLibraryId?: string
   author?: string
   summary?: string
-  quantity?: number
+  quantity: number
   active?:boolean
   pages?: number
   format?: string

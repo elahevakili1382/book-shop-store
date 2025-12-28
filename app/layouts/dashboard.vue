@@ -1,18 +1,42 @@
 <template>
-  <div class="flex min-h-screen bg-gray-100">
-    <Sidebar />
+  <div class="min-h-screen bg-gray-100 flex">
 
-    <div class="flex-1 flex flex-col pr-[1rem] pl-[1rem] pt-[1rem]">
-      <Header />
+    <!-- overlay موبایل -->
+    <div
+      v-if="isSidebarOpen"
+      class="fixed inset-0 bg-black/40 z-30 lg:hidden"
+      @click="isSidebarOpen = false"
+    />
 
-      <main class="p-6">
+    <!-- Sidebar -->
+    <aside
+      class="fixed lg:static z-40 inset-y-0 right-0 w-64
+             bg-white shadow
+             transform transition-transform duration-300
+             lg:translate-x-0"
+      :class="isSidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'"
+    >
+      <Sidebar />
+    </aside>
+
+    <!-- Content -->
+    <div class="flex-1 flex flex-col min-h-screen bg-gray-100">
+      <Header @toggle-sidebar="isSidebarOpen = !isSidebarOpen" />
+
+      <!-- ⭐ این مهمه -->
+      <main class="flex-1 p-4 md:p-6">
         <NuxtPage />
       </main>
     </div>
+
   </div>
 </template>
 
+
 <script setup lang="ts">
-import Sidebar from '../components/dashboard/sidebar.vue';
-import Header from '../components/dashboard/Header.vue';
+import { ref } from 'vue'
+import Sidebar from '../components/dashboard/sidebar.vue'
+import Header from '../components/dashboard/Header.vue'
+
+const isSidebarOpen = ref(false)
 </script>

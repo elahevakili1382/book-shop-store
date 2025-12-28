@@ -7,13 +7,23 @@
             @click="openAddModal"
             >+ افزودن محصول</button>
         </div>
-        <div v-if="loading" class="py-10 text-center text-gray-500">
-            در حال بارگذاری محصولات...
-        </div>
+      
+
+        <div v-if="loading" class="flex justify-center items-center py-16">
+       <span class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"> 
+      </span>
+      </div>
+
+      <div v-else-if="products.length === 0"
+     class="py-16 text-center text-gray-400">
+  محصولی وجود ندارد
+</div>
 
 
-        <table v-else class="w-full text-right">
-            <thead class="border-b">
+      <div v-else class="overflow-x-auto">
+
+        <table class="min-w-[700px] w-full text-right text-sm md:text-base border-separate border-spacing-y-3">
+            <thead class="border-b sticky top-0 bg-white z-10">
                 <tr class="text-gray-600">
                 <th class="py-3">نام محصول</th>
                 <th>دسته بندی </th>
@@ -25,7 +35,7 @@
             </thead>
 
             <tbody>
-                <tr v-for="product in paginatedProducts" :key="product.id" class="border-b transition-all dura hover:bg-gray-50 ">
+                <tr v-for="product in paginatedProducts" :key="product.id" class="bg-gray-50 hover:bg-gray-100 transition rounded-xl">
                     <td class="py-3 font-semibold">{{ product.title }}</td>
                     <td>{{ product.category }}</td>
                     <td>{{ product.price.toLocaleString() }} تومان</td>
@@ -37,12 +47,20 @@
                           v-model.number="product.quantity"
                           @change="updateQuantity(product)"
                         />
-                        
                     </td>
+
+
+
                     <td>
-                        <span class="px-3 py-1 rounded-full text-xs font-semibold " :class="(product.quantity ?? 0) > 0 ? 'bg-green-100 text-green-700' :'bg-gray-200 text-gray-600'">{{ (product.quantity ?? 0) > 0 ? ' فعال': 'غیر فعال' }}</span>
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold " 
+                        :class="product.quantity > 10 
+                        ? 'bg-green-100 text-green-700' 
+                        :product.quantity > 0 ?
+                         'bg-yellow-100 text-yellow-700': 
+                        'bg-red-100 text-red-700'">
+                        {{ product.quantity > 10 ? 'موجود' : product.quantity > 0 ? 'موجود محدود ' : 'نا موجود'}}</span>
                     </td>
-                    <td class="flex gap-3">
+                    <td class="flex gap-2 md:gap-3">
                         <button class="text-blue-600 hover:text-blue-800" @click="openEditModal(product)"> ✏️ </button>
                         <button class="text-red-500 hover:text-red-700" @click="$emit('delete',product.id)"> 🗑️ </button>
                     </td>
@@ -50,7 +68,10 @@
             </tbody>
         </table>
 
-        <div v-if="!loading && products.length === 0" class="py-10 text-center text-gray-400">محصولی وجود ندارد </div>
+      </div>
+        
+
+        <!-- <div v-if="!loading && products.length === 0" class="py-10 text-center text-gray-400">محصولی وجود ندارد </div> -->
 
         <div class="flex justify-center gap-2 mt-6 ">
             <button v-for="page in totalPages" :key="page" @click="currentPage = page" 
@@ -71,6 +92,7 @@
         <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
       </select>
       <input type="number" min="0" v-model.number="editProduct!.quantity" class="w-full border border-gray-800 rounded-lg px-3 py-2" placeholder="تعداد" />
+      
       <div class="flex justify-end gap-3 pt-4">
         <button type="button" @click="closeEditModal" class="px-4 py-2 rounded-lg bg-gray-200">انصراف</button>
         <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">ذخیره</button>
