@@ -15,6 +15,8 @@
     import productsTable from '../../components/dashboard/productsTable.vue';
 
     const store = useProductStore()
+    const search = ref('')
+    const debouncedSearch = useDebounce(search, 400)
 
     onMounted(()=>{
         store.fetchAllCategoriesProducts(10)
@@ -31,6 +33,11 @@ function onAddProduct(product: any) {
 function onDeleteProduct(id: string) {
   store.deleteProduct(id)
 }
+
+watch(debouncedSearch, (value) =>{
+  store.searchProducts(value)
+})
+
  definePageMeta({
         title:'محصولات',
         layout :'dashboard'

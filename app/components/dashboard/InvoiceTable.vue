@@ -104,6 +104,8 @@ import { ref, computed, onMounted } from 'vue'
 import { useInvoiceStore } from '../../stores/useInvoiceStore'
 import ToastContainer from '../../components/ToastContainer.vue'
 import { useMyToast } from '../../composables/usemyToast'
+import { formatDate } from '../../utils/formatDate'
+
 
 const invoiceStore = useInvoiceStore()
 const toast = useMyToast()
@@ -197,7 +199,6 @@ const tabsWithCount = computed(() =>{
 
 
 const remove = (id: string) => { if (confirm('آیا مطمئن هستید؟')) invoiceStore.deleteInvoice(id) }
-const formatDate = (value?: string) => { if(!value) return '-'; const d = new Date(value); return isNaN(d.getTime()) ? '-' : d.toLocaleDateString('fa-IR') }
 </script>
 
 <style scoped  lang="postcss">

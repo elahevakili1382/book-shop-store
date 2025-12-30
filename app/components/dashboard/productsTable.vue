@@ -38,7 +38,7 @@
                 <tr v-for="product in paginatedProducts" :key="product.id" class="bg-gray-50 hover:bg-gray-100 transition rounded-xl">
                     <td class="py-3 font-semibold">{{ product.title }}</td>
                     <td>{{ product.category }}</td>
-                    <td>{{ product.price.toLocaleString() }} تومان</td>
+                    <td>{{ formatPrice(product.price)}} تومان</td>
                     <td>
                         <input
                           type="number"
@@ -146,6 +146,7 @@ import{ref, reactive, computed} from 'vue'
 
 const store = useProductStore()
 import type { Product } from '../../stores/productStore'
+import { formatPrice } from '../../utils/formatPrice'
 
 const currentPage = ref(1)
 const pageSize = 10
