@@ -64,8 +64,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 // ✅ درست: useRoute از nuxt/navigation
-import { useRoute, useRouter } from '#app'  
-import { NuxtImg, NuxtLink } from '#components'
 import { useCartStore } from '@/stores/cart'
 import type { ProductDetail } from '@/stores/productStore'
 import { useProductStore } from '@/stores/productStore'

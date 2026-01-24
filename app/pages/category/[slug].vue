@@ -12,9 +12,9 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useCategoryStore } from '@/stores/categories'
-import { useProductStore } from '@/stores/productStore'
-import ProductCard from '@/components/ui/ProductCard.vue'
+import { useCategoryStore } from '../../stores/categories'
+import { useProductStore } from '../../stores/productStore'
+import ProductCard from '../../components/ui/ProductCard.vue'
 
 const route = useRoute()
 const router = useRouter()

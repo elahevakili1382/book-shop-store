@@ -1,13 +1,30 @@
 <template>
   <div class="space-y-6">
     <h1 class="text-2xl font-semibold">تنظیمات</h1>
-
-    <UserProfileCard />
-    <AppSettingsCard />
+<AdminProfile
+    @update="onUpdateProfile"
+    @delete="onDeleteProfile"
+  />
+    
   </div>
 </template>
+
+
+
 <script setup lang="ts">
-  import {computed, onMounted} from 'vue';
-import UserProfileCard from '../../components/dashboard/UserProfileCard.vue'
-  
+import AdminProfile from '../../components/dashboard/AdminProfile.vue';
+import type { AdminProfile as AdminProfileType } from '../../components/dashboard/AdminProfile.vue';
+definePageMeta({
+  title:'تنظیمات',
+  layout:'dashboard'
+})
+
+const onUpdateProfile = (profile:AdminProfileType) => {
+  console.log('UPDATED PROFILE:', profile);
+}
+
+const onDeleteProfile = (id: string) => {
+  console.log('DELETE PROFILE ID:', id)
+}
+
 </script>

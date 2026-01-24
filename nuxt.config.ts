@@ -10,7 +10,10 @@ export default defineNuxtConfig({
       
     ]
   },
-
+ alias: {
+    '@': '/app',
+    '~': '/app',
+  },
   future:{
     compatibilityVersion:4,
   },

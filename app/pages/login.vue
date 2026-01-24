@@ -105,19 +105,9 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { useToast, useNuxtApp, useState } from '#imports'
-interface User {
-  id: string
-  name: string
-  email: string
-}
-const userState = useState<User | null>("clientUser", () => null)
 
 const toast = useToast()
-const nuxtApp = useNuxtApp()
-
-
-
+const auth = useAuthStore()
 
 const activeTab = ref<'login'|'signup'>('login')
 
@@ -127,18 +117,17 @@ const signupData = reactive({ name: '', email: '', password: '' })
 
 const handleLogin = async () => {
   try {
-    const res = await $fetch('/api/auth/login', {
+    const res: any = await $fetch('/api/auth/login', {
       method: 'POST',
-      body: {
-        email: loginData.email,
-        password: loginData.password,
-      },
+      body: loginData,
     })
 
-    console.log('login response', res)
-
     if ((res as any).ok) {
-      userState.value = (res as any).user
+
+      auth.login(
+        (res as any).user,
+        (res as any).token 
+      )
 
       toast.success({
         title: 'موفق',

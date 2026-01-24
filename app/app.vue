@@ -8,12 +8,14 @@
 </template>
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useCartStore } from '@/stores/cart'
+import { useCartStore } from '.././stores/cart'
+import ToastContainer from './components/ToastContainer.vue'
 
 
 const cartStore = useCartStore()
 
 onMounted(() => {
+  useAuthStore().loadFromStorage()
   cartStore.loadCart()
 })
 </script>

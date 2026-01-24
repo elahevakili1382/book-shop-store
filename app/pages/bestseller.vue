@@ -108,8 +108,8 @@
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from "vue"
-import { useProductStore } from "@/stores/productStore"
-import ProductCard from "@/components/ui/ProductCard.vue"
+import { useProductStore } from "../../stores/productStore"
+import ProductCard from ".././components/ui/ProductCard.vue"
 import { Swiper, SwiperSlide } from "swiper/vue"
 import "swiper/css"
 import "swiper/css/navigation"

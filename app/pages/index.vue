@@ -1,12 +1,3 @@
-
-<script setup lang="ts">
-// import SoldProductCard from '~/components/ui/SoldProductCard.vue';
-
-
-definePageMeta({
-    layout:'default',
-})
-</script>
 <template>
     <main>
         <HeroSection/>
@@ -18,6 +9,22 @@ definePageMeta({
         <JoinWithUs/>
     </main>
 </template>
+
+<script setup lang="ts">
+    
+import HeroSection from '../components/HeroSection.vue';
+import Features from '../components/Features.vue';
+import NewArrival from '../components/NewArrival.vue';
+import BestSelling from '../components/BestSelling.vue';
+import DealsOfDay from '../components/DealsOfDay.vue';
+import ShopWithUs from '../components/ShopWithUs.vue';
+import JoinWithUs from '../components/JoinWithUs.vue';
+
+
+definePageMeta({
+    layout:'default',
+})
+</script>
 
 
 

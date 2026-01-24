@@ -97,8 +97,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue"
-import ProductCard from "@/components/ui/ProductCard.vue"
-import { useProductStore } from "@/stores/productStore"
+import ProductCard from ".././components/ui/ProductCard.vue"
+import { useProductStore } from "../../stores/productStore"
 import { Swiper, SwiperSlide } from "swiper/vue"
 import "swiper/css"
 import "swiper/css/navigation"

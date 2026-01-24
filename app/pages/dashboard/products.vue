@@ -40,7 +40,8 @@ watch(debouncedSearch, (value) =>{
 
  definePageMeta({
         title:'محصولات',
-        layout :'dashboard'
+        layout :'dashboard',
+
     })
 
 

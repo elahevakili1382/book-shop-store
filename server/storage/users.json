@@ -26,5 +26,12 @@
     "email": "mahdi80namvar@gmail.com",
     "password": "$2b$10$SMBIY.RvIqBNdEe6SzqP6uilGtzaFqun57QUdxpR7N6ICl25sCttS",
     "createdAt": "2025-11-09T06:56:57.413Z"
+  },
+  {
+    "id": "8500528c-a8b5-471b-94af-40caa47300e2",
+    "name": "elahe",
+    "email": "elahevakili8@gmail.com",
+    "password": "$2b$10$9xERPru2Zx/Rq6g1gDLUKuT0XiCM0JlgvnNTKkaJ0YHmEdshL0UGm",
+    "createdAt": "2026-01-01T08:09:29.046Z"
   }
 ]

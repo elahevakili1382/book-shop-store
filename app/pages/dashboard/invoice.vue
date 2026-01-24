@@ -8,9 +8,10 @@
 </template>
 
 <script setup>
-import InvoiceTable from '~/components/dashboard/InvoiceTable.vue';
+import InvoiceTable from '../../components/dashboard/InvoiceTable.vue';
 definePageMeta({
   title: "فاکتورها",
-  layout: "dashboard"
+  layout: "dashboard",
+
 })
 </script>

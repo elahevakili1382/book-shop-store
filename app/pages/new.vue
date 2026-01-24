@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { onMounted, computed, ref } from "vue"
-import ProductCard from "@/components/ui/ProductCard.vue"
+import ProductCard from "../components/ui/ProductCard.vue"
 import { Swiper, SwiperSlide } from "swiper/vue"
 import "swiper/css"
 import "swiper/css/navigation"
 import "swiper/css/pagination"
 import { Navigation, Pagination } from "swiper/modules"
-import { useProductStore } from "@/stores/productStore"
+import { useProductStore } from "../../stores/productStore"
 
 const store = useProductStore()
 const searchQuery = ref('')
