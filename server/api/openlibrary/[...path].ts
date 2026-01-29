@@ -1,19 +1,42 @@
-export default defineEventHandler(async (event) => {
-    try{
-        const {path} = event.context.params
-        const query = getQuery(event)
+import type { EventHandler } from 'h3'
+import { getQuery, createError } from 'h3'
 
-        const targetURL =  "https://openlibrary.org/"+ path + (Object.keys(query).length ? "?" + new URLSearchParams(query).toString() : "")
+const cache: Record<string, unknown> = {}
 
-        const proxyURL = "https://api.allorigins.win/raw?url=" + encodeURIComponent(targetURL)
-        const data = await $fetch(proxyURL)
-
-        return data 
-    } catch (error) {
-        console.error ("OpenLibrary Proxy Error: ", error)
-        throw createError({
-            statusCode: 500,
-            statusMessage: "OpenLibrary Proxy Request Failed",
-        })
+async function fetchWithRetry(url: string, retries = 2, timeout = 60000): Promise<unknown> {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      return await $fetch<unknown>(url, { timeout })
+    } catch (err) {
+      if (i === retries) throw err
     }
-})
+  }
+  throw new Error('fetchWithRetry failed')
+}
+
+const handler: EventHandler<any> = async (event) => {
+  try {
+    const query = getQuery(event)
+    const searchTerm = (query.q as string) || ''
+    const limit = Number(query.limit) || 10
+
+    const targetURL = `https://openlibrary.org/search.json?q=${encodeURIComponent(
+      searchTerm
+    )}&limit=${limit}`
+
+    const cacheKey = targetURL
+    if (cache[cacheKey]) return cache[cacheKey]
+
+    const data: unknown = await fetchWithRetry(targetURL)
+    cache[cacheKey] = data
+    return data
+  } catch (err: any) {
+    console.error('OpenLibrary Proxy Error:', err.message)
+    throw createError({
+      statusCode: 502,
+      statusMessage: 'OpenLibrary Request Failed',
+    })
+  }
+}
+
+export default handler

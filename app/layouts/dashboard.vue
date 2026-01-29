@@ -40,7 +40,5 @@ import Header from '../components/dashboard/Header.vue'
 
 const isSidebarOpen = ref(false)
 
-definePageMeta({
-  middleware: 'auth',
-})
+
 </script>

@@ -8,6 +8,10 @@ const adminStore = useAdminStore()
 onMounted(() => {
   adminStore.fetchAdmins()
 })
+
+definePageMeta({
+  middleware: 'auth',
+})
 </script>
 
 <template>

@@ -95,29 +95,7 @@
         تغییر رمز عبور
       </button>
     </div>
-    
-    
-    </div>
-    
-    <!-- Actions -->
-     <!-- <div>
-       <button
-      @click="saveProfile"
-      :disabled="loading"
-      class="px-4 py-2 rounded bg-primary text-white disabled:opacity-50"
-    >
-      {{ loading ? 'در حال ذخیره...' : 'ذخیره تغییرات' }}
-    </button>
-    <p
-      v-if="success"
-      class="text-green-600 mt-4 text-sm"
-    >
-      اطلاعات با موفقیت ذخیره شد ✅
-    </p>
-     </div> -->
-   
-
-    
+    </div>    
   </div>
 
     <!-- div1 -->
@@ -143,43 +121,67 @@
     </div>
 
     <!-- click to upload -->
-     <div class="border-2 border-dashed border-[#aaa] p-20 rounded-md cursor-pointer min-h-[200px]" @click="openFilePicker" @dragover.prevent @drop.prevent="onDrop">
-
-    <p class="font-semibold text-lg text-gray-400" v-if="images.length === 0"> <span class="text-lg text-purple-600"> click to upload</span> or drag and drop 
-      <p class="font-semibold text-sm text-gray-400 text-center">
-        SVG, PNG, JPG
+      <div
+    class="border-2 border-dashed border-[#aaa] p-6 rounded-md cursor-pointer min-h-[200px]"
+    @click="openFilePicker"
+    @dragover.prevent
+    @drop.prevent="onDrop"
+  >
+    <!-- empty state -->
+    <div v-if="images.length === 0" class="text-center space-y-2">
+      <p class="font-semibold text-lg text-gray-400">
+        <span class="text-purple-600">click to upload</span>
+        or drag and drop
       </p>
+      <p class="text-sm text-gray-400">SVG, PNG, JPG</p>
+    </div>
 
-      </p>
-    <div class="flex flex-wrap gap-10" v-else>
-      <div v-for="(img, index) in images" :key="index" class="relative w-[120px] h-[120px]">
-        <img class="w-full h-full object-cover" :src="img.preview">
-        <button class="absolute top-4 right-4 text-white pointer" @click.stop="removeImage(index)"> ✕ </button>
+    <!-- preview state -->
+    <div v-else class="flex flex-wrap gap-4">
+      <div
+        v-for="(img, index) in images"
+        :key="index"
+        class="relative w-[120px] h-[120px]"
+      >
+        <img
+          :src="img.preview"
+          class="w-full h-full object-cover rounded"
+        />
 
-        <div class="absolute bottom-0 left-0 h-5 w-full bg-[#eeeeee]" v-if="img.progress < 100">
-     <div
-            class="h-full bg-green-400"
+        <button
+          class="absolute top-2 right-2 bg-black/60 text-white rounded-full w-6 h-6 flex items-center justify-center"
+          @click.stop="removeImage(index)"
+        >
+          ✕
+        </button>
+
+        <div
+          v-if="img.progress < 100"
+          class="absolute bottom-0 left-0 w-full h-2 bg-gray-200"
+        >
+          <div
+            class="h-full bg-green-400 transition-all"
             :style="{ width: img.progress + '%' }"
-          ></div>
-                </div>
+          />
+        </div>
       </div>
     </div>
 
-    <input type="file" ref="fileInput" accept="image/*" multiple hidden @change="onFilesSelected">
-
-     </div>
-
+    <input
+      ref="fileInput"
+      type="file"
+      accept="image/*"
+      multiple
+      hidden
+      @change="onFilesSelected"
+    />
+  </div>
   </div> 
+  
   </div>
 </template>
 
 <script setup lang="ts">
-  // چجوری ابدیت و دیلیت رو واکنش گرا کنم ؟ 
-  // چجوری گرید بندی اطلاعات ادمین رو ریسپانسیو کنم ؟
-  // چرا عکس پروفایل نمیاد ؟ 
-  // برای click tp upload drag and drop images چه کنم ؟ 
-  // متغیر پروفایل همینجوری حالت استاتیک بریا این نمونه کارن اوکیه یا مهمه که حتما داینامیک باشه برای مصاحبه گرا ؟ 
-  //و این قسمت click to upload  رو ریز به ریز فانکشن به فانکشن به من توضیح بده تا کامل بفهمم 
 import { reactive, ref } from 'vue'
 
 interface Role{

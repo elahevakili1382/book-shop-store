@@ -36,28 +36,48 @@
             </div>
 
             <!-- کنترل تعداد -->
-            <div class="flex items-center gap-2">
-              <button
-                @click="cart.updateQuantity(item.uniqueId, item.quantity - 1)"
-                class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition text-lg"
-              >-</button>
+<div class="flex items-center gap-3 px-4 py-2 bg-gray-100 rounded-lg">
 
-              <span class="font-medium text-gray-700">{{ item.quantity }}</span>
+  <!-- افزایش -->
+  <button
+    @click="cart.updateQuantity(item.uniqueId, item.quantity + 1)"
+    class="w-8 h-8 flex items-center justify-center rounded-md 
+           text-lg text-gray-700 hover:bg-gray-200 transition"
+    title="افزایش"
+  >
+    +
+  </button>
 
-              <button
-                @click="cart.updateQuantity(item.uniqueId, item.quantity + 1)"
-                class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition text-lg"
-              >+</button>
-            </div>
+  <!-- تعداد -->
+  <span class="w-6 text-center font-medium text-gray-800">
+    {{ item.quantity }}
+  </span>
 
-            <!-- حذف -->
-            <button
-              @click="cart.removeFromCart(item.uniqueId)"
-              class="ml-4 text-red-500 hover:text-red-700 transition"
-              title="حذف"
-            >
-              <FontAwesome :icon="['fas','trash']" class="w-5 h-5" />
-            </button>
+  <!-- کاهش یا حذف -->
+  <button
+    v-if="item.quantity > 1"
+    @click="cart.updateQuantity(item.uniqueId, item.quantity - 1)"
+    class="w-8 h-8 flex items-center justify-center rounded-md
+           text-lg text-gray-700 hover:bg-gray-200 transition"
+    title="کم کردن"
+  >
+    −
+  </button>
+
+  <button
+    v-else
+    @click="cart.removeFromCart(item.uniqueId)"
+    class="w-8 h-8 flex items-center justify-center rounded-md
+           text-red-500 hover:bg-red-100 hover:text-red-700 transition"
+    title="حذف"
+  >
+    <FontAwesomeIcon :icon="['fas', 'trash']" class="w-4 h-4" />
+  </button>
+
+</div>
+
+
+            
           </div>
         </div>
 
@@ -72,7 +92,7 @@
             <button
               class="w-full py-3 rounded-lg bg-green-600 hover:bg-green-700 text-white font-semibold transition shadow-md"
             >
-              ادامه خرید / تسویه حساب
+                تایید و ادامه 
             </button>
           </div>
 
@@ -123,12 +143,17 @@
 
 <script setup lang="ts">
 import {ref,onMounted} from 'vue'
+import {useRouter} from 'vue-router'
 import { useCartStore } from "../../stores/cart";
 
 const cart = useCartStore();
+const router = useRouter()
 
 const isMounted = ref(false)
 
+const goToAddress = () => {
+  router.push('/address')
+}
 onMounted(() => {
   cart.loadCart()
   isMounted.value = true

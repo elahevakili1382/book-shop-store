@@ -9,6 +9,7 @@
 
 <script setup>
 import InvoiceTable from '../../components/dashboard/InvoiceTable.vue';
+import DashboardBreadcrumb from '../../components/dashboard/DashboardBreadcrumb.vue';
 definePageMeta({
   title: "فاکتورها",
   layout: "dashboard",

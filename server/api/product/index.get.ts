@@ -1,28 +1,43 @@
-// import { useProductStore } from "@/stores/productStore"
+import { defineEventHandler, getQuery, createError } from 'h3'
 
-// export default defineEventHandler(async (event) => {
-//   const query = getQuery(event)
-//   const slug = query.slug as string
+// کش ساده در حافظه (برای نمونه)
+const cache: Record<string, any> = {}
 
-//   if (!slug) {
-//     throw createError({
-//       statusCode: 400,
-//       statusMessage: "Slug is required"
-//     })
-//   }
+async function fetchWithRetry(url: string, retries = 2, timeout = 30000) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      return await $fetch(url, { timeout })
+    } catch (err) {
+      if (i === retries) throw err
+    }
+  }
+}
 
-//   // استور را صدا می‌زنیم (به صورت سروری)
-//   const productStore = useProductStore()
+export default defineEventHandler(async (event) => {
+  const query = getQuery(event)
+  const subject = (query.subject as string) || 'programming'
+  const limit = Number(query.limit) || 10
+  const cacheKey = `${subject}-${limit}`
 
-//   // چون slug همان openLibraryId است
-//   const product = await productStore.fetchProductById(slug)
+  // اگر داده تو کش هست، همون رو برگردون
+  if (cache[cacheKey]) return cache[cacheKey]
 
-//   if (!product) {
-//     throw createError({
-//       statusCode: 404,
-//       statusMessage: "Product not found"
-//     })
-//   }
+  const url = `https://openlibrary.org/subjects/${subject}.json?limit=${limit}`
 
-//   return product
-// })
+  try {
+    const data = await fetchWithRetry(url, 2, 60000) // retry 2 بار، timeout 60s
+    cache[cacheKey] = data // ذخیره در کش
+    return data
+  } catch (err: any) {
+    console.error('OpenLibrary Proxy Error:', err.message)
+
+    // اگر قبلا داده کش داریم، برگردون
+    if (cache[cacheKey]) return cache[cacheKey]
+
+    // اگر نه، خطای مناسب برگردون
+    throw createError({
+      statusCode: 502,
+      statusMessage: 'OpenLibrary Request Failed',
+    })
+  }
+})

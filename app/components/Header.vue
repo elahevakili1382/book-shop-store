@@ -188,12 +188,12 @@
        
       </NuxtLink>
 
-      <NuxtLink to="/login" class="flex justify-center items-center px-7 py-[10px] gap-2 w-[120px] h-[35px] bg-[#DCF763] border border-[#435058] rounded-[40px]">
+      <NuxtLink to="/login" class="flex justify-center items-center px-6 py-2 gap-2 bg-[#DCF763] border border-[#435058] rounded-[40px]">
         <ClientOnly>
                   <NuxtImg src="/images/user-icon.svg" width="20" height="20" />
 
         </ClientOnly>
-        <span class="text-black text-sm">ورود</span>
+        <span class="text-black text-sm">ورود | ثبت نام</span>
       </NuxtLink>
     </div>
 

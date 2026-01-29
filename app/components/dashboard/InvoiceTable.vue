@@ -31,6 +31,8 @@
   </div>
 
   <div v-else>
+    <pre>{{ invoiceStore.invoices }}</pre>
+
     <table class="w-full text-right border-separate border-spacing-y-3">
       <thead>
         <tr class="text-gray-600 text-lg">
@@ -105,11 +107,27 @@ import { useInvoiceStore } from '../../stores/useInvoiceStore'
 import ToastContainer from '../../components/ToastContainer.vue'
 import { useMyToast } from '../../composables/usemyToast'
 import { formatDate } from '../../utils/formatDate'
+import type { Invoice } from '../../stores/useInvoiceStore'
 
 
 const invoiceStore = useInvoiceStore()
 const toast = useMyToast()
-onMounted(() => invoiceStore.fetchInvoices())
+
+const fetchInvoices = async() =>{
+  invoiceStore.loading = true
+  try{
+    const data = await $fetch<Invoice[]>("/api/invoices")
+    console.log('Fetched:',data);
+    invoiceStore.invoices = data
+  }catch(err){
+    console.error('Error fetching invoices:', err)
+  }finally{
+    invoiceStore.loading = false
+  }
+}
+onMounted(() => {
+  fetchInvoices() 
+})
 
 // Tabs
 const tabs = [

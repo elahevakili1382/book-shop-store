@@ -50,23 +50,13 @@ function getCache<T>(map: Map<string, CacheEntry<T>>, key: string) {
   return e.value
 }
 
-/* Robust openId normalization:
-   Accepts inputs like:
-     - "OL4617640W"
-     - "works/OL4617640W"
-     - "/works/OL4617640W"
-     - "works/works/OL4617640W"
-   Always returns: "works/OL4617640W"
-*/
+
+
 function normalizeOpenId(idOrSlug: string | undefined): string | null {
   if (!idOrSlug) return null
-  // force string, trim
   let s = String(idOrSlug).trim()
-  // remove leading slashes
   s = s.replace(/^\/+/, '')
-  // remove any leading repeated "works/" (case-insensitive)
   s = s.replace(/^(?:works\/)+/i, '')
-  // now s is the bare id (e.g. OL4617640W or works/OL... removed)
   if (!s) return null
   return `works/${s}`
 }
@@ -74,11 +64,13 @@ function normalizeOpenId(idOrSlug: string | undefined): string | null {
 function mapWorkToProduct(book: Work | Doc, idx: number, categoryKey?: string): Product {
   const cover = (book as any).cover_id ?? (book as any).cover_i
 
-  const key = (book as any).key || ''  // مثل /works/OL12345W
+
+  const rawkey = (book as any).key || ''  // مثل /works/OL12345W
+  const cleanId = rawkey.replace(/^\/+/, '')
 
   return {
-  id: key,
-  openLibraryId: key,
+  id: cleanId,
+  openLibraryId: cleanId,
   title: (book as any).title ?? 'بدون عنوان',
   price: DEFAULT_PRICE(),
   image: cover
@@ -153,7 +145,7 @@ export const useProductStore = defineStore('productStore', () => {
       isLoading.value = true
       error.value = null
       try {
-        const data = await $fetch<SubjectResponse>(`/api/subjects/${apiKey}?limit=${limit}`)
+        const data = await $fetch<SubjectResponse>(`/api/openlibrary/subjects/${apiKey}.json?limit=${limit}`)
         const list = (data.works || [])
           .filter((b: Work) => (b as any).cover_id)
           .map((b: Work, i: number) => mapWorkToProduct(b, i, categoryKey))
@@ -202,7 +194,7 @@ export const useProductStore = defineStore('productStore', () => {
         isLoading.value = true
         error.value = null
         try {
-          const url = `/api/search?q=${encodeURIComponent(q)}`
+          const url = `/api/openlibrary/search.json?q=${encodeURIComponent(q)}`
           const data = await $fetch<SearchResponse>(url, signal ? { signal } as any : undefined)
           const list = (data.docs || [])
             .filter((b: Doc) => (b as any).cover_i)
@@ -261,14 +253,14 @@ export const useProductStore = defineStore('productStore', () => {
         if (cached) return cached
 
         // fetch main work data
-        const workData = await $fetch<WorkDetail>(`/api/${openId}`)
+        const workData = await $fetch<WorkDetail>(`/api/openlibrary/${openId}.json`)
 
         // author (safe)
         let authorName: string | undefined
         if (workData.authors?.length && workData.authors[0]?.author?.key) {
           const authorId = String(workData.authors[0].author.key).replace(/^\/+/, '').replace(/^authors\//i, '')
           try {
-            const authorRes = await $fetch<{ name: string }>(`/api/authors/${authorId}`)
+            const authorRes = await $fetch<{ name: string }>(`/api/openlibrary/authors/${authorId}.json`)
             authorName = authorRes.name
           } catch {
             // ignore author fetch failure
@@ -279,7 +271,7 @@ export const useProductStore = defineStore('productStore', () => {
         // editions (optional)
         let editionData: EditionEntry | undefined
         try {
-          const editions = await $fetch<EditionResponse>(`/api/${openId}/editions?limit=5`)
+          const editions = await $fetch<EditionResponse>(`/api/openlibrary/${openId}/editions.json?limit=5`)
           editionData = editions.entries.find(
             (e) => e.number_of_pages || e.physical_format || e.languages || e.publishers
           ) ?? editions.entries[0] ?? undefined
