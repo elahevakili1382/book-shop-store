@@ -27,10 +27,21 @@
       <NuxtLink to="/" class="font-bold px-4 py-1 ml-2 bg-[#435058] rounded-full text-white hover:bg-[#0c161dcb] hover:scale-105">
         خانه
       </NuxtLink>
+       <div class="relative group">
+        <button class="font-bold text-gray-600">دسته بندی ها</button>
+        <div class="absolute right-0 mt-0 hidden group-hover:block bg-white shadow-lg rounded min-w-[200px] z-50">
+
+          <NuxtLink v-for="cat in categoryStore.categories" :key="cat.id" :to="`/category/${cat.slug}`" class="block text-primary px-4 py-2 hover:bg-gray-100">{{ cat.name }} ({{ cat.items }})</NuxtLink>
+        </div>
+      </div>
+      <div v-if="categoryStore.isLoading">در حال بارگذاری</div>
+      <div v-else-if="categoryStore.error">{{ categoryStore.error }}</div>
       <NuxtLink to="/new" class="font-bold text-gray-600 hover:text-gray-500 ">تازه ها</NuxtLink>
       <NuxtLink to="/bestseller" class="font-bold text-gray-600 hover:text-gray-500">پرفروش ها</NuxtLink>
       <NuxtLink to="/daily-offers" class="font-bold text-gray-600 hover:text-gray-500">پیشنهاد روز</NuxtLink>
       <NuxtLink to="/about" class="font-bold text-gray-600 hover:text-gray-500">درباره ما</NuxtLink>
+
+     
     </nav>
 
     <!-- سرچ دسکتاپ -->
@@ -247,6 +258,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from "vue"
+import { useCategoryStore } from "../stores/categories"
 import { useCartStore } from "../../stores/cart"
 import { useProductStore } from "../../stores/productStore"
 import { useUIStore } from "../../stores/ui"
@@ -256,6 +268,7 @@ const ui = useUIStore()
 const cart = useCartStore()
 const store = useProductStore()
 const router = useRouter()
+const categoryStore = useCategoryStore()
 
 const searchQuery = ref("")
 const isMobileSearchOpen = ref(false)
@@ -306,6 +319,10 @@ const isDropdownVisible = computed(
 const closeDropdown = () => {
   store.products = []
 }
+
+onMounted(() =>{
+  categoryStore.fetchCategories()
+})
 </script>
 <style scoped>
 

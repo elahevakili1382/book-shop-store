@@ -42,7 +42,7 @@ const fetchCategories = async (force = false) => {
   isLoading.value = true
   error.value = null
   try {
-    const res = await $fetch('/data/categories.json')
+    const res = await $fetch<Category[]>('/data/categories.json')
 
 
     if (!isValidCategoryArray(res)) throw new Error('خطا در دریافت دسته‌بندی‌ها')
