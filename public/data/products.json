@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "title": "تیتر اصلی کتاب 1",
+    "cover": "/images/Rectangle-4173.png",
+    "price": 129000,
+    "category": "بیوگرافی تاریخی",
+    "rating": 4.5
+  },
+  {
+    "id": 2,
+    "title": "تیتر اصلی کتاب 2",
+    "cover": "/images/Rectangle-4173-(1).png",
+    "price": 129000,
+    "category": "رهبران و برجسته",
+    "rating": 4.7
+  },
+  {
+    "id": 3,
+    "title": "تیتر اصلی کتاب 3",
+    "cover": "/images/Rectangle-4173-(2).png",
+    "price": 129000,
+    "category": "بیوگرافی ورزشی",
+    "rating": 4.3
+  },
+  {
+    "id": 4,
+    "title": "تیتر اصلی کتاب 4",
+    "cover": "/images/Rectangle-4173-(3).png",
+    "price": 129000,
+    "category": "اکشن و ماجراجویی",
+    "rating": 4.6
+  },
+  {
+    "id": 5,
+    "title": "تیتر اصلی کتاب 5",
+    "cover": "/images/Rectangle-4173-(4).png",
+    "price": 129000,
+    "category": "بیوگرافی تاریخی",
+    "rating": 4.2
+  },
+  {
+    "id": 6,
+    "title": "تیتر اصلی کتاب 6",
+    "cover": "/images/Rectangle-4173-(5).png",
+    "price": 129000,
+    "category": "رهبران و برجسته",
+    "rating": 4.8
+  },
+  {
+    "id": 7,
+    "title": "تیتر اصلی کتاب 7",
+    "cover": "/images/Rectangle-4173-(3).png",
+    "price": 129000,
+    "category": "بیوگرافی های مدرن",
+    "rating": 4.4
+  },
+  {
+    "id": 8,
+    "title": "تیتر اصلی کتاب 8",
+    "cover": "/images/Rectangle-4173-(4).png",
+    "price": 129000,
+    "category": "بیوگرافی ایالات متحده",
+    "rating": 4.6
+  },
+  {
+    "id": 9,
+    "title": "تیتر اصلی کتاب 9",
+    "cover": "/images/Rectangle-4173-(5).png",
+    "price": 129000,
+    "category": "بیوگرافی های مدرن",
+    "rating": 4.3
+  },
+  {
+    "id": 10,
+    "title": "تیتر اصلی کتاب 10",
+    "cover": "/images/Rectangle-4173-(3).png",
+    "price": 129000,
+    "category": "اکشن و ماجراجویی",
+    "rating": 4.5
+  },
+  {
+    "id": 11,
+    "title": "تیتر اصلی کتاب 11",
+    "cover": "/images/Rectangle-4173-(4).png",
+    "price": 129000,
+    "category": "بیوگرافی تاریخی",
+    "rating": 4.7
+  },
+  {
+    "id": 12,
+    "title": "تیتر اصلی کتاب 12",
+    "cover": "/images/Rectangle-4173-(5).png",
+    "price": 129000,
+    "category": "رهبران و برجسته",
+    "rating": 4.8
+  }
+]
