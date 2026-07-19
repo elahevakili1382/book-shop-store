@@ -1,21 +1,21 @@
 <template>
-    <div class="bg-white rounded-2xl shadow p-6">
+    <div class="bg-dash-card border border-dash-border rounded-2xl p-6">
         <div class="flex items-center justify-between mb-5">
-            <h2 class="text-lg font-semibold text-gray-800">لیست محصولات</h2>
+            <h2 class="text-lg font-semibold text-dash-text">لیست محصولات</h2>
 
-            <button class="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm hover:bg-blue-700 transition"
+            <button class="px-4 py-2 rounded-xl bg-dash-accent text-dash-bg text-sm font-bold hover:opacity-90 transition"
             @click="openAddModal"
             >+ افزودن محصول</button>
         </div>
       
 
         <div v-if="loading" class="flex justify-center items-center py-16">
-       <span class="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"> 
+       <span class="w-10 h-10 border-4 border-dash-accent border-t-transparent rounded-full animate-spin"> 
       </span>
       </div>
 
       <div v-else-if="products.length === 0"
-     class="py-16 text-center text-gray-400">
+     class="py-16 text-center text-dash-muted">
   محصولی وجود ندارد
 </div>
 
@@ -23,8 +23,8 @@
       <div v-else class="overflow-x-auto">
 
         <table class="min-w-[700px] w-full text-right text-sm md:text-base border-separate border-spacing-y-3">
-            <thead class="border-b sticky top-0 bg-white z-10">
-                <tr class="text-gray-600">
+            <thead class="border-b border-dash-border sticky top-0 bg-dash-card z-10">
+                <tr class="text-dash-muted">
                 <th class="py-3">نام محصول</th>
                 <th>دسته بندی </th>
                 <th>قیمت </th>
@@ -35,15 +35,15 @@
             </thead>
 
             <tbody>
-                <tr v-for="product in paginatedProducts" :key="product.id" class="bg-gray-50 hover:bg-gray-100 transition rounded-xl">
+                <tr v-for="product in paginatedProducts" :key="product.id" class="bg-dash-bg hover:bg-dash-border/40 transition rounded-xl text-dash-text">
                     <td class="py-3 font-semibold">{{ product.title }}</td>
-                    <td>{{ product.category }}</td>
+                    <td class="text-dash-muted">{{ product.category }}</td>
                     <td>{{ formatPrice(product.price)}} تومان</td>
                     <td>
                         <input
                           type="number"
                           min="0"
-                          class="w-16 border border-gray-700 rounded text-center"
+                          class="w-16 border border-dash-border rounded-lg text-center bg-dash-card text-dash-text"
                           v-model.number="product.quantity"
                           @change="updateQuantity(product)"
                         />
@@ -54,15 +54,15 @@
                     <td>
                         <span class="px-3 py-1 rounded-full text-xs font-semibold " 
                         :class="product.quantity > 10 
-                        ? 'bg-green-100 text-green-700' 
+                        ? 'bg-dash-accent2/15 text-dash-accent2' 
                         :product.quantity > 0 ?
-                         'bg-yellow-100 text-yellow-700': 
-                        'bg-red-100 text-red-700'">
+                         'bg-amber-400/15 text-amber-300': 
+                        'bg-rose-400/15 text-rose-300'">
                         {{ product.quantity > 10 ? 'موجود' : product.quantity > 0 ? 'موجود محدود ' : 'نا موجود'}}</span>
                     </td>
                     <td class="flex gap-2 md:gap-3">
-                        <button class="text-blue-600 hover:text-blue-800" @click="openEditModal(product)"> ✏️ </button>
-                        <button class="text-red-500 hover:text-red-700" @click="$emit('delete',product.id)"> 🗑️ </button>
+                        <button class="text-dash-accent hover:opacity-80" @click="openEditModal(product)"> ✏️ </button>
+                        <button class="text-rose-300 hover:text-rose-200" @click="$emit('delete',product.id)"> 🗑️ </button>
                     </td>
                 </tr>
             </tbody>
@@ -71,31 +71,29 @@
       </div>
         
 
-        <!-- <div v-if="!loading && products.length === 0" class="py-10 text-center text-gray-400">محصولی وجود ندارد </div> -->
-
         <div class="flex justify-center gap-2 mt-6 ">
             <button v-for="page in totalPages" :key="page" @click="currentPage = page" 
-            class="px-3 py-1 rounded-lg border text-sm" 
-            :class="page === currentPage ? 'bg-blue-600 text-white' : 'bg-white hover:bg-gray-100'"
+            class="px-3 py-1 rounded-lg border border-dash-border text-sm" 
+            :class="page === currentPage ? 'bg-dash-accent text-dash-bg font-bold' : 'bg-dash-bg text-dash-muted hover:text-dash-text'"
             >{{ page }}</button>
         </div>
 
         <!-- modal for edit product-->
-         <div v-if="showEditModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-         <div class="bg-white rounded-2xl w-full max-w-md p-6">
+         <div v-if="showEditModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+         <div class="bg-dash-card border border-dash-border rounded-2xl w-full max-w-md p-6 text-dash-text">
          <h3 class="font-semibold text-lg mb-4">ویرایش محصول</h3>
 
          <form v-if="editProduct" @submit.prevent="submitEditProduct" class="space-y-4">
-      <input v-model="editProduct!.title" type="text" placeholder="نام محصول" class="w-full border rounded-lg px-3 py-2" required />
-      <input v-model="editProduct!.price" type="number" placeholder="قیمت" class="w-full border rounded-lg px-3 py-2" required />
-      <select v-model="editProduct!.category" class="w-full border rounded-lg px-3 py-2" required>
+      <input v-model="editProduct!.title" type="text" placeholder="نام محصول" class="w-full border border-dash-border rounded-lg px-3 py-2 bg-dash-bg text-dash-text" required />
+      <input v-model="editProduct!.price" type="number" placeholder="قیمت" class="w-full border border-dash-border rounded-lg px-3 py-2 bg-dash-bg text-dash-text" required />
+      <select v-model="editProduct!.category" class="w-full border border-dash-border rounded-lg px-3 py-2 bg-dash-bg text-dash-text" required>
         <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
       </select>
-      <input type="number" min="0" v-model.number="editProduct!.quantity" class="w-full border border-gray-800 rounded-lg px-3 py-2" placeholder="تعداد" />
+      <input type="number" min="0" v-model.number="editProduct!.quantity" class="w-full border border-dash-border rounded-lg px-3 py-2 bg-dash-bg text-dash-text" placeholder="تعداد" />
       
       <div class="flex justify-end gap-3 pt-4">
-        <button type="button" @click="closeEditModal" class="px-4 py-2 rounded-lg bg-gray-200">انصراف</button>
-        <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">ذخیره</button>
+        <button type="button" @click="closeEditModal" class="px-4 py-2 rounded-lg bg-dash-border text-dash-text">انصراف</button>
+        <button type="submit" class="px-4 py-2 rounded-lg bg-dash-accent text-dash-bg font-bold hover:opacity-90">ذخیره</button>
       </div>
     </form>
 
@@ -106,33 +104,33 @@
 
 
         <!-- modal for add product  -->
-         <div v-if="showAddModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-            <div class="bg-white rounded-2xl w-full max-w-md p-6">
+         <div v-if="showAddModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+            <div class="bg-dash-card border border-dash-border rounded-2xl w-full max-w-md p-6 text-dash-text">
 
                 <!-- header  -->
                  <div class="flex justify-between items-center mb-4">
                     <h3 class="font-semibold text-lg">افزودن محصول جدید</h3>
-                    <button @click="closeAddModal">✖️</button>
+                    <button class="text-dash-muted hover:text-dash-text" @click="closeAddModal">✖️</button>
                  </div>
 
                  <form @submit.prevent="submitProduct" class="space-y-4">
-                    <input v-model="form.title" type="text" placeholder="نام محصول" class="w-full border rounded-lg px-3 py-2 hover:border-gray-800 transition" required>
-                    <input v-model="form.price" type="number" placeholder="قیمت" class="w-full border rounded-lg px-3 py-2 hover:border-gray-800 transition" required>
-                    <select v-model="form.category" class="w-full border rounded-lg px-3 py-2 text-black hover:border-gray-800 transition" required>
-                        <option value="" disabled class="text-bold">دسته بندی</option>
-                        <option v-for="cat in categories" :key="cat" :value="cat" class="text-black">{{ cat }}</option>
+                    <input v-model="form.title" type="text" placeholder="نام محصول" class="w-full border border-dash-border rounded-lg px-3 py-2 bg-dash-bg text-dash-text transition" required>
+                    <input v-model="form.price" type="number" placeholder="قیمت" class="w-full border border-dash-border rounded-lg px-3 py-2 bg-dash-bg text-dash-text transition" required>
+                    <select v-model="form.category" class="w-full border border-dash-border rounded-lg px-3 py-2 bg-dash-bg text-dash-text transition" required>
+                        <option value="" disabled>دسته بندی</option>
+                        <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
                     </select>
                      <input
                           type="number"
                           min="0"
-                          class="w-full rounded-lg border px-3 py-2 hover:border-gray-800 transition"
+                          class="w-full rounded-lg border border-dash-border px-3 py-2 bg-dash-bg text-dash-text transition"
                           placeholder="تعداد"
                           v-model.number="form.quantity"
                         />
 
                     <div class="flex justify-end gap-3 pt-4">
-                        <button type="button" class="px-4 py-2 rounded-lg bg-gray-200" @click="closeAddModal">انصراف</button>
-                        <button type="submit" class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700">ذخیره</button>
+                        <button type="button" class="px-4 py-2 rounded-lg bg-dash-border text-dash-text" @click="closeAddModal">انصراف</button>
+                        <button type="submit" class="px-4 py-2 rounded-lg bg-dash-accent text-dash-bg font-bold hover:opacity-90">ذخیره</button>
                     </div>
 
                  </form>
@@ -251,10 +249,10 @@ function submitProduct() {
 
 <style scoped  lang="postcss">
 .badge-tab {
-  @apply px-4 py-2 text-gray-600 bg-gray-100 rounded-lg text-sm hover:bg-gray-200 transition;
+  @apply px-4 py-2 text-dash-muted bg-dash-bg rounded-lg text-sm hover:bg-dash-border/40 transition;
 }
 .badge-tab-active {
-  @apply px-4 py-2 rounded-lg text-sm bg-green-100 text-green-700 font-semibold border border-green-300;
+  @apply px-4 py-2 rounded-lg text-sm bg-dash-accent/15 text-dash-accent font-semibold border border-dash-accent/40;
 }
 table th, table td { padding: 12px; }
 /* ردیف‌ها */
@@ -265,7 +263,7 @@ tbody tr {
 
 tbody tr:hover {
   transform: translateY(-2px) scale(1.01);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.25);
 }
 
 tbody tr::after {
@@ -276,7 +274,7 @@ tbody tr::after {
   width: 0;
   bottom: 0;
   right: 0;
-  background: #4e5dff;
+  background: #DCF763;
   border-radius: 2px;
   transition: width 0.25s ease;
 }
@@ -291,30 +289,27 @@ thead th {
   transition: color 0.25s ease, transform 0.25s ease;
 }
 
-/* خط زیر th به صورت دیفالت (طوسی یا آبی ملایم) */
 thead th::after {
   content: "";
   position: absolute;
   height: 2px;
-  width: 60%;           /* حالت عادی طول خط */
+  width: 60%;
   bottom: 0;
-  left: 20%;            /* وسط کردن خط */
-  background: #cbd5e1;  /* رنگ طوسی ملایم */
+  left: 20%;
+  background: #2A2D36;
   border-radius: 2px;
-  transition: all 0.3s ease; /* انیمیشن روی تغییرات */
+  transition: all 0.3s ease;
 }
 
-/* هاور th */
 thead th:hover {
   transform: translateY(-1px) scale(1.03);
-  color: #4e5dff;
+  color: #DCF763;
 }
 
-/* خط زیر هنگام هاور */
 thead th:hover::after {
   width: 100%;
   left: 0;
-  background: #4e5dff; /* رنگ آبی هنگام هاور */
+  background: #DCF763;
 }
 
 

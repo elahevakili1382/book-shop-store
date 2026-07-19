@@ -62,20 +62,16 @@
           </div>
 
           <!-- زمان ارسال -->
-          <div
-            v-if="shippingMethod === 'courier'"
-            class="rounded-[1.35rem] bg-white border border-slate/8 shadow-card p-5 sm:p-6 space-y-4"
-          >
+          <div v-if="shippingMethod === 'courier'"
+            class="rounded-[1.35rem] bg-white border border-slate/8 shadow-card p-5 sm:p-6 space-y-4">
             <div class="flex items-center justify-between gap-3">
               <h2 class="text-base font-black text-slate">زمان ارسال را انتخاب کنید</h2>
-              <span
-                :class="[
-                  'px-2.5 py-1 rounded-full text-[11px] font-bold shrink-0',
-                  selectedDay && selectedSlot
-                    ? 'bg-lime/40 text-slate'
-                    : 'bg-red-50 text-red-500',
-                ]"
-              >
+              <span :class="[
+                'px-2.5 py-1 rounded-full text-[11px] font-bold shrink-0',
+                selectedDay && selectedSlot
+                  ? 'bg-lime/40 text-slate'
+                  : 'bg-red-50 text-red-500',
+              ]">
                 {{ selectedDay && selectedSlot ? 'تعیین شد' : 'تعیین نشد' }}
               </span>
             </div>
@@ -83,23 +79,14 @@
             <div class="space-y-2">
               <p class="text-xs font-semibold text-slate/45">روز تحویل</p>
               <div class="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
-                <button
-                  v-for="day in shippingDays"
-                  :key="day.key"
-                  type="button"
-                  class="shrink-0 min-w-[92px] px-3 py-3 rounded-2xl border text-center transition-all"
-                  :class="
-                    selectedDay === day.key
-                      ? 'bg-slate text-white border-slate shadow-sm'
-                      : 'bg-cream/60 border-slate/10 text-slate hover:border-slate/20'
-                  "
-                  @click="selectedDay = day.key"
-                >
+                <button v-for="day in shippingDays" :key="day.key" type="button"
+                  class="shrink-0 min-w-[92px] px-3 py-3 rounded-2xl border text-center transition-all" :class="selectedDay === day.key
+                    ? 'bg-slate text-white border-slate shadow-sm'
+                    : 'bg-cream/60 border-slate/10 text-slate hover:border-slate/20'
+                    " @click="selectedDay = day.key">
                   <span class="block text-xs font-bold leading-tight">{{ day.weekday }}</span>
-                  <span
-                    class="block mt-1 text-[11px] leading-tight"
-                    :class="selectedDay === day.key ? 'text-white/70' : 'text-slate/45'"
-                  >
+                  <span class="block mt-1 text-[11px] leading-tight"
+                    :class="selectedDay === day.key ? 'text-white/70' : 'text-slate/45'">
                     {{ day.label }}
                   </span>
                 </button>
@@ -109,18 +96,11 @@
             <div class="space-y-2">
               <p class="text-xs font-semibold text-slate/45">بازه زمانی</p>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <button
-                  v-for="slot in timeSlots"
-                  :key="slot.value"
-                  type="button"
-                  class="w-full px-4 py-3 rounded-2xl border text-sm font-bold text-center transition-all"
-                  :class="
-                    selectedSlot === slot.value
-                      ? 'bg-slate text-white border-slate shadow-sm'
-                      : 'bg-cream/60 border-slate/10 text-slate hover:border-slate/20'
-                  "
-                  @click="selectedSlot = slot.value"
-                >
+                <button v-for="slot in timeSlots" :key="slot.value" type="button"
+                  class="w-full px-4 py-3 rounded-2xl border text-sm font-bold text-center transition-all" :class="selectedSlot === slot.value
+                    ? 'bg-slate text-white border-slate shadow-sm'
+                    : 'bg-cream/60 border-slate/10 text-slate hover:border-slate/20'
+                    " @click="selectedSlot = slot.value">
                   {{ slot.label }}
                 </button>
               </div>
@@ -319,7 +299,13 @@ function submitAddress() {
       selectedDay: selectedDay.value,
       selectedSlot: selectedSlot.value,
       shippingCost: shippingCost.value,
-      amount: payableTotal.value
+      amount: payableTotal.value,
+      items: cart.cartItems.map((item) => ({
+        title: item.name,
+        price: item.price,
+        quantity: item.quantity,
+        bookId: String(item.id)
+      }))
     }),
   )
 

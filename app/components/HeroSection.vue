@@ -7,13 +7,10 @@
 
     <div class="relative z-10 max-w-[1280px] mx-auto px-4 sm:px-8 pt-6 pb-12 lg:pt-8 lg:pb-20">
       <!-- quick nav -->
-      <nav class="flex flex-nowrap sm:flex-wrap items-center justify-center lg:justify-end gap-1 sm:gap-2 mb-6 sm:mb-8 lg:mb-10 overflow-x-auto scrollbar-hide pb-1">
-        <NuxtLink
-          v-for="link in quickLinks"
-          :key="link.to"
-          :to="link.to"
-          class="px-4 py-2 text-xs sm:text-sm font-bold tracking-wide text-slate/55 hover:text-slate transition-colors rounded-full hover:bg-white/60"
-        >
+      <nav
+        class="flex flex-nowrap sm:flex-wrap items-center justify-center lg:justify-end gap-1 sm:gap-2 mb-6 sm:mb-8 lg:mb-10 overflow-x-auto scrollbar-hide pb-1">
+        <NuxtLink v-for="link in quickLinks" :key="link.to" :to="link.to"
+          class="px-4 py-2 text-xs sm:text-sm font-bold tracking-wide text-slate/55 hover:text-slate transition-colors rounded-full hover:bg-white/60">
           {{ link.label }}
         </NuxtLink>
       </nav>
@@ -22,12 +19,9 @@
         <!-- intro — موبایل: اول -->
         <div class="lg:col-span-5 order-1 lg:order-none space-y-4 sm:space-y-5 text-center lg:text-right">
           <ClientOnly>
-            <motion.div
-              :initial="{ opacity: 0, y: 16 }"
-              :animate="{ opacity: 1, y: 0 }"
+            <motion.div :initial="{ opacity: 0, y: 16 }" :animate="{ opacity: 1, y: 0 }"
               :transition="{ duration: 0.45 }"
-              class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur border border-slate/10 text-sm font-medium text-slate"
-            >
+              class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur border border-slate/10 text-sm font-medium text-slate">
               <span class="w-1.5 h-1.5 rounded-full bg-slate/40" />
               {{ bookCount }}+ کتاب منتخب
             </motion.div>
@@ -35,14 +29,9 @@
 
           <h1 class="text-3xl sm:text-[2.75rem] lg:text-[3rem] font-black text-slate leading-[1.1] tracking-tight">
             <ClientOnly>
-              <motion.span
-                v-for="(line, i) in headlineLines"
-                :key="line"
-                :initial="{ opacity: 0, y: 24 }"
-                :animate="{ opacity: 1, y: 0 }"
-                :transition="{ duration: 0.55, delay: 0.08 + i * 0.1 }"
-                :class="['block', i === 1 ? 'text-slate/65' : '']"
-              >
+              <motion.span v-for="(line, i) in headlineLines" :key="line" :initial="{ opacity: 0, y: 24 }"
+                :animate="{ opacity: 1, y: 0 }" :transition="{ duration: 0.55, delay: 0.08 + i * 0.1 }"
+                :class="['block', i === 1 ? 'text-slate/65' : '']">
                 {{ line }}
               </motion.span>
               <template #fallback>
@@ -56,64 +45,39 @@
           </p>
 
           <ClientOnly>
-            <motion.form
-              :initial="{ opacity: 0, y: 12 }"
-              :animate="{ opacity: 1, y: 0 }"
-              :transition="{ duration: 0.45, delay: 0.25 }"
-              class="relative max-w-md mx-auto lg:mx-0"
-              @submit.prevent="onSearch"
-            >
-              <AppIcon
-                icon="mdi:magnify"
-                class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate/40"
-              />
-              <input
-                v-model="searchQuery"
-                type="text"
-                placeholder="نام کتاب را جستجو کن..."
-                class="w-full rounded-2xl py-3.5 pr-12 pl-4 bg-white border border-slate/10 focus:ring-1 focus:ring-slate/20 focus:outline-none text-right font-medium"
-              />
+            <motion.form :initial="{ opacity: 0, y: 12 }" :animate="{ opacity: 1, y: 0 }"
+              :transition="{ duration: 0.45, delay: 0.25 }" class="relative max-w-md mx-auto lg:mx-0"
+              @submit.prevent="onSearch">
+              <AppIcon icon="mdi:magnify" class="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate/40" />
+              <input v-model="searchQuery" type="text" placeholder="نام کتاب را جستجو کن..."
+                class="w-full rounded-2xl py-3.5 pr-12 pl-4 bg-white border border-slate/10 focus:ring-1 focus:ring-slate/20 focus:outline-none text-right font-medium" />
             </motion.form>
           </ClientOnly>
 
           <div class="flex flex-wrap justify-center lg:justify-start gap-3">
-            <button
-              type="button"
+            <button type="button"
               class="px-6 py-3 rounded-2xl bg-slate text-white font-bold text-sm shadow-card hover:opacity-90 transition-opacity flex items-center gap-2"
-              @click="goShop"
-            >
+              @click="goShop">
               <AppIcon icon="mdi:cart-outline" class="w-4 h-4" />
               شروع خرید
             </button>
-            <button
-              type="button"
+            <button type="button"
               class="px-6 py-3 rounded-2xl bg-white border border-slate/15 text-slate font-bold text-sm hover:bg-cream transition-colors"
-              @click="goExplore"
-            >
+              @click="goExplore">
               کاوش دسته‌ها
             </button>
           </div>
 
           <ClientOnly>
-            <motion.div
-              v-if="categories.length"
-              :initial="{ opacity: 0, y: 10 }"
-              :animate="{ opacity: 1, y: 0 }"
+            <motion.div v-if="categories.length" :initial="{ opacity: 0, y: 10 }" :animate="{ opacity: 1, y: 0 }"
               :transition="{ duration: 0.45, delay: 0.35 }"
-              class="flex flex-wrap justify-center lg:justify-start gap-2 pt-1"
-            >
-              <button
-                v-for="cat in categories.slice(0, 6)"
-                :key="cat.slug"
-                type="button"
-                :class="[
-                  'px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-colors',
-                  selectedSlug === cat.slug
-                    ? 'bg-slate text-white border-slate'
-                    : 'bg-white/70 border-slate/10 text-slate/70 hover:border-slate/25 hover:text-slate',
-                ]"
-                @click="goCategory(cat.slug)"
-              >
+              class="flex flex-wrap justify-center lg:justify-start gap-2 pt-1">
+              <button v-for="cat in categories.slice(0, 6)" :key="cat.slug" type="button" :class="[
+                'px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-colors',
+                selectedSlug === cat.slug
+                  ? 'bg-slate text-white border-slate'
+                  : 'bg-white/70 border-slate/10 text-slate/70 hover:border-slate/25 hover:text-slate',
+              ]" @click="goCategory(cat.slug)">
                 {{ cat.name }}
               </button>
             </motion.div>
@@ -125,108 +89,73 @@
           <ClientOnly>
             <div v-if="featuredBooks.length" class="flex flex-col sm:grid sm:grid-cols-12 gap-6 sm:gap-6 items-start">
               <div class="w-full sm:col-span-7">
-                <motion.div
-                  :initial="{ opacity: 0, y: 24 }"
-                  :animate="{ opacity: 1, y: 0 }"
-                  :transition="{ duration: 0.7, delay: 0.2, type: 'spring', stiffness: 80 }"
-                >
+                <motion.div :initial="{ opacity: 0, y: 24 }" :animate="{ opacity: 1, y: 0 }"
+                  :transition="{ duration: 0.7, delay: 0.2, type: 'spring', stiffness: 80 }">
                   <p class="text-xs font-bold tracking-[0.22em] text-slate/40 mb-3 text-center sm:text-right">
                     برای تو
                   </p>
 
                   <div class="flex items-center justify-center gap-1 sm:gap-2 overflow-visible">
-                    <motion.button
-                      type="button"
-                      aria-label="کتاب قبلی"
-                      :while-hover="{ scale: 1.06 }"
+                    <motion.button type="button" aria-label="کتاب قبلی" :while-hover="{ scale: 1.06 }"
                       :while-tap="{ scale: 0.95 }"
                       class="hidden sm:flex shrink-0 w-10 h-10 rounded-full bg-white border border-slate/10 items-center justify-center text-slate hover:bg-cream self-center z-10"
-                      @click="prevSlide"
-                    >
+                      @click="prevSlide">
                       <AppIcon icon="mdi:chevron-right" class="w-5 h-5" />
                     </motion.button>
 
-                    <div class="relative w-full max-w-[260px] sm:max-w-[340px] h-[240px] sm:h-[360px] mx-auto shrink-0 overflow-visible">
-                      <div
-                        v-for="(book, i) in visibleSlides"
-                        :key="book._id || book.id || `${book.title}-${i}`"
+                    <div
+                      class="relative w-full max-w-[260px] sm:max-w-[340px] h-[240px] sm:h-[360px] mx-auto shrink-0 overflow-visible">
+                      <div v-for="(book, i) in visibleSlides" :key="book._id || book.id || `${book.title}-${i}`"
                         class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-                        :style="{ zIndex: getSlideAnim(i).zIndex }"
-                      >
-                        <motion.div
-                          :initial="false"
-                          :animate="{
-                            x: getSlideAnim(i).x,
-                            y: getSlideAnim(i).y,
-                            scale: getSlideAnim(i).scale,
-                            rotate: getSlideAnim(i).rotate,
-                            opacity: getSlideAnim(i).opacity,
-                          }"
-                          :transition="{ type: 'spring', stiffness: 260, damping: 28 }"
+                        :style="{ zIndex: getSlideAnim(i).zIndex }">
+                        <motion.div :initial="false" :animate="{
+                          x: getSlideAnim(i).x,
+                          y: getSlideAnim(i).y,
+                          scale: getSlideAnim(i).scale,
+                          rotate: getSlideAnim(i).rotate,
+                          opacity: getSlideAnim(i).opacity,
+                        }" :transition="{ type: 'spring', stiffness: 260, damping: 28 }"
                           class="cursor-pointer origin-center"
-                          @click="book && (i === 1 ? goProduct(book) : i === 0 ? prevSlide() : nextSlide())"
-                        >
-                          <div
-                            :class="[
-                              'relative rounded-3xl overflow-hidden bg-white border border-white/90',
-                              i === 1
-                                ? 'p-2.5 sm:p-3.5 w-[170px] sm:w-[230px] shadow-card ring-1 ring-slate/8'
-                                : 'p-2 w-[110px] sm:w-[148px] shadow-card',
-                            ]"
-                          >
-                            <button
-                              v-if="i === 1"
-                              type="button"
-                              aria-label="نشان‌گذاری"
+                          @click="book && (i === 1 ? goProduct(book) : i === 0 ? prevSlide() : nextSlide())">
+                          <div :class="[
+                            'relative rounded-3xl overflow-hidden bg-white border border-white/90',
+                            i === 1
+                              ? 'p-2.5 sm:p-3.5 w-[170px] sm:w-[230px] shadow-card ring-1 ring-slate/8'
+                              : 'p-2 w-[110px] sm:w-[148px] shadow-card',
+                          ]">
+                            <button v-if="i === 1" type="button" aria-label="نشان‌گذاری"
                               class="absolute top-3.5 left-3.5 z-10 w-7 h-7 rounded-full bg-white/95 border border-slate/10 flex items-center justify-center text-slate/50 hover:text-slate"
-                              @click.stop
-                            >
+                              @click.stop>
                               <AppIcon icon="mdi:bookmark-outline" class="w-3.5 h-3.5" />
                             </button>
-                            <NuxtImg
-                              :src="book.image"
-                              :alt="book.title"
-                              :width="i === 1 ? 230 : 160"
-                              :height="i === 1 ? 320 : 220"
-                              :class="[
+                            <NuxtImg :src="book.image" :alt="book.title" :width="i === 1 ? 230 : 160"
+                              :height="i === 1 ? 320 : 220" :class="[
                                 'object-cover rounded-2xl w-full',
                                 i === 1 ? 'h-[210px] sm:h-[290px]' : 'h-[150px] sm:h-[195px]',
-                              ]"
-                              format="webp"
-                            />
+                              ]" format="webp" />
                           </div>
                         </motion.div>
                       </div>
                     </div>
 
-                    <motion.button
-                      type="button"
-                      aria-label="کتاب بعدی"
-                      :while-hover="{ scale: 1.06 }"
+                    <motion.button type="button" aria-label="کتاب بعدی" :while-hover="{ scale: 1.06 }"
                       :while-tap="{ scale: 0.95 }"
                       class="hidden sm:flex shrink-0 w-10 h-10 rounded-full bg-white border border-slate/10 items-center justify-center text-slate hover:bg-cream self-center z-10"
-                      @click="nextSlide"
-                    >
+                      @click="nextSlide">
                       <AppIcon icon="mdi:chevron-left" class="w-5 h-5" />
                     </motion.button>
                   </div>
 
                   <!-- موبایل: دکمه prev/next (دسکتاپ: arrow کنار stack) -->
                   <div class="flex sm:hidden items-center justify-center gap-4 mt-2">
-                    <button
-                      type="button"
-                      aria-label="کتاب قبلی"
+                    <button type="button" aria-label="کتاب قبلی"
                       class="w-10 h-10 rounded-full bg-white border border-slate/10 flex items-center justify-center text-slate active:bg-cream"
-                      @click="prevSlide"
-                    >
+                      @click="prevSlide">
                       <AppIcon icon="mdi:chevron-right" class="w-5 h-5" />
                     </button>
-                    <button
-                      type="button"
-                      aria-label="کتاب بعدی"
+                    <button type="button" aria-label="کتاب بعدی"
                       class="w-10 h-10 rounded-full bg-white border border-slate/10 flex items-center justify-center text-slate active:bg-cream"
-                      @click="nextSlide"
-                    >
+                      @click="nextSlide">
                       <AppIcon icon="mdi:chevron-left" class="w-5 h-5" />
                     </button>
                   </div>
@@ -242,7 +171,8 @@
                     <p v-if="currentBook.category" class="mt-1.5 text-sm text-slate/50">
                       {{ currentBook.category }}
                     </p>
-                    <p class="mt-3 inline-block text-sm font-semibold text-slate/75 px-3 py-1 rounded-full bg-white/80 border border-slate/10">
+                    <p
+                      class="mt-3 inline-block text-sm font-semibold text-slate/75 px-3 py-1 rounded-full bg-white/80 border border-slate/10">
                       {{ formatPrice(currentBook.price) }}
                     </p>
                   </div>
@@ -255,54 +185,33 @@
               </div>
 
               <div class="w-full sm:col-span-5">
-                <motion.div
-                  v-if="featuredBooks.length > 1"
-                  :initial="{ opacity: 0, y: 20 }"
-                  :animate="{ opacity: 1, y: 0 }"
-                  :transition="{ duration: 0.55, delay: 0.45 }"
-                  class="overflow-hidden"
-                >
+                <motion.div v-if="featuredBooks.length > 1" :initial="{ opacity: 0, y: 20 }"
+                  :animate="{ opacity: 1, y: 0 }" :transition="{ duration: 0.55, delay: 0.45 }" class="overflow-hidden">
                   <p class="text-xs font-bold tracking-[0.15em] text-slate/45 mb-4 text-center sm:text-right">
-                    ادامه مطالعه
+                    پیشنهاد برای شما
                   </p>
                   <div class="flex flex-col gap-2.5">
-                    <motion.button
-                      v-for="(book, i) in readContinueBooks"
-                      :key="book._id || book.id || book.title"
-                      type="button"
-                      :initial="{ opacity: 0, x: 12 }"
-                      :animate="{ opacity: 1, x: 0 }"
-                      :transition="{ duration: 0.35, delay: 0.5 + i * 0.05 }"
-                      :class="[
+                    <motion.button v-for="(book, i) in suggestedBooks" :key="book._id || book.id || book.title"
+                      type="button" :initial="{ opacity: 0, x: 12 }" :animate="{ opacity: 1, x: 0 }"
+                      :transition="{ duration: 0.35, delay: 0.5 + i * 0.05 }" :class="[
                         'w-full flex items-center gap-3 rounded-2xl px-3 py-2.5 border transition-all text-right',
                         isCurrentBook(book)
                           ? 'bg-white border-slate/15 shadow-card'
                           : 'bg-white/60 border-slate/8 hover:border-slate/15',
-                      ]"
-                      @click="activeIndex = featuredBooks.indexOf(book)"
-                    >
-                      <NuxtImg
-                        :src="book.image"
-                        :alt="book.title"
-                        width="40"
-                        height="56"
-                        class="rounded-lg object-cover h-14 w-10 shrink-0"
-                        format="webp"
-                      />
-                      
+                      ]" @click="goProduct(book)">
+
+
+                      <NuxtImg :src="book.image" :alt="book.title" width="40" height="56"
+                        class="rounded-lg object-cover h-14 w-10 shrink-0" format="webp" />
+
                       <div class="flex-1 min-w-0">
                         <p class="text-xs font-bold text-slate truncate">{{ book.title }}</p>
-                        <div class="mt-2 h-0.5 rounded-full bg-slate/10 overflow-hidden">
-                          <div
-                            class="h-full rounded-full bg-slate/30 transition-all duration-500"
-                            :style="{ width: `${readProgress[i]}%` }"
-                          />
-                        </div>
+                        <p v-if="book.category" class="mt-1 text-[11px] text-slate/45 truncate">
+                          {{ book.category }}
+                        </p>
                       </div>
 
-                      <span class="text-[10px] font-semibold text-slate/45 shrink-0">
-                        {{ readProgress[i] }}%
-                      </span>
+                      <AppIcon icon="mdi:chevron-left" class="w-4 h-4 text-slate/40 shrink-0" />
                     </motion.button>
                   </div>
                 </motion.div>
@@ -311,11 +220,7 @@
 
             <template #fallback>
               <div class="flex justify-center py-16">
-                <NuxtImg
-                  src="/images/books/atomic-habits.jpg"
-                  width="180"
-                  class="rounded-2xl shadow-card"
-                />
+                <NuxtImg src="/images/books/atomic-habits.jpg" width="180" class="rounded-2xl shadow-card" />
               </div>
             </template>
           </ClientOnly>
@@ -329,10 +234,12 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { motion } from 'motion-v'
 import { useCategoryStore } from '../stores/categories'
+import { productPath } from '../utils/slugify'
 
 type HeroBook = {
   _id?: string
   id?: string
+  slug?: string
   title: string
   image: string
   price: number
@@ -346,7 +253,6 @@ const selectedSlug = ref('')
 const categoryStore = useCategoryStore()
 const featuredBooks = ref<HeroBook[]>([])
 const headlineLines = ['کتاب بعدی‌ات', 'یک کلیک فاصله دارد']
-const readProgress = [25, 50, 75, 40]
 
 const quickLinks = [
   { label: 'کتاب‌های من', to: '/new' },
@@ -358,14 +264,28 @@ const quickLinks = [
 const categories = computed(() => categoryStore.categories)
 const bookCount = computed(() => featuredBooks.value.length || 20)
 const currentBook = computed(() => featuredBooks.value[activeIndex.value])
-const readContinueBooks = computed(() => featuredBooks.value.slice(0, 4))
+const suggestedBooks = computed(() => {
+  const current = currentBook.value
+  if (!current) return []
+
+  const others = featuredBooks.value.filter((b) => b !== current)
+
+  const sameCategory = others.filter(
+    (b) => current.category && b.category === current.category
+  )
+
+  if (sameCategory.length >= 4) return sameCategory.slice(0, 4)
+
+  const rest = others.filter((b) => !sameCategory.includes(b))
+  return [...sameCategory, ...rest].slice(0, 4)
+})
 
 const slidePositionLabel = computed(
   () => `${activeIndex.value + 1} / ${featuredBooks.value.length}`
 )
 
 
-function isCurrentBook(book:HeroBook){
+function isCurrentBook(book: HeroBook) {
   return book === currentBook.value
 }
 
@@ -457,8 +377,8 @@ function goCategory(slug: string) {
   router.push(`/category/${slug}`)
 }
 
-function goProduct(book: { title: string }) {
-  router.push(`/product/${slugify(book.title)}`)
+function goProduct(book: HeroBook) {
+  router.push(productPath(book))
 }
 
 function onSearch() {
@@ -474,7 +394,15 @@ onMounted(async () => {
 
   try {
     const data = await $fetch<
-      Array<{ _id: string; id: string; title: string; image: string; price: number; category?: string }>
+      Array<{
+        _id: string
+        id: string
+        slug?: string
+        title: string
+        image: string
+        price: number
+        category?: string
+      }>
     >('/api/books')
     if (Array.isArray(data) && data.length) {
       featuredBooks.value = data.slice(0, 8)
@@ -509,6 +437,7 @@ onUnmounted(() => {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }

@@ -17,11 +17,11 @@ definePageMeta({
 <template>
   <div>
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-xl font-bold">مدیریت ادمین‌ها</h1>
+      <h1 class="text-xl font-bold text-dash-text">مدیریت ادمین‌ها</h1>
 
       <NuxtLink
         to="/dashboard/admins/create"
-        class="px-4 py-2 bg-black text-white rounded"
+        class="px-4 py-2 bg-dash-accent text-dash-bg font-bold rounded-xl hover:opacity-90"
       >
         افزودن ادمین
       </NuxtLink>

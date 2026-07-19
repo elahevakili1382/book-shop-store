@@ -37,6 +37,7 @@ export const useDashboardStore = defineStore('dashboard', {
   getters: {
     totalBooks: (state) => state.products.length,
     totalUsers: (state) => state.users.length,
+    lowStockBooks:(state) => state.products.filter((p) =>(p.stock ?? 0) <5).slice(0,5),
     totalStock: (state) =>
       state.products.reduce((sum, p) => sum + (p.stock || 0), 0),
     latestOrders: (state) => state.orders.slice(0, 5),

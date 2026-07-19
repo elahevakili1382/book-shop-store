@@ -10,25 +10,15 @@
       </p>
 
       <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-        <NuxtLink
-          v-if="isSuccess"
-          to="/"
-          class="px-6 py-3 rounded-2xl bg-slate text-white font-bold text-sm"
-        >
+        <NuxtLink v-if="isSuccess" to="/" class="px-6 py-3 rounded-2xl bg-slate text-white font-bold text-sm">
           بازگشت به فروشگاه
         </NuxtLink>
 
         <template v-else>
-          <NuxtLink
-            to="/cart"
-            class="px-6 py-3 rounded-2xl bg-slate text-white font-bold text-sm"
-          >
+          <NuxtLink to="/cart" class="px-6 py-3 rounded-2xl bg-slate text-white font-bold text-sm">
             بازگشت به سبد خرید
           </NuxtLink>
-          <NuxtLink
-            to="/"
-            class="px-6 py-3 rounded-2xl bg-white border border-slate/15 text-slate font-bold text-sm"
-          >
+          <NuxtLink to="/" class="px-6 py-3 rounded-2xl bg-white border border-slate/15 text-slate font-bold text-sm">
             صفحه اصلی
           </NuxtLink>
         </template>
@@ -47,23 +37,38 @@ const cart = useCartStore()
 const message = ref('')
 const isSuccess = ref(false)
 
-onMounted(() => {
+
+
+onMounted(async () => {
   if (!import.meta.client) return
 
   const status = route.query.Status
-  const authority = route.query.Authority
-
-  if (status === 'OK') {
-    isSuccess.value = true
-    message.value = 'سفارش شما ثبت شد. به‌زودی جزئیات را برایتان ارسال می‌کنیم.'
-    cart.clearCart()
-    sessionStorage.removeItem('checkout')
-  } else {
+  if (status !== 'OK') {
     isSuccess.value = false
-    message.value = 'تراکنش تکمیل نشد. می‌توانید دوباره از سبد خرید اقدام کنید.'
+    message.value = 'تراکنش تکمیل نشد...'
+    return
   }
 
-  // فعلاً authority فقط برای مرحله بعدی (verify) نگه داشته می‌شود
-  console.log('authority:', authority)
+  const raw = sessionStorage.getItem('checkout')
+  const data = JSON.parse(raw)
+
+  await $fetch('/api/orders', {
+    method: 'POST', body: {
+      customerName: data.fullName,
+      phone: data.phone,
+      address: data.address,
+      city: data.city,
+      postalCode: data.postalCode,
+      amount: data.amount,
+      paymentMethod: 'online',
+      status: 'paid',
+      items: data.items,
+    }
+  })
+
+  cart.clearCart()
+  sessionStorage.removeItem('checkout')
+  isSuccess.value = true
+  message.value = 'سفارش شما ثبت شد...'
 })
 </script>

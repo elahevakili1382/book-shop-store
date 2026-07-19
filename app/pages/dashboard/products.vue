@@ -1,7 +1,7 @@
 <template>
         <DashboardBreadcrumb :items="['داشبورد', 'محصولات']"/>
 
-                <h1 class="m-5 font-semibold text-black text-2xl">مدیریت محصولات </h1>
+                <h1 class="m-5 font-semibold text-dash-text text-2xl">مدیریت محصولات </h1>
 
 
     <productsTable :products="products" :loading="isLoading" @add="onAddProduct" @delete="onDeleteProduct"/>

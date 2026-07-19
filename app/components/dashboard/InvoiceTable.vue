@@ -8,10 +8,10 @@
         @click="activeTab = tab.status"
   :class="[
     'flex justify-center items-center px-5 py-2 gap-1 rounded-2xl text-sm font-semibold border transition',
-    activeTab === tab.status ? tabColor(tab.status) : 'text-gray-600 bg-gray-100 hover:bg-gray-200'
+    activeTab === tab.status ? tabColor(tab.status) : 'text-dash-muted bg-dash-card border-dash-border hover:bg-dash-border/40'
   ]"      >
         {{ tab.label }}
-         <span  class="w-6 h-6 flex items-center justify-center text-xs font-bold rounded-full text-white" 
+         <span  class="w-6 h-6 flex items-center justify-center text-xs font-bold rounded-full text-dash-bg" 
         :class="countColor(tab.status, activeTab === tab.status)">{{ tab.amount }}
       </span> 
        </button>
@@ -19,23 +19,21 @@
 
 
 <!-- Invoice Table -->
-<div class="bg-white p-6 rounded-2xl shadow-lg">
-  <h2 class="text-2xl font-bold text-gray-700 mb-5">لیست فاکتورها</h2>
+<div class="bg-dash-card border border-dash-border p-6 rounded-2xl">
+  <h2 class="text-2xl font-bold text-dash-text mb-5">لیست فاکتورها</h2>
 
   <div v-if="invoiceStore.loading" class="flex justify-center py-10">
-    <span class="animate-spin w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full"></span>
+    <span class="animate-spin w-8 h-8 border-4 border-dash-accent border-t-transparent rounded-full"></span>
   </div>
 
-  <div v-else-if="filteredInvoices.length === 0" class="text-center py-10 text-gray-500">
+  <div v-else-if="filteredInvoices.length === 0" class="text-center py-10 text-dash-muted">
     هیچ فاکتوری یافت نشد.
   </div>
 
   <div v-else>
-    <pre>{{ invoiceStore.invoices }}</pre>
-
-    <table class="w-full text-right border-separate border-spacing-y-3">
+    <table class="w-full text-right border-separate border-spacing-y-3 text-dash-text">
       <thead>
-        <tr class="text-gray-600 text-lg">
+        <tr class="text-dash-muted text-base">
           <th>شماره</th>
           <th>مشتری</th>
           <th>تاریخ</th>
@@ -49,12 +47,12 @@
         <tr
           v-for="invoice in filteredInvoices"
           :key="invoice.id"
-          class="bg-gray-50 hover:bg-gray-100 transition rounded-xl"
+          class="bg-dash-bg hover:bg-dash-border/40 transition rounded-xl"
         >
           <td class="p-3 font-semibold">{{ invoice.number }}</td>
           <td class="p-3 font-sans">{{ invoice.client }}</td>
-          <td class="p-3">{{ formatDate(invoice.date) }}</td>
-          <td class="p-3 font-bold text-blue-700">{{ invoice.total.toLocaleString() }} تومان</td>
+          <td class="p-3 text-dash-muted">{{ formatDate(invoice.date) }}</td>
+          <td class="p-3 font-bold text-dash-accent">{{ invoice.total.toLocaleString() }} تومان</td>
           <td class="p-3">
             <span :class="statusClass(invoice.status)" class="px-3 py-1 text-sm rounded-full">
               {{ invoice.status }}
@@ -62,33 +60,33 @@
           </td>
 
           <td class="p-3 flex items-center gap-3">
-            <button @click="openEditModal(invoice)" class="text-blue-600 hover:text-blue-900">✏️</button>
+            <button @click="openEditModal(invoice)" class="text-dash-accent hover:opacity-80">✏️</button>
             <EditInvoiceModal v-model="editing" :invoice="selected" @saved="onSaved" @error="onError" />
             <ToastContainer/>
-            <button class="text-red-500 hover:text-red-700" @click="remove(invoice.id)">🗑️</button>
+            <button class="text-rose-300 hover:text-rose-200" @click="remove(invoice.id)">🗑️</button>
           </td>
 
-          <td class="p-3">{{ formatDate(invoice.due) }}</td>
+          <td class="p-3 text-dash-muted">{{ formatDate(invoice.due) }}</td>
         </tr>
       </tbody>
     </table>
 
-    <div v-if="showEditModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-  <div class="bg-white rounded-2xl p-6 w-full max-w-md">
+    <div v-if="showEditModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+  <div class="bg-dash-card border border-dash-border rounded-2xl p-6 w-full max-w-md text-dash-text">
     <h3 class="text-lg font-semibold mb-4">ویرایش فاکتور</h3>
 
     <form @submit.prevent="submitEditInvoice" class="space-y-4">
-      <input v-model="selectedInvoice.client" type="text" placeholder="مشتری" class="w-full border rounded px-3 py-2" required />
-      <input v-model="selectedInvoice.total" type="number" placeholder="مبلغ" class="w-full border rounded px-3 py-2" required />
-      <select v-model="selectedInvoice.status" class="w-full border rounded px-3 py-2">
+      <input v-model="selectedInvoice.client" type="text" placeholder="مشتری" class="w-full border border-dash-border rounded-lg px-3 py-2 bg-dash-bg text-dash-text" required />
+      <input v-model="selectedInvoice.total" type="number" placeholder="مبلغ" class="w-full border border-dash-border rounded-lg px-3 py-2 bg-dash-bg text-dash-text" required />
+      <select v-model="selectedInvoice.status" class="w-full border border-dash-border rounded-lg px-3 py-2 bg-dash-bg text-dash-text">
         <option value="Paid">پرداخت شده</option>
         <option value="Pending">در انتظار پرداخت </option>
         <option value="Unpaid">پرداخت نشده</option>
       </select>
 
       <div class="flex justify-end gap-3 mt-4">
-        <button type="button" class="px-4 py-2 bg-gray-200 rounded" @click="closeEditModal">انصراف</button>
-        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">ذخیره</button>
+        <button type="button" class="px-4 py-2 bg-dash-border rounded-lg text-dash-text" @click="closeEditModal">انصراف</button>
+        <button type="submit" class="px-4 py-2 bg-dash-accent text-dash-bg font-bold rounded-lg hover:opacity-90">ذخیره</button>
       </div>
     </form>
   </div>
@@ -181,29 +179,28 @@ const filteredInvoices = computed(() => {
 // Helpers
 const statusClass = (status: string) => {
   switch (status) {
-    case 'Paid': return 'bg-green-100 text-green-700'
-    case 'Pending': return 'bg-yellow-100 text-yellow-600'
-    case 'Unpaid': return 'bg-red-100 text-red-600'
-    default: return 'bg-gray-200 text-gray-700'
+    case 'Paid': return 'bg-dash-accent2/15 text-dash-accent2'
+    case 'Pending': return 'bg-amber-400/15 text-amber-300'
+    case 'Unpaid': return 'bg-rose-400/15 text-rose-300'
+    default: return 'bg-dash-border text-dash-muted'
   }
 }
 const tabColor = (status: string) => {
   switch(status) {
-        case 'All Invoice': return 'bg-white text-green-700 border-green-300'
-
-    case 'Paid': return 'bg-green-100 text-green-700 border-green-300'
-    case 'Pending': return 'bg-yellow-100 text-yellow-600 border-yellow-300'
-    case 'Unpaid': return 'bg-red-100 text-red-600 border-red-300'
-    default: return 'bg-gray-100 text-gray-700 border-gray-300'
+    case 'All Invoice': return 'bg-dash-accent/15 text-dash-accent border-dash-accent/40'
+    case 'Paid': return 'bg-dash-accent2/15 text-dash-accent2 border-dash-accent2/40'
+    case 'Pending': return 'bg-amber-400/15 text-amber-300 border-amber-400/40'
+    case 'Unpaid': return 'bg-rose-400/15 text-rose-300 border-rose-400/40'
+    default: return 'bg-dash-card text-dash-muted border-dash-border'
   }
 }
 
 const countColor = (status: string, isActive: boolean) => {
   switch(status) {
-    case 'Paid': return isActive ? 'bg-green-700' : 'bg-green-300'
-    case 'Pending': return isActive ? 'bg-yellow-600' : 'bg-yellow-200'
-    case 'Unpaid': return isActive ? 'bg-red-600' : 'bg-red-300'
-    default: return isActive ? 'bg-gray-700' : 'bg-gray-300'
+    case 'Paid': return isActive ? 'bg-dash-accent2' : 'bg-dash-accent2/50'
+    case 'Pending': return isActive ? 'bg-amber-400' : 'bg-amber-400/50'
+    case 'Unpaid': return isActive ? 'bg-rose-400' : 'bg-rose-400/50'
+    default: return isActive ? 'bg-dash-accent' : 'bg-dash-muted'
   }
 }
 
@@ -246,7 +243,7 @@ tbody tr::after {
   width: 0;
   bottom: 0;
   right: 0;
-  background: #4e5dff;
+  background: #DCF763;
   border-radius: 2px;
   transition: width 0.25s ease;
 }
@@ -269,7 +266,7 @@ thead th::after {
   width: 60%;           /* حالت عادی طول خط */
   bottom: 0;
   left: 20%;            /* وسط کردن خط */
-  background: #cbd5e1;  /* رنگ طوسی ملایم */
+  background: #2A2D36;
   border-radius: 2px;
   transition: all 0.3s ease; /* انیمیشن روی تغییرات */
 }
@@ -277,14 +274,14 @@ thead th::after {
 /* هاور th */
 thead th:hover {
   transform: translateY(-1px) scale(1.03);
-  color: #4e5dff;
+  color: #DCF763;
 }
 
 /* خط زیر هنگام هاور */
 thead th:hover::after {
   width: 100%;
   left: 0;
-  background: #4e5dff; /* رنگ آبی هنگام هاور */
+  background: #DCF763;
 }
 
 

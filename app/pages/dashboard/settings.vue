@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-6">
-    <h1 class="text-2xl font-semibold">تنظیمات</h1>
+    <h1 class="text-2xl font-semibold text-dash-text">تنظیمات</h1>
 <AdminProfile
     @update="onUpdateProfile"
     @delete="onDeleteProfile"

@@ -69,7 +69,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useCartStore } from '../stores/cart'
+import { useCartStore } from '../../stores/cart'
 import { motion } from 'motion-v'
 
 const fullName = ref('')
