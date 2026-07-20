@@ -20,7 +20,7 @@ export const useDashboardStore = defineStore('dashboard', {
         const [products, users, orders] = await Promise.all([
           $fetch<Product[]>('/api/books'),
           $fetch<User[]>('/api/users'),
-          $fetch<Order[]>('/api/orders', { query: { limit: 10 } }),
+          $fetch<Order[]>('/api/orders', { query: { limit: 200 } }),
         ])
 
         this.products = products
