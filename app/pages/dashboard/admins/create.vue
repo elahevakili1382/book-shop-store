@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useAdminStore } from '@/stores/adminStore'
 
 const router = useRouter()
 const adminStore = useAdminStore()
@@ -23,9 +22,7 @@ const handleSubmit = () => {
   router.push('/dashboard/admins')
 }
 
-definePageMeta({
-  middleware: 'auth',
-})
+
 </script>
 
 <template>
@@ -35,22 +32,12 @@ definePageMeta({
     <form class="space-y-4" @submit.prevent="handleSubmit">
       <div>
         <label class="block text-sm font-medium mb-1">نام</label>
-        <input
-          v-model="name"
-          type="text"
-          required
-          class="w-full px-3 py-2 border rounded-lg"
-        />
+        <input v-model="name" type="text" required class="w-full px-3 py-2 border rounded-lg" />
       </div>
 
       <div>
         <label class="block text-sm font-medium mb-1">ایمیل</label>
-        <input
-          v-model="email"
-          type="email"
-          required
-          class="w-full px-3 py-2 border rounded-lg"
-        />
+        <input v-model="email" type="email" required class="w-full px-3 py-2 border rounded-lg" />
       </div>
 
       <div>
@@ -61,10 +48,7 @@ definePageMeta({
         </select>
       </div>
 
-      <button
-        type="submit"
-        class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition"
-      >
+      <button type="submit" class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition">
         ذخیره
       </button>
     </form>

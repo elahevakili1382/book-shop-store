@@ -1,6 +1,7 @@
 import { defineEventHandler, createError, getQuery } from 'h3'
 import { connectDB } from '../../utils/mongodb'
 import { Order } from '../../models/Order'
+import { format } from 'node:path'
 
 type Range = 'week' | 'month' | 'year'
 const PAID_STATUSES = ['paid', 'shipped'] as const
@@ -39,17 +40,25 @@ function yearKey(d: Date) {
   return String(d.getFullYear())
 }
 
+//جمه مبلغ سفارش های پرداخت شده بین دو تا تاریخ 
 async function sumInRange(from: Date, to: Date) {
-  const [row] = await Order.aggregate<{ total: number }>([
-    {
-      $match: {
-        createdAt: { $gte: from, $lt: to },
-        status: { $in: [...PAID_STATUSES] },
-      },
-    },
-    { $group: { _id: null, total: { $sum: '$amount' } } },
-  ])
-  return row?.total ?? 0
+    const rows = await Order.aggregate<{_id:null; total:number}>([
+
+      {
+  $match:{
+    createdAt:{$gte: from, $lt: to},
+    status:{$in:[...PAID_STATUSES]}
+  },
+},
+
+{
+  $group:{
+    _id:null, //جمع کل
+    total:{ $sum: '$amount'},// نتیجه را برای  هر سند جمع می زند 
+  },
+},
+])
+return rows[0]?.total ?? 0
 }
 
 function growthRate(current: number, previous: number) {
@@ -74,20 +83,23 @@ export default defineEventHandler(async (event) => {
     let buckets: { key: string; label: string }[] = []
     let groupFormat: string
 
-    if (range === 'week') {
-      startCurrent = startOfDay(addDays(now, -6))
+    if(range === 'week'){
+        startCurrent = startOfDay(addDays(now, -6))
       startPrevious = addDays(startCurrent, -7)
       endPrevious = startCurrent
       groupFormat = '%Y-%m-%d'
 
-      for (let i = 0; i < 7; i++) {
-        const day = addDays(startCurrent, i)
+      for(let i =0; i<7; i++){
+        const day = addDays(startCurrent,i)
         buckets.push({
           key: daykey(day),
-          label: day.toLocaleDateString('fa-IR', { weekday: 'short' }),
+          label:day.toLocaleDateString('fa-IR', {weekday:'short'})
+
         })
       }
-    } else if (range === 'month') {
+    }
+
+  else if (range === 'month') {
       startCurrent = startOfMonth(addMonths(now, -11))
       startPrevious = startOfMonth(addMonths(startCurrent, -12))
       endPrevious = startCurrent
@@ -116,30 +128,41 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-    const rows = await Order.aggregate<{ _id: string; total: number }>([
-      {
-        $match: {
-          createdAt: { $gte: startCurrent, $lt: tomorrow },
-          status: { $in: [...PAID_STATUSES] },
-        },
+  const rows = await Order.aggregate<{_id:string; total:number}>([
+    {
+      $match:{
+        createdAt:{$gte: startCurrent, $lt: tomorrow},
+        status:{$in:[...PAID_STATUSES]},
       },
-      {
-        $group: {
-          _id: {
-            $dateToString: { format: groupFormat, date: '$createdAt' },
-          },
-          total: { $sum: '$amount' },
-        },
+    },
+
+   {
+    $group:{
+      _id:{
+     $dateToString:{
+      format:groupFormat,
+      date:'$createdAt',
+     },
       },
-      { $sort: { _id: 1 } },
-    ])
+      total:
+       {$sum: '$amount'},
+      
+    },
+   },
+    {$sort:{_id:1}}
+  ])
+//فقط روز ها و ماه هایی که سفارش داشتند رو بر میگردونه 
+  const byKey = new Map(
+    rows.map((r) => [r._id, r.total])
+  )
 
-    const byKey = new Map(rows.map((r) => [r._id, r.total]))
-    const categories = buckets.map((b) => b.label)
-    const series = buckets.map((b) => byKey.get(b.key) ?? 0)
+   const categories = buckets.map((b) => b.label)
+   const series = buckets.map((b) =>byKey.get(b.key) ?? 0)
 
-    const currentTotal = series.reduce((s, n) => s + n, 0)
-    const previousTotal = await sumInRange(startPrevious, endPrevious)
+   const currentTotal = series.reduce((sum,n) => sum + n, 0)
+   const previousTotal = await sumInRange(startPrevious, endPrevious)
+
+
 
     return {
       categories,

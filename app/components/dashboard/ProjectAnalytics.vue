@@ -13,6 +13,8 @@
           {{ range }}
         </button>
       </div>
+
+
     </div>
 
     <p v-if="chartError" class="text-sm text-rose-300">
@@ -31,14 +33,8 @@
     <p v-if="chartLoading && !chartError" class="text-sm text-[#A8A29E]">در حال بارگذاری چارت...</p>
 
     <client-only>
-      <ApexChart
-        v-if="!chartLoading && !chartError"
-        type="bar"
-        class="w-full"
-        height="300"
-        :options="chartOptions"
-        :series="series"
-      />
+      <ApexChart v-if="!chartLoading && !chartError" type="bar" class="w-full" height="300" :options="chartOptions"
+        :series="series" />
     </client-only>
   </div>
 </template>
@@ -94,10 +90,12 @@ async function fetchSalesChart() {
       statusMessage?: string
       data?: { statusMessage?: string; message?: string }
     }
+
     const detail =
       fetchErr.data?.statusMessage ??
       fetchErr.data?.message ??
       fetchErr.statusMessage
+
     const code = fetchErr.statusCode ? ` (${fetchErr.statusCode})` : ''
     chartError.value =
       detail?.trim()

@@ -1,59 +1,58 @@
 <template>
-  <header
-    class="flex items-center gap-4 px-4 sm:px-6 py-3.5
-           sticky top-0 z-10 border border-[#2A2D36]
-           rounded-2xl m-3 sm:m-4 shadow-lg shadow-black/20"
-    style="background:#1C1E24"
-  >
-    <button
-      type="button"
-      class="lg:hidden text-xl shrink-0 text-[#F5F2EB]"
-      aria-label="باز کردن منو"
-      @click="$emit('toggle-sidebar')"
-    >
+  <header class="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sticky top-0 z-10
+           border border-dash-border rounded-2xl m-3 sm:m-4
+           bg-dash-card shadow-lg shadow-black/20">
+    <button type="button" class="lg:hidden text-xl shrink-0 text-dash-text" aria-label="باز کردن منو"
+      @click="$emit('toggle-sidebar')">
       ☰
     </button>
 
-    <div class="flex-1 relative">
-      <input
-        type="text"
-        placeholder="جستجو..."
-        class="w-full pr-10 pl-4 py-2.5 rounded-2xl border border-[#2A2D36]
-               text-[#F5F2EB] placeholder:text-[#A8A29E] outline-none
-               focus:ring-1 focus:ring-[#DCF763]/40 focus:border-[#DCF763]/40"
-        style="background:#14151A"
-      />
-      <svg
-        class="w-5 h-5 absolute right-3 top-1/2 -translate-y-1/2 text-[#A8A29E]"
-        xmlns="http://www.w3.org/2000/svg"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M21 21l-4.35-4.35M5 11a6 6 0 1112 0z"
-        />
-      </svg>
-    </div>
+    <!-- سرچ فشرده، روشن — مثل نمونه Dribbble -->
+    <form class="relative w-44 sm:w-52 md:w-60 shrink-0" @submit.prevent="onSubmit">
+      <AppIcon icon="mdi:magnify"
+        class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+      <input v-model="query" type="search" name="dashboard-search" autocomplete="off" placeholder="جستجو محصول" class="w-full h-9 pr-9 pl-8 rounded-lg border-0
+               bg-[#8888887b] text-gray-900 text-md
+               placeholder:text-gray-500 outline-none transition
+               focus:ring-2 focus:ring-dash-accent/50" />
+      <button v-if="query.length" type="button" class="absolute left-2 top-1/2 -translate-y-1/2 p-0.5 rounded
+               text-gray-500 hover:text-gray-800 transition" aria-label="پاک کردن جستجو" @click="clearSearch">
+        <AppIcon icon="mdi:close" class="w-3.5 h-3.5" />
+      </button>
+    </form>
 
-    <div
-      class="relative w-10 h-10 flex items-center justify-center
-             border border-[#2A2D36] rounded-full
-             hover:border-[#DCF763]/40 shrink-0 transition-colors"
-      style="background:#14151A"
-    >
-      <AppIcon icon="mdi:email" class="text-[#DCF763] w-5 h-5" />
-      <span
-        class="absolute top-1 right-1 w-2.5 h-2.5 bg-rose-400
-               rounded-full border-2 border-[#1C1E24]"
-      />
+    <div class="flex-1 min-w-0" />
+
+    <div class="relative w-9 h-9 flex items-center justify-center shrink-0
+             border border-dash-border rounded-full bg-dash-bg
+             hover:border-dash-accent/40 transition-colors">
+      <AppIcon icon="mdi:email-outline" class="text-dash-accent w-4 h-4" />
+      <span class="absolute top-0.5 right-0.5 w-2 h-2 bg-rose-400
+               rounded-full border-2 border-dash-card" />
     </div>
   </header>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import { useDashboardSearch } from '../../composables/useDashboardSearch'
+
 defineEmits(['toggle-sidebar'])
+
+const route = useRoute()
+const { query } = useDashboardSearch()
+
+function onSubmit() {
+  const q = query.value.trim()
+  if (!q) return
+  if (route.path !== '/dashboard/products') {
+    return navigateTo({ path: '/dashboard/products', query: { q } })
+  }
+}
+
+function clearSearch() {
+  query.value = ''
+  if (route.path === '/dashboard/products') {
+    navigateTo({ path: '/dashboard/products', query: {} })
+  }
+}
 </script>

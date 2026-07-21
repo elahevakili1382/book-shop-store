@@ -12,7 +12,15 @@ export default defineEventHandler(async (event) => {
   try {
     const decoded = jwt.verify(token, SECRET) as any
     // decoded شامل id,name,email
-    return { ok: true, user: { id: decoded.id, name: decoded.name, email: decoded.email } }
+    return {
+      ok: true,
+      user: {
+        id: decoded.id,
+        name: decoded.name,
+        email: decoded.email,
+        role: decoded.role as string | undefined,
+      },
+    }
   } catch (err) {
     return { ok: false, user: null }
   }

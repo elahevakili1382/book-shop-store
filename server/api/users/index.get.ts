@@ -1,10 +1,12 @@
 import { defineEventHandler, createError } from 'h3'
 import { connectDB } from '../../utils/mongodb'
 import { User } from '../../models/User'
+import {requireAuth} from '../../utils/requireAuth'
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event) => {
   try {
     await connectDB()
+    requireAuth(event)
 
     const users = await User.find()
       .select('-password')
