@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
         const query = getQuery(event)
         const limitRaw = query.limit
         const limit = typeof limitRaw === 'string' && /^\d+$/.test(limitRaw) ? Math.min(parseInt(limitRaw,10),200): 10
-  const orders = await Order.find().sort({createdAt:-1}).limit(limit).lean()
+        const orders = await Order.find().sort({createdAt:-1}).limit(limit).lean()
   return orders.map((order) =>({
     ...order,
     _id:order._id.toString(),

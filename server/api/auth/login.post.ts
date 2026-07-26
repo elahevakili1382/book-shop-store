@@ -37,13 +37,13 @@ export default defineEventHandler(async (event) => {
     const token = jwt.sign(
       { id, email: user.email, name: user.name, role: user.role },
       SECRET,
-      { expiresIn: '1h' }
+      { expiresIn: '7d' }
     )
 
     setCookie(event, 'auth_token', token, {
       httpOnly: true,
       sameSite: 'lax',
-      maxAge: 60 * 60,
+      maxAge: 60 * 60 *24 *7,
     })
 
     return {

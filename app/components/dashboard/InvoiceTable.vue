@@ -61,8 +61,6 @@
 
           <td class="p-3 flex items-center gap-3">
             <button @click="openEditModal(invoice)" class="text-dash-accent hover:opacity-80">✏️</button>
-            <EditInvoiceModal v-model="editing" :invoice="selected" @saved="onSaved" @error="onError" />
-            <ToastContainer/>
             <button class="text-rose-300 hover:text-rose-200" @click="remove(invoice.id)">🗑️</button>
           </td>
 
@@ -79,9 +77,9 @@
       <input v-model="selectedInvoice.client" type="text" placeholder="مشتری" class="w-full border border-dash-border rounded-lg px-3 py-2 bg-dash-bg text-dash-text" required />
       <input v-model="selectedInvoice.total" type="number" placeholder="مبلغ" class="w-full border border-dash-border rounded-lg px-3 py-2 bg-dash-bg text-dash-text" required />
       <select v-model="selectedInvoice.status" class="w-full border border-dash-border rounded-lg px-3 py-2 bg-dash-bg text-dash-text">
-        <option value="Paid">پرداخت شده</option>
-        <option value="Pending">در انتظار پرداخت </option>
-        <option value="Unpaid">پرداخت نشده</option>
+        <option value="paid">پرداخت شده</option>
+        <option value="pending">در انتظار پرداخت </option>
+        <option value="unpaid">پرداخت نشده</option>
       </select>
 
       <div class="flex justify-end gap-3 mt-4">
@@ -101,38 +99,22 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useInvoiceStore } from '../../stores/useInvoiceStore'
-import ToastContainer from '../../components/ToastContainer.vue'
-import { useMyToast } from '../../composables/usemyToast'
+import { useInvoiceStore, type Invoice } from '../../stores/useInvoiceStore'
 import { formatDate } from '../../utils/formatDate'
-import type { Invoice } from '../../stores/useInvoiceStore'
 
 
 const invoiceStore = useInvoiceStore()
-const toast = useMyToast()
 
-const fetchInvoices = async() =>{
-  invoiceStore.loading = true
-  try{
-    const data = await $fetch<Invoice[]>("/api/invoices")
-    console.log('Fetched:',data);
-    invoiceStore.invoices = data
-  }catch(err){
-    console.error('Error fetching invoices:', err)
-  }finally{
-    invoiceStore.loading = false
-  }
-}
 onMounted(() => {
-  fetchInvoices() 
+  invoiceStore.fetchInvoices()
 })
 
 // Tabs
 const tabs = [
   { status: 'all', label: 'همه فاکتورها' },
-  { status: 'Paid', label: 'پرداخت موفق' },
-  { status: 'Pending', label: 'در انتظار پرداخت' },
-  { status: 'Unpaid', label: 'پرداخت نشده' },
+  { status: 'paid', label: 'پرداخت موفق' },
+  { status: 'pending', label: 'در انتظار پرداخت' },
+  { status: 'unpaid', label: 'پرداخت نشده' },
 ]
 
 const activeTab = ref('all')
@@ -155,20 +137,20 @@ const closeEditModal = () => {
   selectedInvoice.value = null
 }
 
-const submitEditInvoice = () => {
+const submitEditInvoice = async () => {
   if (!selectedInvoice.value) return
-
-  const index = invoiceStore.invoices.findIndex(i => i.id === selectedInvoice.value!.id)
-  if (index !== -1) {
-    invoiceStore.invoices[index] = { ...selectedInvoice.value } // ویرایش در استور
+  try {
+    await invoiceStore.updateInvoice(selectedInvoice.value.id, selectedInvoice.value)
+    closeEditModal()
+  } catch {
+    // خطا در استور ست می‌شود
   }
-
-  closeEditModal()
 }
 
 
-const onSaved = (updated: any) => toast.add({ type: 'success', message: 'فاکتور با موفقیت ذخیره شد', title: 'ذخیره' })
-const onError = (msg: string) => toast.add({ type: 'error', message: msg || 'خطا در ذخیره', title: 'خطا' })
+const remove = (id: string) => {
+  if (confirm('آیا مطمئن هستید؟')) invoiceStore.deleteInvoice(id)
+}
 
 // Filtered invoices by active tab
 const filteredInvoices = computed(() => {
@@ -179,27 +161,27 @@ const filteredInvoices = computed(() => {
 // Helpers
 const statusClass = (status: string) => {
   switch (status) {
-    case 'Paid': return 'bg-dash-accent2/15 text-dash-accent2'
-    case 'Pending': return 'bg-amber-400/15 text-amber-300'
-    case 'Unpaid': return 'bg-rose-400/15 text-rose-300'
+    case 'paid': return 'bg-dash-accent2/15 text-dash-accent2'
+    case 'pending': return 'bg-amber-400/15 text-amber-300'
+    case 'unpaid': return 'bg-rose-400/15 text-rose-300'
     default: return 'bg-dash-border text-dash-muted'
   }
 }
 const tabColor = (status: string) => {
   switch(status) {
-    case 'All Invoice': return 'bg-dash-accent/15 text-dash-accent border-dash-accent/40'
-    case 'Paid': return 'bg-dash-accent2/15 text-dash-accent2 border-dash-accent2/40'
-    case 'Pending': return 'bg-amber-400/15 text-amber-300 border-amber-400/40'
-    case 'Unpaid': return 'bg-rose-400/15 text-rose-300 border-rose-400/40'
+    case 'all': return 'bg-dash-accent/15 text-dash-accent border-dash-accent/40'
+    case 'paid': return 'bg-dash-accent2/15 text-dash-accent2 border-dash-accent2/40'
+    case 'pending': return 'bg-amber-400/15 text-amber-300 border-amber-400/40'
+    case 'unpaid': return 'bg-rose-400/15 text-rose-300 border-rose-400/40'
     default: return 'bg-dash-card text-dash-muted border-dash-border'
   }
 }
 
 const countColor = (status: string, isActive: boolean) => {
   switch(status) {
-    case 'Paid': return isActive ? 'bg-dash-accent2' : 'bg-dash-accent2/50'
-    case 'Pending': return isActive ? 'bg-amber-400' : 'bg-amber-400/50'
-    case 'Unpaid': return isActive ? 'bg-rose-400' : 'bg-rose-400/50'
+    case 'paid': return isActive ? 'bg-dash-accent2' : 'bg-dash-accent2/50'
+    case 'pending': return isActive ? 'bg-amber-400' : 'bg-amber-400/50'
+    case 'unpaid': return isActive ? 'bg-rose-400' : 'bg-rose-400/50'
     default: return isActive ? 'bg-dash-accent' : 'bg-dash-muted'
   }
 }
@@ -213,7 +195,6 @@ const tabsWithCount = computed(() =>{
 })
 
 
-const remove = (id: string) => { if (confirm('آیا مطمئن هستید؟')) invoiceStore.deleteInvoice(id) }
 </script>
 
 <style scoped  lang="postcss">

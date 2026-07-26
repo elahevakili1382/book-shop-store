@@ -18,6 +18,7 @@ import ProjectAnalytics from '../../components/dashboard/ProjectAnalytics.vue';
 import DetailTable from '../../components/dashboard/DetailTable.vue';
 
 
+
 definePageMeta({
   title: 'داشبورد ادمین',
   layout: 'dashboard',

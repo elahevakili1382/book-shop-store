@@ -1,26 +1,45 @@
-import { defineEventHandler, createError } from 'h3'
+import { defineEventHandler, createError, readBody, getRouterParam } from 'h3'
+import { connectDB } from '../../utils/mongodb'
+import { Invoice } from '../../models/Invoice'
+import { requireAuth } from '../../utils/requireAuth'
 
-type InvoiceResponse = {
-  id: string
-  name: string
-  amount: number
-  createdAt: string
-  updatedAt: string
-}
 export default defineEventHandler(async (event) => {
-  const id = event.context.params?.id
-  if (!id) {
-    throw createError({ statusCode: 400, statusMessage: 'Missing ID' })
-  }
+  try {
+    requireAuth(event)
+    await connectDB()
 
-  const body = await readBody(event)
-
-  return await $fetch<Invoice>(
-    `https://69215dda512fb4140be003df.mockapi.io/invoices/${id}`,
-    {
-      method: 'PUT',
-      body,
-      headers: { 'Content-Type': 'application/json' },
+    const id = getRouterParam(event, 'id')
+    if (!id) {
+      throw createError({ statusCode: 400, statusMessage: 'Missing ID' })
     }
-  )
+
+    const body = await readBody(event)
+
+    const payload: Record<string, unknown> = {}
+    if (body?.status) payload.status = body.status
+    if (body?.customerName) payload.customerName = body.customerName
+    if (body?.phone !== undefined) payload.phone = body.phone
+    if (body?.amount != null) payload.amount = Number(body.amount)
+    if (body?.note !== undefined) payload.note = body.note
+    if (body?.dueAt) payload.dueAt = body.dueAt
+    if (body?.number) payload.number = body.number
+
+    const updated = await Invoice.findByIdAndUpdate(id, payload, { new: true }).lean()
+
+    if (!updated) {
+      throw createError({ statusCode: 404, statusMessage: 'Invoice not found' })
+    }
+
+    return {
+      ...updated,
+      _id: updated._id.toString(),
+      id: updated._id.toString(),
+    }
+  } catch (err: any) {
+    if (err?.statusCode) throw err
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Failed to update invoice',
+    })
+  }
 })

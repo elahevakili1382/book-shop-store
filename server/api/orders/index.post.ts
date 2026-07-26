@@ -18,8 +18,8 @@ export default defineEventHandler(async(event) =>{
      city: body.city || '',
     postalCode: body.postalCode || '',
     amount: body.amount,
-    paymentMethod: body.paymentMethod || 'online', // 'online' | 'cod'
-    status: body.status || 'pending',             // 'pending' | 'paid' | ...
+    paymentMethod: body.paymentMethod || 'online', 
+    status: body.status || 'pending',             
     items: body.items || [],
 
   })
