@@ -1,20 +1,11 @@
 <template>
   <div class="space-y-6">
     <!-- هدر -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div class="flex flex-col gap-3">
       <div>
         <p class="text-sm text-dash-muted mb-1">داشبورد / سفارشات</p>
         <h1 class="text-2xl font-semibold text-dash-text">سفارشات</h1>
       </div>
-      <button
-        type="button"
-        class="px-4 py-2 rounded-xl border border-dash-border bg-dash-card text-dash-text text-sm
-               hover:border-dash-accent/40 transition disabled:opacity-50"
-        :disabled="loading"
-        @click="refreshOrders"
-      >
-        بروزرسانی
-      </button>
     </div>
 
     <!-- لودینگ -->
@@ -45,18 +36,11 @@
 
       <!-- تب‌ها -->
       <div class="flex gap-2 overflow-x-auto pb-1">
-        <button
-          v-for="t in tabs"
-          :key="t.key"
-          type="button"
-          class="px-4 py-2 rounded-2xl text-sm font-semibold border transition shrink-0"
-          :class="
-            activeTab === t.key
-              ? 'bg-dash-accent/15 text-dash-accent border-dash-accent/40'
-              : 'bg-dash-card text-dash-muted border-dash-border hover:text-dash-text'
-          "
-          @click="activeTab = t.key"
-        >
+        <button v-for="t in tabs" :key="t.key" type="button"
+          class="px-4 py-2 rounded-2xl text-sm font-semibold border transition shrink-0" :class="activeTab === t.key
+            ? 'bg-dash-accent/15 text-dash-accent border-dash-accent/40'
+            : 'bg-dash-card text-dash-muted border-dash-border hover:text-dash-text'
+            " @click="activeTab = t.key">
           {{ t.label }}
           <span class="mr-1 opacity-70">({{ tabCount(t.key) }})</span>
         </button>
@@ -64,14 +48,24 @@
 
       <!-- جدول -->
       <div class="bg-dash-card border border-dash-border rounded-2xl p-4 sm:p-6 overflow-x-auto">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-5">
+          <h2 class="text-lg font-semibold text-dash-text shrink-0">لیست سفارشات</h2>
+          <div class="flex flex-col sm:flex-row gap-2 sm:items-center w-full sm:max-w-xl sm:ms-auto">
+            <DashboardListSearch v-model="searchTerm" placeholder="جستجو: نام، تلفن، شهر، شماره سفارش..."
+              wrapper-class="sm:flex-1 sm:min-w-[12rem]" />
+            <button type="button" class="px-4 py-2 h-10 rounded-xl border border-dash-border bg-dash-bg text-dash-text text-sm
+                     hover:border-dash-accent/40 transition disabled:opacity-50 shrink-0" :disabled="loading"
+              @click="refreshOrders">
+              بروزرسانی
+            </button>
+          </div>
+        </div>
+
         <div v-if="filtered.length === 0" class="py-12 text-center text-dash-muted">
           سفارشی یافت نشد.
         </div>
 
-        <table
-          v-else
-          class="min-w-[800px] w-full text-right text-sm text-dash-text border-separate border-spacing-y-2"
-        >
+        <table v-else class="min-w-[800px] w-full text-right text-sm text-dash-text border-separate border-spacing-y-2">
           <thead>
             <tr class="text-dash-muted">
               <th class="p-3 font-medium">سفارش</th>
@@ -85,22 +79,16 @@
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="order in filtered"
-              :key="order.id || order._id"
+            <tr v-for="order in filtered" :key="order.id || order._id"
               class="bg-dash-bg hover:bg-dash-border/40 transition rounded-xl cursor-pointer"
-              @click="openDetail(order)"
-            >
+              @click="openDetail(order)">
               <td class="p-3 font-mono font-semibold">
                 #{{ orderIdShort(order) }}
               </td>
               <td class="p-3 text-dash-muted">{{ formatDate(order.createdAt) }}</td>
               <td class="p-3">{{ order.customerName }}</td>
               <td class="p-3">
-                <span
-                  class="px-2.5 py-1 rounded-full text-xs font-semibold"
-                  :class="statusClass(order.status)"
-                >
+                <span class="px-2.5 py-1 rounded-full text-xs font-semibold" :class="statusClass(order.status)">
                   {{ statusLabel(order.status) }}
                 </span>
               </td>
@@ -110,11 +98,8 @@
               <td class="p-3 text-dash-muted">{{ order.city || '—' }}</td>
               <td class="p-3">{{ order.items?.length || 0 }} مورد</td>
               <td class="p-3" @click.stop>
-                <button
-                  type="button"
-                  class="text-dash-accent hover:opacity-80 text-sm font-semibold"
-                  @click="openDetail(order)"
-                >
+                <button type="button" class="text-dash-accent hover:opacity-80 text-sm font-semibold"
+                  @click="openDetail(order)">
                   مشاهده
                 </button>
               </td>
@@ -126,26 +111,18 @@
 
     <!-- مودال جزئیات — خارج از کارت جدول -->
     <Teleport to="body">
-      <div
-        v-if="showDetail && selected"
-        class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60"
-        @click.self="closeDetail"
-      >
-        <div
-          class="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-dash-card border border-dash-border
-                 rounded-2xl p-6 text-dash-text shadow-xl"
-        >
+      <div v-if="showDetail && selected" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60"
+        @click.self="closeDetail">
+        <div class="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-dash-card border border-dash-border
+                 rounded-2xl p-6 text-dash-text shadow-xl">
           <div class="flex items-start justify-between gap-3 mb-6">
             <div>
               <h3 class="text-lg font-semibold">جزئیات سفارش</h3>
               <p class="font-mono text-dash-muted text-sm mt-1">#{{ orderIdShort(selected) }}</p>
             </div>
-            <button
-              type="button"
+            <button type="button"
               class="w-8 h-8 rounded-lg text-dash-muted hover:text-dash-text hover:bg-dash-border/50 transition"
-              aria-label="بستن"
-              @click="closeDetail"
-            >
+              aria-label="بستن" @click="closeDetail">
               ✕
             </button>
           </div>
@@ -160,10 +137,8 @@
               </div>
               <div class="bg-dash-bg rounded-xl p-3 border border-dash-border">
                 <p class="text-dash-muted text-xs mb-1">وضعیت</p>
-                <span
-                  class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                  :class="statusClass(selected.status)"
-                >
+                <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                  :class="statusClass(selected.status)">
                   {{ statusLabel(selected.status) }}
                 </span>
               </div>
@@ -216,15 +191,10 @@
           <section class="border-t border-dash-border pt-5">
             <h4 class="text-sm font-semibold text-dash-accent mb-3">محصولات</h4>
             <ul v-if="selected.items?.length" class="space-y-3">
-              <li
-                v-for="(item, idx) in selected.items"
-                :key="idx"
-                class="flex items-center gap-3 bg-dash-bg rounded-xl p-3 border border-dash-border"
-              >
-                <div
-                  class="w-12 h-16 rounded-lg shrink-0 bg-dash-border flex items-center justify-center
-                         text-dash-muted text-[10px] text-center px-1"
-                >
+              <li v-for="(item, idx) in selected.items" :key="idx"
+                class="flex items-center gap-3 bg-dash-bg rounded-xl p-3 border border-dash-border">
+                <div class="w-12 h-16 rounded-lg shrink-0 bg-dash-border flex items-center justify-center
+                         text-dash-muted text-[10px] text-center px-1">
                   کتاب
                 </div>
                 <div class="min-w-0 flex-1">
@@ -243,11 +213,9 @@
           </section>
 
           <div class="mt-6 flex justify-end">
-            <button
-              type="button"
+            <button type="button"
               class="px-4 py-2 rounded-xl bg-dash-border text-dash-text text-sm hover:opacity-90 transition"
-              @click="closeDetail"
-            >
+              @click="closeDetail">
               بستن
             </button>
           </div>
@@ -264,6 +232,9 @@ definePageMeta({ layout: 'dashboard', title: 'سفارشات' })
 
 const orders = ref<any[]>([])
 const loading = ref(false)
+const searchTerm = ref('')
+
+
 
 const tabs = [
   { key: 'all', label: 'همه' },
@@ -275,9 +246,30 @@ const tabs = [
 
 const activeTab = ref('all')
 
+
+
+
 const filtered = computed(() => {
-  if (activeTab.value === 'all') return orders.value
-  return orders.value.filter((o) => o.status === activeTab.value)
+  let list = orders.value
+  if (activeTab.value !== 'all') {
+    list = list.filter((o) => o.status === activeTab.value)
+  }
+
+  const q = searchTerm.value.trim().toLowerCase()
+  if (!q) return list
+
+  return list.filter((o) => {
+    const id = (o.id || o._id || '').toString().toLowerCase()
+    const name = (o.customerName || '').toLowerCase()
+    const phone = (o.phone || '').toString()
+    const city = (o.city || '').toLowerCase()
+    return (
+      id.includes(q) ||
+      name.includes(q) ||
+      phone.includes(q) ||
+      city.includes(q)
+    )
+  })
 })
 
 const totalCount = computed(() => orders.value.length)

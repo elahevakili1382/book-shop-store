@@ -3,10 +3,7 @@
 
   <h1 class="m-5 font-semibold text-dash-text text-2xl">مدیریت محصولات</h1>
 
-  <p
-    v-if="activeSearch"
-    class="mx-5 -mt-3 mb-4 text-sm text-dash-muted"
-  >
+  <p v-if="activeSearch" class="mx-5 -mt-3 mb-4 text-sm text-dash-muted">
     نتیجه جستجو برای «{{ activeSearch }}»
   </p>
 
@@ -15,6 +12,7 @@
     :loading="isLoading"
     @add="onAddProduct"
     @delete="onDeleteProduct"
+    @update="onUpdateProduct"
   />
 </template>
 
@@ -22,14 +20,19 @@
 import { computed, onMounted, watch } from 'vue'
 import { useDashboardSearch } from '~/composables/useDashboardSearch'
 import { useProductStore } from '../../stores/productStore'
+import type { Product } from '~/types/types'
 import productsTable from '../../components/dashboard/productsTable.vue'
+
+definePageMeta({
+  title: 'محصولات',
+  layout: 'dashboard',
+})
 
 const store = useProductStore()
 const route = useRoute()
 const { query: searchQuery } = useDashboardSearch()
 
 const activeSearch = ref('')
-
 const products = computed(() => store.products)
 const isLoading = computed(() => store.isLoading)
 
@@ -39,7 +42,7 @@ function runSearch(q: string) {
   const trimmed = q.trim()
   activeSearch.value = trimmed
   if (!trimmed) {
-    return store.fetchAllCategoriesProducts(10)
+    return store.fetchAllCategoriesProducts()
   }
   return store.searchProducts(trimmed)
 }
@@ -73,20 +76,39 @@ onMounted(() => {
     searchQuery.value = initial
     runSearch(initial)
   } else {
-    store.fetchAllCategoriesProducts(10)
+    // بدون limit تا همه محصولات بیاید و pagination کار کند
+    store.fetchAllCategoriesProducts()
   }
 })
 
-function onAddProduct(product: Parameters<typeof store.addProduct>[0]) {
-  store.addProduct(product)
+function onAddProduct(product: {
+  title: string
+  price: number
+  category: string
+  quantity: number
+}) {
+  const id = crypto.randomUUID()
+  store.addProduct({
+    id,
+    _id: id,
+    title: product.title,
+    price: product.price,
+    category: product.category,
+    quantity: product.quantity,
+    stock: product.quantity,
+    description: '',
+    image: '/images/NonFictionIcon(1).svg',
+    rating: 0,
+  })
 }
 
 function onDeleteProduct(id: string) {
   store.deleteProduct(id)
 }
 
-definePageMeta({
-  title: 'محصولات',
-  layout: 'dashboard',
-})
+function onUpdateProduct(product: Product) {
+  const list = store.products
+  const idx = list.findIndex((p) => p.id === product.id || p._id === product._id)
+  if (idx !== -1) list[idx] = { ...list[idx], ...product }
+}
 </script>
