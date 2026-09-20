@@ -37,7 +37,7 @@
             class="bg-dash-bg hover:bg-dash-border/40 transition rounded-xl text-dash-text">
             <td class="py-3 font-semibold">{{ product.title }}</td>
             <td class="text-dash-muted">{{ product.category }}</td>
-            <td>{{ formatPrice(product.price) }} تومان</td>
+            <td>{{ formatPrice(product.price) }} </td>
             <td>
               <input type="number" min="0"
                 class="w-16 border border-dash-border rounded-lg text-center bg-dash-card text-dash-text"
@@ -66,30 +66,20 @@
 
 
     <div v-if="!loading && products.length > 0 && totalPages > 1" class="flex justify-center items-center gap-2 mt-6">
-      <button
-        type="button"
+      <button type="button"
         class="px-3 py-1 rounded-lg border border-dash-border text-sm bg-dash-bg text-dash-muted hover:text-dash-text disabled:opacity-40"
-        :disabled="currentPage <= 1"
-        @click="goPrev"
-      >
+        :disabled="currentPage <= 1" @click="goPrev">
         قبلی
       </button>
-      <button
-        v-for="page in totalPages"
-        :key="page"
-        type="button"
+      <button v-for="page in totalPages" :key="page" type="button"
         class="px-3 py-1 rounded-lg border border-dash-border text-sm"
         :class="page === currentPage ? 'bg-dash-accent text-dash-bg font-bold' : 'bg-dash-bg text-dash-muted hover:text-dash-text'"
-        @click="currentPage = page"
-      >
+        @click="currentPage = page">
         {{ page }}
       </button>
-      <button
-        type="button"
+      <button type="button"
         class="px-3 py-1 rounded-lg border border-dash-border text-sm bg-dash-bg text-dash-muted hover:text-dash-text disabled:opacity-40"
-        :disabled="currentPage >= totalPages"
-        @click="goNext"
-      >
+        :disabled="currentPage >= totalPages" @click="goNext">
         بعدی
       </button>
     </div>
@@ -289,7 +279,7 @@ function updateQuantity(product: Product) {
   $fetch(`/api/product/${id}`, {
     method: 'POST',
     body: { quantity: product.quantity },
-  }).catch(() => {})
+  }).catch(() => { })
 }
 </script>
 

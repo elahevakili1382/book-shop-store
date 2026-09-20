@@ -2,6 +2,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { Product } from '~/types/types'
+import { slugify } from '../utils/slugify'
 
 export interface ProductDetail extends Product {
   summary?: string
@@ -54,8 +55,13 @@ export function mapBookToProduct(book: Record<string, unknown>): Product {
     image: (book.image as string) ?? '/images/default-book.jpg',
     category: (book.category as string) ?? 'نامشخص',
     stock: (book.stock as number) ?? 0,
-    quantity: (book.quantity as number) ?? 0,
-    slug: book.slug as string | undefined,
+    quantity: (book.quantity as number) ?? (book.stock as number) ?? 0,
+    slug:
+      (typeof book.slug === 'string' && book.slug.trim()) ||
+      slugify((book.titleEn as string) || '') ||
+      String(book.id ?? book._id ?? ''),
+    titleEn: book.titleEn as string | undefined,
+    isbn: book.isbn as string | undefined,
     author: book.author as string | undefined,
     rating: (book.rating as number) ?? 0,
     pages: book.pages as number | undefined,

@@ -1,8 +1,9 @@
-import { defineEventHandler, readBody, createError, setCookie } from 'h3'
+import { defineEventHandler, readBody, createError } from 'h3'
 import bcrypt from 'bcryptjs'
 import jsonwebtoken from 'jsonwebtoken'
 import { connectDB } from '../../utils/mongodb'
 import { User } from '../../models/User'
+import { setAuthCookie } from '../../utils/authCookie'
 
 const SECRET = process.env.JWT_SECRET || 'dev_secret'
 const jwt: typeof jsonwebtoken =
@@ -17,19 +18,19 @@ export default defineEventHandler(async (event) => {
     const password = (body?.password || '').toString()
 
     if (!email || !password) {
-      throw createError({ statusCode: 400, statusMessage: 'Email and password are required' })
+      throw createError({ statusCode: 400, statusMessage: 'ایمیل و رمز را کامل کن' })
     }
 
     await connectDB()
 
     const user = await User.findOne({ email }).select('name email role password')
     if (!user) {
-      throw createError({ statusCode: 401, statusMessage: 'User not found' })
+      throw createError({ statusCode: 401, statusMessage: 'ایمیلی با این مشخصات پیدا نشد' })
     }
 
     const ok = await bcrypt.compare(password, user.password)
     if (!ok) {
-      throw createError({ statusCode: 401, statusMessage: 'Invalid password' })
+      throw createError({ statusCode: 401, statusMessage: 'رمز عبور اشتباه است' })
     }
 
     const id = user._id.toString()
@@ -40,11 +41,7 @@ export default defineEventHandler(async (event) => {
       { expiresIn: '7d' }
     )
 
-    setCookie(event, 'auth_token', token, {
-      httpOnly: true,
-      sameSite: 'lax',
-      maxAge: 60 * 60 *24 *7,
-    })
+    setAuthCookie(event, token)
 
     return {
       ok: true,
@@ -54,14 +51,13 @@ export default defineEventHandler(async (event) => {
         name: user.name,
         role: user.role,
       },
-      token,
     }
   } catch (err: any) {
     if (err?.statusCode) throw err
     console.error('POST /api/auth/login failed:', err)
     throw createError({
       statusCode: 500,
-      statusMessage: err?.message || 'Login failed',
+      statusMessage: 'ورود ناموفق بود',
     })
   }
 })

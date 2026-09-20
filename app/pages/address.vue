@@ -1,5 +1,5 @@
 <template>
-  <main class="bg-cream min-h-screen">
+  <main class="min-h-screen">
     <div class="max-w-[1120px] mx-auto px-4 sm:px-8 py-10">
       <ClientOnly>
         <motion.header :initial="{ opacity: 0, y: 16 }" :animate="{ opacity: 1, y: 0 }"
@@ -14,6 +14,8 @@
           <p class="mt-1.5 text-sm text-slate/50">آدرس، روش دریافت و زمان ارسال را مشخص کنید</p>
         </motion.header>
       </ClientOnly>
+
+      <CheckoutStepper current="address" />
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <section class="lg:col-span-7 space-y-5">
@@ -37,27 +39,28 @@
 
           <!-- فرم گیرنده -->
           <div class="rounded-[1.35rem] bg-white border border-slate/8 shadow-card p-5 sm:p-6 space-y-3">
-            <label for="fullName">نام و نام خانوادگی</label>
-            <input id="fullName" v-model="fullName" type="text"
-              class="w-full rounded-2xl border border-slate/10 bg-white px-4 py-3 text-sm" />
+            <label for="fullName" class="block text-sm font-bold text-slate">نام و نام خانوادگی</label>
+            <input id="fullName" v-model="fullName" type="text" autocomplete="name"
+              class="w-full rounded-2xl border border-slate/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-lime/50" />
 
-            <label for="phone">موبایل</label>
-            <input id="phone" v-model="phone" type="text"
-              class="w-full rounded-2xl border border-slate/10 bg-white px-4 py-3 text-sm" />
+            <label for="phone" class="block text-sm font-bold text-slate">موبایل</label>
+            <input id="phone" v-model="phone" type="tel" inputmode="numeric" autocomplete="tel" dir="ltr"
+              class="w-full rounded-2xl border border-slate/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-lime/50"
+              placeholder="09121234567" />
 
             <!-- فقط وقتی ارسال به آدرس انتخاب شده -->
             <template v-if="shippingMethod === 'courier'">
-              <label for="city">شهر</label>
+              <label for="city" class="block text-sm font-bold text-slate">شهر</label>
               <input id="city" v-model="city" type="text"
-                class="w-full rounded-2xl border border-slate/10 bg-white px-4 py-3 text-sm" />
+                class="w-full rounded-2xl border border-slate/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-lime/50" />
 
-              <label for="postalCode">کد پستی</label>
-              <input id="postalCode" v-model="postalCode" type="text"
-                class="w-full rounded-2xl border border-slate/10 bg-white px-4 py-3 text-sm" />
+              <label for="postalCode" class="block text-sm font-bold text-slate">کد پستی</label>
+              <input id="postalCode" v-model="postalCode" type="text" dir="ltr"
+                class="w-full rounded-2xl border border-slate/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-lime/50" />
 
-              <label for="address">آدرس کامل</label>
+              <label for="address" class="block text-sm font-bold text-slate">آدرس کامل</label>
               <textarea id="address" v-model="address" rows="3"
-                class="w-full rounded-2xl border border-slate/10 bg-white px-4 py-3 text-sm" />
+                class="w-full rounded-2xl border border-slate/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-lime/50" />
             </template>
           </div>
 
@@ -115,9 +118,9 @@
             </p>
           </div>
 
-          <button type="button" class="w-full py-3.5 rounded-2xl bg-slate text-white font-bold text-sm"
+          <button type="button" class="w-full py-3.5 rounded-2xl bg-slate text-white font-bold text-sm hover:bg-lime hover:text-slate"
             @click="submitAddress">
-            ثبت و ادامه پرداخت
+            {{ payment === 'online' ? 'ثبت و ادامه پرداخت' : 'ثبت سفارش' }}
           </button>
         </section>
 
@@ -164,6 +167,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { motion } from 'motion-v'
 import { useCartStore } from '../stores/cart'
+import CheckoutStepper from '../components/ui/CheckoutStepper.vue'
 
 definePageMeta({ layout: 'default' })
 
@@ -173,6 +177,7 @@ useSeoMeta({
 })
 
 const cart = useCartStore()
+const toast = useToast()
 const easeOut = [0.22, 1, 0.36, 1]
 
 const fullName = ref('')
@@ -243,6 +248,11 @@ onMounted(() => {
   cart.loadCart()
   if (!import.meta.client) return
 
+  if (!cart.cartItems.length) {
+    navigateTo('/cart')
+    return
+  }
+
   try {
     const raw = sessionStorage.getItem('checkout')
     if (!raw) return
@@ -265,50 +275,78 @@ function formatPrice(value) {
   return new Intl.NumberFormat('fa-IR').format(value)
 }
 
-function submitAddress() {
-  if (!fullName.value || !phone.value) {
-    alert('نام و موبایل الزامی است')
+async function submitAddress() {
+  if (!fullName.value.trim() || !phone.value.trim()) {
+    toast.error('نام و موبایل الزامی است')
+    return
+  }
+  if (!/^09\d{9}$/.test(phone.value.trim())) {
+    toast.error('موبایل را با ۰۹ و ۱۱ رقم وارد کن')
     return
   }
   if (!cart.cartItems.length) {
-    alert('سبد خرید خالی است')
+    toast.error('سبد خرید خالی است')
     navigateTo('/cart')
     return
   }
   if (shippingMethod.value === 'courier') {
     if (!selectedDay.value || !selectedSlot.value) {
-      alert('روز و بازه زمانی را انتخاب کنید')
+      toast.error('روز و بازه زمانی را انتخاب کنید')
       return
     }
-    if (!address.value || !city.value) {
-      alert('شهر و آدرس را کامل کنید')
+    if (!address.value.trim() || !city.value.trim()) {
+      toast.error('شهر و آدرس را کامل کنید')
       return
     }
   }
 
-  sessionStorage.setItem(
-    'checkout',
-    JSON.stringify({
-      address: address.value.trim(),
-      payment: payment.value,
-      fullName: fullName.value,
-      phone: phone.value,
-      city: city.value,
-      postalCode: postalCode.value,
-      shippingMethod: shippingMethod.value,
-      selectedDay: selectedDay.value,
-      selectedSlot: selectedSlot.value,
-      shippingCost: shippingCost.value,
-      amount: payableTotal.value,
-      items: cart.cartItems.map((item) => ({
-        title: item.name,
-        price: item.price,
-        quantity: item.quantity,
-        bookId: String(item.id)
-      }))
-    }),
-  )
+  try {
+    const res = await $fetch('/api/orders', {
+      method: 'POST',
+      body: {
+        customerName: fullName.value.trim(),
+        phone: phone.value.trim(),
+        address: address.value.trim(),
+        city: city.value.trim(),
+        postalCode: postalCode.value.trim(),
+        paymentMethod: payment.value === 'online' ? 'online' : 'cod',
+        shippingMethod: shippingMethod.value,
+        deliveryDay: selectedDay.value,
+        deliverySlot: selectedSlot.value,
+        items: cart.cartItems.map((item) => ({
+          bookId: String(item.id),
+          quantity: item.quantity,
+        })),
+      },
+    })
 
-  navigateTo('/payment')
+    if (!res?.ok || !res.order?.id) {
+      toast.error('ثبت سفارش ناموفق بود')
+      return
+    }
+
+    sessionStorage.setItem(
+      'checkout',
+      JSON.stringify({
+        orderId: res.order.id,
+        amount: res.order.amount,
+        address: address.value.trim(),
+        payment: payment.value,
+        fullName: fullName.value,
+        phone: phone.value,
+        city: city.value,
+        postalCode: postalCode.value,
+        shippingMethod: shippingMethod.value,
+        selectedDay: selectedDay.value,
+        selectedSlot: selectedSlot.value,
+      }),
+    )
+
+    navigateTo('/payment')
+  } catch (err) {
+    const message =
+      err?.data?.statusMessage || err?.statusMessage || 'ثبت سفارش ناموفق بود'
+    toast.error(message)
+  }
 }
 </script>

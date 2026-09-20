@@ -14,11 +14,11 @@
       />
     </NuxtLink>
 
-    <div class="flex flex-col justify-between flex-1 min-w-0 py-1">
+    <div class="flex min-w-0 flex-1 flex-col justify-between py-1">
       <div>
-        <p class="text-[10px] font-bold tracking-wide text-slate/40 mb-1">پیشنهاد ویژه</p>
+        <p class="mb-1 text-[10px] font-bold tracking-wide text-slate/40">پیشنهاد ویژه</p>
         <NuxtLink :to="productUrl">
-          <h3 class="text-sm font-bold text-slate truncate mb-1 group-hover:text-slate/80">
+          <h3 class="mb-1 truncate text-sm font-bold text-slate group-hover:text-slate/80">
             {{ product.title }}
           </h3>
         </NuxtLink>
@@ -26,21 +26,20 @@
       </div>
 
       <div>
-        <div class="flex items-center justify-between text-[10px] text-slate/45 mb-1.5">
+        <div class="mb-1.5 flex items-center justify-between text-[10px] text-slate/45">
           <span>فروش رفته</span>
           <span class="font-bold text-slate/60">21 / 99</span>
         </div>
-        <div class="h-1 rounded-full bg-slate/10 overflow-hidden mb-3">
+        <div class="mb-3 h-1 overflow-hidden rounded-full bg-slate/10">
           <div class="h-full w-[70%] rounded-full bg-slate/35" />
         </div>
-
         <button
           type="button"
-          class="w-full py-2 rounded-xl bg-slate text-white text-xs font-bold flex items-center justify-center gap-1.5 hover:opacity-90 transition-opacity"
+          class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate text-white hover:bg-lime hover:text-slate"
+          aria-label="افزودن به سبد خرید"
           @click="addToCart"
         >
-          <AppIcon icon="mdi:cart-plus" class="w-3.5 h-3.5" />
-          افزودن به سبد
+          <AppIcon icon="mdi:cart-plus" class="h-5 w-5" />
         </button>
       </div>
     </div>

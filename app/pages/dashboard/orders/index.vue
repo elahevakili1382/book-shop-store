@@ -8,9 +8,14 @@
       </div>
     </div>
 
-    <!-- لودینگ -->
-    <div v-if="loading" class="flex justify-center items-center py-20">
+    <!-- فقط لود اول — موقع refresh کل صفحه خالی نشود -->
+    <div v-if="isInitialLoading" class="flex justify-center items-center py-20">
       <span class="w-10 h-10 border-4 border-dash-accent border-t-transparent rounded-full animate-spin" />
+    </div>
+
+    <div v-else-if="error" class="py-12 text-center text-rose-300">
+      خطا در دریافت سفارشات
+      <button type="button" class="underline mr-2" @click="refresh">تلاش مجدد</button>
     </div>
 
     <template v-else>
@@ -54,8 +59,8 @@
             <DashboardListSearch v-model="searchTerm" placeholder="جستجو: نام، تلفن، شهر، شماره سفارش..."
               wrapper-class="sm:flex-1 sm:min-w-[12rem]" />
             <button type="button" class="px-4 py-2 h-10 rounded-xl border border-dash-border bg-dash-bg text-dash-text text-sm
-                     hover:border-dash-accent/40 transition disabled:opacity-50 shrink-0" :disabled="loading"
-              @click="refreshOrders">
+                     hover:border-dash-accent/40 transition disabled:opacity-50 shrink-0" :disabled="pending"
+              @click="refresh">
               بروزرسانی
             </button>
           </div>
@@ -153,6 +158,26 @@
                 <p>{{ selected.paymentMethod === 'cod' ? 'پرداخت در محل' : 'آنلاین' }}</p>
               </div>
             </div>
+
+            <!-- وضعیت  -->
+            <div class="mt-4 space-y-2">
+              <label class="text-xs text-dash-muted">تغییر وضعیت</label>
+              <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
+                <select v-model="editStatus"
+                  class="flex-1 px-3 py-2 rounded-xl border border-dash-border bg-dash-bg text-dash-text text-sm">
+                  <option value="pending">پرداخت نشده</option>
+                  <option value="paid">پرداخت شده</option>
+                  <option value="shipped">بسته شده</option>
+                  <option value="failed">ناموفق</option>
+                </select>
+                <button type="button"
+                  class="px-4 py-2 rounded-xl bg-dash-accent text-dash-bg text-sm font-bold disabled:opacity-50"
+                  :disabled="savingStatus || editStatus === selected.status" @click="saveStatus">
+                  {{ savingStatus ? 'در حال ذخیره...' : 'ذخیره وضعیت' }}
+                </button>
+              </div>
+              <p v-if="statusError" class="text-sm text-rose-300">{{ statusError }}</p>
+            </div>
           </section>
 
           <!-- مشتری -->
@@ -227,14 +252,20 @@
 
 <script setup lang="ts">
 import { formatDate } from '../../../utils/formatDate'
+import type { Order } from '~/types/dashboard'
 
 definePageMeta({ layout: 'dashboard', title: 'سفارشات' })
 
-const orders = ref<any[]>([])
-const loading = ref(false)
+// as any: جلوگیری از Excessive stack depth روی تایپ‌های Nuxt $fetch/useFetch
+const { data, pending, error, refresh } = await (useFetch as any)('/api/orders', {
+  query: { limit: 50 },
+  credentials: 'include',
+})
+
+const orders = computed((): Order[] => (Array.isArray(data.value) ? (data.value as Order[]) : []))
+/** اسپینر تمام‌صفحه فقط وقتی هنوز هیچ داده‌ای نیست */
+const isInitialLoading = computed(() => Boolean(pending.value) && !data.value)
 const searchTerm = ref('')
-
-
 
 const tabs = [
   { key: 'all', label: 'همه' },
@@ -245,9 +276,6 @@ const tabs = [
 ]
 
 const activeTab = ref('all')
-
-
-
 
 const filtered = computed(() => {
   let list = orders.value
@@ -277,26 +305,56 @@ const pendingCount = computed(() => orders.value.filter((o) => o.status === 'pen
 const paidCount = computed(() => orders.value.filter((o) => o.status === 'paid').length)
 const shippedCount = computed(() => orders.value.filter((o) => o.status === 'shipped').length)
 
-const selected = ref<any | null>(null)
+const selected = ref<Order | null>(null)
 const showDetail = ref(false)
+const editStatus = ref<Order['status']>('pending')
+const savingStatus = ref(false)
+const statusError = ref('')
 
 function tabCount(key: string) {
   if (key === 'all') return orders.value.length
   return orders.value.filter((o) => o.status === key).length
 }
 
-function orderIdShort(order: any) {
+function orderIdShort(order: Order) {
   return (order?.id || order?._id || '').toString().slice(-6)
 }
 
-function openDetail(order: any) {
+function openDetail(order: Order) {
   selected.value = order
+  editStatus.value = order.status
+  statusError.value = ''
   showDetail.value = true
 }
 
 function closeDetail() {
   showDetail.value = false
   selected.value = null
+  statusError.value = ''
+}
+
+async function saveStatus() {
+  if (!selected.value) return
+  savingStatus.value = true
+  statusError.value = ''
+
+  try {
+    const id = selected.value.id || selected.value._id
+    await ($fetch as any)(`/api/orders/${id}`, {
+      method: 'PUT',
+      body: { status: editStatus.value },
+      credentials: 'include',
+    })
+
+    await refresh()
+    selected.value = { ...selected.value, status: editStatus.value }
+
+  } catch {
+    statusError.value = 'ذخیره وضعیت ناموفق بود'
+  } finally {
+    savingStatus.value = false
+  }
+
 }
 
 function statusLabel(status: string) {
@@ -323,24 +381,4 @@ function statusClass(status: string) {
       return 'bg-dash-border text-dash-muted'
   }
 }
-
-async function refreshOrders() {
-  loading.value = true
-  try {
-    // cast تا خطای Excessive stack depth تایپ‌های Nuxt روی $fetch نیاید
-    const data = await ($fetch as any)('/api/orders', {
-      query: { limit: 50 },
-      credentials: 'include',
-    })
-    orders.value = Array.isArray(data) ? data : []
-  } catch {
-    orders.value = []
-  } finally {
-    loading.value = false
-  }
-}
-
-onMounted(() => {
-  refreshOrders()
-})
 </script>

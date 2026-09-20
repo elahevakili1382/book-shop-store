@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
     <div class="text-right">
-      <p v-if="eyebrow" class="text-xs font-bold tracking-[0.18em] text-slate/45 mb-1.5 uppercase">
+      <p v-if="eyebrow" class="mb-1.5 text-xs font-bold text-slate/45">
         {{ eyebrow }}
       </p>
       <h2 class="text-2xl sm:text-3xl font-black text-slate">{{ title }}</h2>

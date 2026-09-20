@@ -6,6 +6,11 @@ onMounted(() => {
   adminStore.fetchAdmins()
 })
 
+definePageMeta({
+  title: 'ادمین‌ها',
+  layout: 'dashboard',
+})
+
 </script>
 
 <template>

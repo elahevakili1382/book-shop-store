@@ -4,6 +4,12 @@ import { connectDB } from '../../utils/mongodb'
 import { User } from '../../models/User'
 
 export default defineEventHandler(async (event) => {
+  if(process.env.NODE_ENV === 'production'){
+    throw createError({
+      statusCode:403,
+      statusMessage:'Registration is disabled'
+    })
+  }
   const body = await readBody(event)
   const name = (body?.name || '').toString().trim()
   const email = (body?.email || '').toString().trim().toLowerCase()

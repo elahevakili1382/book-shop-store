@@ -1,40 +1,57 @@
 <template>
-  <section class="max-w-[1400px] mx-auto px-4 py-16">
-    <div class="flex flex-col md:flex-row gap-12 items-center">
-      <!-- متن -->
-      <div class="flex-1 space-y-6 text-center md:text-right">
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-[#0b1f2dcb] mb-4">درباره ما</h2>
-        <p class="text-gray-700 text-base sm:text-lg leading-relaxed">
-          BookShop جاییست که عاشقان کتاب می‌توانند بهترین کتاب‌ها را کشف کنند، خریدی امن داشته باشند و همیشه از پیشنهادهای روز بهره‌مند شوند.
-        </p>
+  <main class="min-h-screen">
+    <div class="mx-auto max-w-[800px] px-4 py-12 sm:px-8 sm:py-16">
+      <p class="text-xs font-bold text-slate/45">درباره Booklett</p>
+      <h1 class="mt-2 text-3xl font-black text-slate sm:text-4xl">کتاب اصل، مسیر کوتاه تا در خانه</h1>
+      <p class="mt-4 max-w-2xl text-sm leading-relaxed text-slate/60 sm:text-base">
+        Booklett فروشگاه آنلاین کتاب چاپی است. جلد واقعی می‌بینی، قیمت همان روی جلد است، و ارسال به سراسر کشور انجام می‌شود.
+      </p>
 
-        <h3 class="text-xl font-semibold mt-6 text-[#0b1f2dcb]" >دستاوردهای ما</h3>
-        <p class="text-[#0c161dcb] text-base sm:text-lg leading-relaxed">
-          ارائه تجربه خرید آسان و لذت‌بخش، دسترسی به هزاران کتاب متنوع و پیشنهادات روزانه برای کاربران.
-        </p>
+      <section id="guide" class="mt-12 scroll-mt-28 rounded-[1.5rem] border border-slate/8 bg-white p-6 shadow-card sm:p-8">
+        <h2 class="text-xl font-black text-slate">راهنمای خرید</h2>
+        <ol class="mt-4 space-y-3 text-sm leading-relaxed text-slate/65">
+          <li>۱. کتاب را از هوم، دسته‌بندی یا جستجو پیدا کن و به سبد اضافه کن.</li>
+          <li>۲. در سبد، تعداد را تنظیم کن و روش پرداخت را انتخاب کن.</li>
+          <li>۳. نام، موبایل و آدرس (یا تحویل حضوری) را وارد کن.</li>
+          <li>۴. اگر پرداخت آنلاین باشد به زرین‌پال می‌روی؛ اگر پرداخت در محل باشد همان‌جا سفارش ثبت می‌شود.</li>
+        </ol>
+      </section>
 
-        <h3 class="text-xl font-semibold mt-6 text-[#0b1f2dcb]">خواندن کتاب‌های ما در هر دستگاهی</h3>
-        <p class="text-gray-700 text-base sm:text-lg leading-relaxed">
-          با BookShop می‌توانید کتاب‌ها را روی موبایل، تبلت و دسکتاپ خود مطالعه کنید و تجربه‌ای بدون مرز داشته باشید.
-        </p>
+      <section id="faq" class="mt-6 scroll-mt-28 rounded-[1.5rem] border border-slate/8 bg-white p-6 shadow-card sm:p-8">
+        <h2 class="text-xl font-black text-slate">سوالات متداول</h2>
+        <dl class="mt-4 space-y-5 text-sm">
+          <div>
+            <dt class="font-bold text-slate">ارسال چقدر طول می‌کشد؟</dt>
+            <dd class="mt-1 leading-relaxed text-slate/60">۳ تا ۵ روز کاری، بسته به شهر گیرنده.</dd>
+          </div>
+          <div>
+            <dt class="font-bold text-slate">کتاب‌ها اصل هستند؟</dt>
+            <dd class="mt-1 leading-relaxed text-slate/60">بله. نسخه‌های چاپی ناشر با گارانتی اصالت.</dd>
+          </div>
+          <div>
+            <dt class="font-bold text-slate">برای خرید باید حساب بسازم؟</dt>
+            <dd class="mt-1 leading-relaxed text-slate/60">نه. مهمان هم می‌تواند تا پرداخت جلو برود. حساب برای ورود ادمین به داشبورد لازم است.</dd>
+          </div>
+        </dl>
+      </section>
 
-        <h3 class="text-xl font-semibold mt-6 text-[#0b1f2dcb]">کیفیت بالا</h3>
-        <p class="text-gray-700 text-base sm:text-lg leading-relaxed">
-          تمامی کتاب‌ها با بالاترین کیفیت ارائه می‌شوند و تجربه خرید و مطالعه‌ای عالی را برای شما فراهم می‌کنیم.
+      <section id="returns" class="mt-6 scroll-mt-28 rounded-[1.5rem] border border-slate/8 bg-white p-6 shadow-card sm:p-8">
+        <h2 class="text-xl font-black text-slate">بازگشت کالا</h2>
+        <p class="mt-3 text-sm leading-relaxed text-slate/60">
+          تا ۷ روز پس از تحویل، اگر کتاب آسیب‌دیده یا مغایر باشد، با ایمیل
+          <a href="mailto:hello@booklett.ir" class="font-bold text-slate hover:text-slate/70">hello@booklett.ir</a>
+          هماهنگ کن. کتاب باید در وضعیت اولیه باشد.
         </p>
-      </div>
-
-      <!-- تصویر -->
-      <div class="flex-1 flex justify-center items-center">
-        <NuxtImg
-          src="/images/education-concept-with-book.jpg"
-          alt="درباره ما"
-          class="rounded-2xl shadow-lg object-cover w-full max-w-[500px] h-auto"
-          sizes="(max-width: 768px) 100vw, 500px"
-        />
-      </div>
+      </section>
     </div>
-  </section>
+  </main>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+definePageMeta({ layout: 'default' })
+
+useSeoMeta({
+  title: 'درباره Booklett',
+  description: 'راهنمای خرید، سوالات متداول و شرایط بازگشت کالا در فروشگاه کتاب Booklett.',
+})
+</script>

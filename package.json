@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
+    "dev": "nuxt dev --host 0.0.0.0 --port 3000",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -29,6 +29,8 @@
     "apexcharts": "^5.3.5",
     "axios": "^1.12.1",
     "bcryptjs": "^3.0.3",
+    "clsx": "^2.1.1",
+    "echarts": "^6.1.0",
     "izitoast": "^1.4.0",
     "jsonwebtoken": "^9.0.2",
     "lucide-vue-next": "^0.546.0",
@@ -40,8 +42,10 @@
     "nuxt-toast": "^1.1.4",
     "pinia": "^3.0.3",
     "swiper": "^11.2.10",
+    "tailwind-merge": "^3.7.0",
     "vue": "^3.5.20",
     "vue-click-outside": "^1.1.0",
+    "vue-echarts": "^8.3.0",
     "vue-router": "^4.5.1",
     "vue3-apexcharts": "^1.10.0"
   },

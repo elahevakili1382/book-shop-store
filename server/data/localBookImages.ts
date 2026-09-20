@@ -45,3 +45,15 @@ export const BOOK_COVER_DOWNLOADS: { file: string; isbn: string }[] = [
   { file: 'brief-history-of-time.jpg', isbn: '9780553380163' },
   { file: 'selfish-gene.jpg', isbn: '9780198788607' },
 ]
+
+const ISBN_BY_FILE = Object.fromEntries(
+  BOOK_COVER_DOWNLOADS.map((row) => [row.file, row.isbn])
+)
+
+export const ISBN_BY_TITLE: Record<string, string> = Object.fromEntries(
+  Object.entries(LOCAL_BOOK_IMAGES).map(([title, path]) => {
+    const file = path.split('/').pop() ?? ''
+    return [title, ISBN_BY_FILE[file] ?? '']
+  })
+)
+

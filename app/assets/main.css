@@ -1,4 +1,36 @@
-html, body {
-    font-family: font-sans;
-    direction: rtl;
+:root {
+  --chart-1: #dcf763;
+  --chart-2: #38bdf8;
+  --chart-3: #7edcb5;
+  --chart-4: #fb7185;
+  --chart-5: #a78bfa;
+  --background: #fafaf8;
+  --foreground: #435058;
+  --card: #ffffff;
+  --popover: #1c1e24;
+  --popover-foreground: #f5f2eb;
+  --muted-foreground: #a8a29e;
+  --border: #2a2d36;
+  --ring: #dcf763;
+}
+
+html,
+body,
+#__nuxt {
+  font-family: 'Vazirmatn', 'Vazir', ui-sans-serif, system-ui, sans-serif;
+  direction: rtl;
+  background-color: #fafaf8;
+  color: #435058;
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
 }

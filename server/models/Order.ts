@@ -18,9 +18,13 @@ export interface IOrder {
   postalCode?: string
   amount: number
   paymentMethod: PaymentMethod
+  shippingMethod?: 'courier' | 'pickup'
+  deliveryDay?: string
+  deliverySlot?: string
   status: OrderStatus
   authority?: string
   items: IOrderItem[]
+  stockDecremented?: boolean
 }
 
 const OrderItemSchema = new mongoose.Schema<IOrderItem>(
@@ -67,6 +71,19 @@ const OrderSchema = new mongoose.Schema<IOrder>(
       enum: ['online', 'cod'],
       default: 'online',
     },
+    shippingMethod: {
+      type: String,
+      enum: ['courier', 'pickup'],
+      default: 'courier',
+    },
+    deliveryDay: {
+      type: String,
+      default: '',
+    },
+    deliverySlot: {
+      type: String,
+      default: '',
+    },
     status: {
       type: String,
       enum: ['pending', 'paid', 'failed', 'shipped'],
@@ -79,6 +96,10 @@ const OrderSchema = new mongoose.Schema<IOrder>(
     items: {
       type: [OrderItemSchema],
       default: [],
+    },
+    stockDecremented: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

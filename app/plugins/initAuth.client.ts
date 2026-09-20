@@ -1,4 +1,4 @@
-export default defineNuxtPlugin(() => {
-    const auth = useAuthStore()
-    auth.loadFromStorage()
+export default defineNuxtPlugin(async () => {
+  const auth = useAuthStore()
+  await auth.fetchSession()
 })

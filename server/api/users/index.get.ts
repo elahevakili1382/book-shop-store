@@ -1,12 +1,12 @@
 import { defineEventHandler, createError } from 'h3'
 import { connectDB } from '../../utils/mongodb'
 import { User } from '../../models/User'
-import {requireAuth} from '../../utils/requireAuth'
+import { requireAdmin } from '../../utils/requireAuth'
 
 export default defineEventHandler(async (event) => {
   try {
+    requireAdmin(event)
     await connectDB()
-    requireAuth(event)
 
     const users = await User.find()
       .select('-password')
@@ -18,7 +18,8 @@ export default defineEventHandler(async (event) => {
       _id: user._id.toString(),
       id: user._id.toString(),
     }))
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.statusCode) throw error
     console.log('GET /api/users failed:', error)
     throw createError({
       statusCode: 500,

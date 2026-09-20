@@ -1,7 +1,7 @@
 import { defineEventHandler, createError, getQuery } from 'h3'
 import { connectDB } from '../../utils/mongodb'
 import { Order } from '../../models/Order'
-import { format } from 'node:path'
+import { requireAdmin } from '../../utils/requireAuth'
 
 type Range = 'week' | 'month' | 'year'
 const PAID_STATUSES = ['paid', 'shipped'] as const
@@ -67,6 +67,7 @@ function growthRate(current: number, previous: number) {
 }
 
 export default defineEventHandler(async (event) => {
+  requireAdmin(event)
   try {
     await connectDB()
 
@@ -128,48 +129,46 @@ export default defineEventHandler(async (event) => {
       }
     }
 
-  const rows = await Order.aggregate<{_id:string; total:number}>([
+  const rows = await Order.aggregate<{ _id: string; total: number; count: number }>([
     {
-      $match:{
-        createdAt:{$gte: startCurrent, $lt: tomorrow},
-        status:{$in:[...PAID_STATUSES]},
+      $match: {
+        createdAt: { $gte: startCurrent, $lt: tomorrow },
+        status: { $in: [...PAID_STATUSES] },
       },
     },
-
-   {
-    $group:{
-      _id:{
-     $dateToString:{
-      format:groupFormat,
-      date:'$createdAt',
-     },
+    {
+      $group: {
+        _id: {
+          $dateToString: {
+            format: groupFormat,
+            date: '$createdAt',
+          },
+        },
+        total: { $sum: '$amount' },
+        count: { $sum: 1 },
       },
-      total:
-       {$sum: '$amount'},
-      
     },
-   },
-    {$sort:{_id:1}}
+    { $sort: { _id: 1 } },
   ])
-//فقط روز ها و ماه هایی که سفارش داشتند رو بر میگردونه 
-  const byKey = new Map(
-    rows.map((r) => [r._id, r.total])
-  )
 
-   const categories = buckets.map((b) => b.label)
-   const series = buckets.map((b) =>byKey.get(b.key) ?? 0)
+  const byKey = new Map(rows.map((r) => [r._id, r.total]))
+  const countByKey = new Map(rows.map((r) => [r._id, r.count]))
 
-   const currentTotal = series.reduce((sum,n) => sum + n, 0)
-   const previousTotal = await sumInRange(startPrevious, endPrevious)
+  const categories = buckets.map((b) => b.label)
+  const series = buckets.map((b) => byKey.get(b.key) ?? 0)
+  const counts = buckets.map((b) => countByKey.get(b.key) ?? 0)
 
+  const currentTotal = series.reduce((sum, n) => sum + n, 0)
+  const previousTotal = await sumInRange(startPrevious, endPrevious)
 
-
-    return {
-      categories,
-      series,
-      growthRate: growthRate(currentTotal, previousTotal),
-    }
-  } catch (err) {
+  return {
+    categories,
+    series,
+    counts,
+    growthRate: growthRate(currentTotal, previousTotal),
+  }
+  } catch (err: any) {
+    if (err?.statusCode) throw err
     const hint =
       err instanceof Error && err.message.includes('MONGODB')
         ? err.message

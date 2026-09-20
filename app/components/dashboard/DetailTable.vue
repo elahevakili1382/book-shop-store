@@ -5,10 +5,10 @@
             style="background:#1C1E24">
             <div class="mb-4 flex items-center justify-between gap-3">
                 <h3 class="text-lg font-bold text-[#F5F2EB]">آخرین سفارش‌ها</h3>
-                <span class="text-[10px] font-bold tracking-wide px-2.5 py-1 rounded-full"
+                <NuxtLink to="/dashboard/orders" class="text-[10px] font-bold tracking-wide px-2.5 py-1 rounded-full"
                     style="background:#DCF7631A; color:#DCF763">
-                    سفارش‌ها
-                </span>
+                    همه سفارش‌ها
+                </NuxtLink>
             </div>
 
             <p v-if="dashboardStore.loading"
@@ -60,10 +60,10 @@
             style="background:#1C1E24">
             <div class="mb-4 flex items-center justify-between gap-3">
                 <h3 class="text-lg font-bold text-[#F5F2EB]">کتاب‌های کم‌موجود</h3>
-                <span class="text-[10px] font-bold tracking-wide px-2.5 py-1 rounded-full"
+                <NuxtLink to="/dashboard/products" class="text-[10px] font-bold tracking-wide px-2.5 py-1 rounded-full"
                     style="background:#FB71851A; color:#FB7185">
                     هشدار موجودی
-                </span>
+                </NuxtLink>
             </div>
 
             <div v-if="dashboardStore.loading"

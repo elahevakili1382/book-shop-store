@@ -1,46 +1,55 @@
 <template>
-  <footer class="footer-root mt-16 border-t border-slate/10 bg-white">
-    <div class="max-w-[1280px] mx-auto px-4 sm:px-8 py-12 lg:py-14">
-      <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-8">
+  <footer class="footer-root mt-16 bg-slate text-white">
+    <div class="h-1 w-full bg-lime" aria-hidden="true" />
+    <div class="mx-auto max-w-[1280px] px-4 py-12 pb-28 sm:px-8 lg:py-14 lg:pb-14">
+      <div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
+        <div class="text-right lg:col-span-5">
+          <NuxtLink to="/" class="inline-flex items-center">
+            <span class="text-xl font-black tracking-tight">Booklett</span>
+          </NuxtLink>
+          <p class="mt-3 max-w-sm text-sm leading-relaxed text-white/65">
+            فروشگاه آنلاین کتاب با جلد اصل، قیمت روی جلد و ارسال به سراسر کشور.
+            از انتخاب کتاب تا پرداخت زرین‌پال، مسیر کوتاه است.
+          </p>
+          <ul class="mt-5 space-y-2.5 text-sm text-white/70">
+            <li class="flex items-center gap-2">
+              <AppIcon icon="mdi:email-outline" class="h-4 w-4 shrink-0 text-lime" />
+              <a href="mailto:hello@booklett.ir" class="hover:text-lime">hello@booklett.ir</a>
+            </li>
+            <li class="flex items-center gap-2">
+              <AppIcon icon="mdi:clock-outline" class="h-4 w-4 shrink-0 text-lime" />
+              شنبه تا پنجشنبه، ۹ صبح تا ۹ شب
+            </li>
+            <li class="flex items-start gap-2">
+              <AppIcon icon="mdi:map-marker-outline" class="mt-0.5 h-4 w-4 shrink-0 text-lime" />
+              تهران، میدان انقلاب
+            </li>
+          </ul>
+          <div class="mt-5 flex gap-2">
+            <a
+              v-for="social in socialLinks"
+              :key="social.label"
+              :href="social.href"
+              :aria-label="social.label"
+              class="flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/70 transition-colors hover:border-lime hover:bg-lime hover:text-slate"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <AppIcon :icon="social.icon" class="h-4 w-4" />
+            </a>
+          </div>
+        </div>
 
         <div
-          v-for="(section, index) in footerSections"
+          v-for="section in footerSections"
           :key="section.title"
-          class="text-right lg:col-auto lg:row-auto"
-          :class="mobileSectionGridClass(index)"
+          class="text-right lg:col-span-2"
+          :class="section.wide ? 'lg:col-span-3' : ''"
         >
-          <h2 class="flex items-center gap-2 text-sm font-bold tracking-wide text-slate mb-4">
-            <AppIcon :icon="section.icon" class="w-4 h-4 text-slate/50" />
-            {{ section.title }}
-          </h2>
-          <template v-if="section.type === 'contact'">
-            <ul class="space-y-3 text-sm text-slate/60">
-              <li class="flex items-start gap-2">
-                <AppIcon icon="mdi:map-marker-outline" class="w-4 h-4 shrink-0 mt-0.5 text-slate/40" />
-                <span>تهران، میدان انقلاب</span>
-              </li>
-              <li class="flex items-center gap-2">
-                <AppIcon icon="mdi:email-outline" class="w-4 h-4 shrink-0 text-slate/40" />
-                <a href="mailto:hello@booklett.ir" class="footer-link">hello@booklett.ir</a>
-              </li>
-            </ul>
-            <div class="flex gap-2 mt-5">
-              <a
-                v-for="social in socialLinks"
-                :key="social.label"
-                :href="social.href"
-                :aria-label="social.label"
-                class="w-9 h-9 flex items-center justify-center rounded-full bg-cream border border-slate/10 text-slate/60 hover:text-slate hover:border-slate/20 transition-colors"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <AppIcon :icon="social.icon" class="w-4 h-4" />
-              </a>
-            </div>
-          </template>
-          <ul v-else class="space-y-2.5">
+          <h2 class="mb-4 text-sm font-bold text-white">{{ section.title }}</h2>
+          <ul class="space-y-2.5">
             <li v-for="link in section.links" :key="link.label">
-              <NuxtLink :to="link.to" class="footer-link text-sm text-slate/60 hover:text-slate transition-colors">
+              <NuxtLink :to="link.to" class="text-sm text-white/65 transition-colors hover:text-lime">
                 {{ link.label }}
               </NuxtLink>
             </li>
@@ -48,41 +57,38 @@
         </div>
       </div>
 
-      <div class="mt-12 pt-6 border-t border-slate/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate/45">
+      <div class="mt-10 grid gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-4 sm:grid-cols-3 sm:px-5">
+        <p
+          v-for="badge in trustBadges"
+          :key="badge.label"
+          class="flex items-center gap-2 text-xs font-bold text-white/75"
+        >
+          <AppIcon :icon="badge.icon" class="h-4 w-4 shrink-0 text-lime" />
+          {{ badge.label }}
+        </p>
+      </div>
+
+      <div class="mt-8 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/45 sm:flex-row">
         <p>© {{ currentYear }} Booklett — فروشگاه آنلاین کتاب</p>
-        <p>{{ footerTagline }}</p>
+        <p>پرداخت امن با زرین‌پال (حالت آزمایشی)</p>
       </div>
     </div>
   </footer>
 </template>
 
 <script setup lang="ts">
-type FooterLink = {
-  label: string
-  to: string
-}
-
-type FooterSection = {
-  title: string
-  icon: string
-  type?: 'contact'
-  links?: FooterLink[]
-}
-
-const footerSections: FooterSection[] = [
+const footerSections = [
   {
     title: 'فروشگاه',
-    icon: 'mdi:book-open-page-variant',
     links: [
       { label: 'تازه‌ها', to: '/new' },
       { label: 'پرفروش‌ها', to: '/bestseller' },
       { label: 'پیشنهاد روز', to: '/daily-offers' },
-      { label: 'درباره ما', to: '/about' },
+      { label: 'علاقه‌مندی‌ها', to: '/wishlist' },
     ],
   },
   {
     title: 'حساب کاربری',
-    icon: 'mdi:account-outline',
     links: [
       { label: 'ورود / ثبت‌نام', to: '/login' },
       { label: 'سبد خرید', to: '/cart' },
@@ -90,18 +96,15 @@ const footerSections: FooterSection[] = [
     ],
   },
   {
-    title: 'راهنما',
-    icon: 'mdi:help-circle-outline',
+    title: 'راهنما و پشتیبانی',
+    wide: true,
     links: [
-      { label: 'راهنمای خرید', to: '/about' },
-      { label: 'سوالات متداول', to: '/about' },
-      { label: 'بازگشت کالا', to: '/about' },
+      { label: 'درباره ما', to: '/about' },
+      { label: 'راهنمای خرید', to: '/about#guide' },
+      { label: 'سوالات متداول', to: '/about#faq' },
+      { label: 'بازگشت کالا', to: '/about#returns' },
+      { label: 'ایمیل پشتیبانی', to: '/about' },
     ],
-  },
-  {
-    title: 'تماس با ما',
-    icon: 'mdi:email-outline',
-    type: 'contact',
   },
 ]
 
@@ -111,28 +114,17 @@ const socialLinks = [
   { label: 'Telegram', icon: 'mdi:telegram', href: 'https://telegram.org' },
 ]
 
+const trustBadges = [
+  { icon: 'mdi:truck-fast-outline', label: 'ارسال ۳ تا ۵ روز کاری' },
+  { icon: 'mdi:shield-check-outline', label: 'پرداخت امن زرین‌پال' },
+  { icon: 'mdi:backup-restore', label: 'بازگشت کالا تا ۷ روز' },
+]
+
 const currentYear = new Date().getFullYear()
-
-const footerTagline = 'اعتماد شما، اعتبار ماست.'
-
-/** موبایل: ۲×۲ — ردیف۱ فروشگاه|حساب، ردیف۲ راهنما|تماس؛ دسکتاپ: lg:grid-cols-4 */
-function mobileSectionGridClass(index: number): string {
-  const placement: Record<number, string> = {
-    0: 'col-start-1 row-start-1', // فروشگاه
-    1: 'col-start-2 row-start-1', // حساب کاربری
-    2: 'col-start-1 row-start-2',
-    3: 'col-start-2 row-start-2' 
-  }
-  return placement[index] ?? ''
-}
 </script>
 
 <style scoped>
 .footer-root {
   direction: rtl;
-}
-
-.footer-link:hover {
-  color: rgb(67 80 88);
 }
 </style>

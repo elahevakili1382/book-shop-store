@@ -1,65 +1,62 @@
 <template>
-  <div
-    class="group flex flex-col h-full rounded-3xl overflow-hidden bg-white border border-slate/8
-           shadow-card hover:shadow-card-hover transition-all duration-300
-           hover:-translate-y-1.5 cursor-pointer w-full max-w-[280px] mx-auto"
+  <article
+    class="group flex h-full w-full flex-col overflow-hidden border border-slate/8 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+    :class="compact ? 'rounded-xl' : 'rounded-2xl'"
   >
     <NuxtLink v-if="productUrl" :to="productUrl" class="relative block overflow-hidden">
-      <div class="relative bg-gradiant-to-b from-cream to-white p-3 pb-0">
-        <NuxtImg
-          :src="displayImage"
-          :alt="props.product.title"
-          class="w-full aspect-[4/5] object-cover rounded-2xl
-                 transition-transform duration-500 group-hover:scale-[1.04]"
-          :sizes="sizes"
-          width="260"
-          height="320"
-          format="webp"
-          loading="lazy"
-        />
+      <img
+        :src="displayImage"
+        :alt="props.product.title"
+        class="aspect-[3/4] w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+        width="240"
+        height="320"
+        loading="lazy"
+        @error="onCoverError"
+      />
 
-        <span v-if="props.product.category" class="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-slate/90 text-white text-[10px] font-bold">{{ props.product.category }}</span>
-        <div
-          v-if="props.product.rating"
-          class="absolute bottom-3 left-3 flex items-center gap-1 px-2.5 py-1 rounded-full
-                 bg-white/95 backdrop-blur text-xs font-bold text-slate shadow-card"
-        >
-          <AppIcon icon="mdi:star" class="w-3.5 h-3.5 text-lime" />
-          {{ props.product.rating }}
-        </div>
+      <span
+        v-if="props.product.category && !compact"
+        class="absolute right-2.5 top-2.5 rounded-full bg-slate/90 px-2 py-0.5 text-[10px] font-bold text-white"
+      >
+        {{ props.product.category }}
+      </span>
+      <div
+        v-if="props.product.rating"
+        :class="compact ? 'bottom-1.5 left-1.5 px-1.5 py-0.5 text-[10px]' : 'bottom-2.5 left-2.5 px-2 py-1 text-xs'"
+        class="absolute flex items-center gap-1 rounded-full bg-white/95 font-bold text-slate shadow-card"
+      >
+        <AppIcon icon="mdi:star" class="h-3.5 w-3.5 text-lime" />
+        {{ props.product.rating }}
       </div>
     </NuxtLink>
 
-    <div class="flex flex-col flex-1 px-4 pt-3 pb-4">
-      <NuxtLink v-if="productUrl" :to="productUrl" class="flex-1">
+    <div class="flex flex-1 flex-col" :class="compact ? 'px-2 pb-2 pt-2' : 'px-3 pb-3 pt-3'">
+      <NuxtLink v-if="productUrl" :to="productUrl" :class="compact ? 'min-h-[2rem]' : 'min-h-[2.5rem]'">
         <h2
-          class="text-sm sm:text-base font-bold text-slate leading-snug mb-2 line-clamp-2 min-h-[2.75rem]
-                 group-hover:text-slate/80 transition-colors"
+          class="line-clamp-2 font-bold leading-snug text-slate group-hover:text-slate/80"
+          :class="compact ? 'text-xs' : 'text-sm'"
         >
           {{ props.product.title }}
         </h2>
-        <p class="font-black text-slate">
-          {{ formattedPrice }}
-        </p>
       </NuxtLink>
 
-      <button
-        type="button"
-        :disabled="outOfStock"
-        class="mt-4 w-full py-2.5 rounded-2xl bg-slate text-white flex items-center justify-center gap-2
-               text-sm font-bold transition-all duration-300 hover:opacity-90
-               group-hover:bg-lime group-hover:text-slate active:scale-[0.98]
-               disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:opacity-50"
-        @click.prevent.stop="addProduct"
-      >
-        <AppIcon icon="mdi:cart-plus" class="w-4 h-4" />
-        <span>
-          {{ outOfStock ? 'ناموجود' : justAdded ? 'اضافه شد ✓' : 'افزودن به سبد' }}
-        </span>
-
-      </button>
+      <div class="mt-auto flex items-center justify-between gap-2" :class="compact ? 'pt-2' : 'pt-3'">
+        <p class="truncate font-black text-slate" :class="compact ? 'text-xs' : 'text-sm'">
+          {{ formattedPrice }}
+        </p>
+        <button
+          type="button"
+          :disabled="outOfStock"
+          :class="compact ? 'h-8 w-8' : 'h-10 w-10'"
+          class="inline-flex shrink-0 items-center justify-center rounded-full bg-slate text-white transition-all duration-300 hover:bg-lime hover:text-slate active:scale-95 disabled:cursor-not-allowed disabled:bg-slate/30 disabled:text-white"
+          :aria-label="cartLabel"
+          @click.prevent.stop="addProduct"
+        >
+          <AppIcon :icon="cartIcon" :class="compact ? 'h-4 w-4' : 'h-5 w-5'" />
+        </button>
+      </div>
     </div>
-  </div>
+  </article>
 </template>
 
 <script setup lang="ts">
@@ -70,29 +67,37 @@ import { productPath } from '../../utils/slugify'
 const toast = useToast()
 const justAdded = ref(false)
 
-const props = defineProps<{
-  product: {
-    id?: string | number
-    _id?: string
-    slug?:string
-    stock?: number
-    title: string
-    image?: string
-    price: number
-    rating?: number
-    category?:string
-  }
-}>()
+const props = withDefaults(
+  defineProps<{
+    compact?: boolean
+    product: {
+      id?: string | number
+      _id?: string
+      slug?: string
+      titleEn?: string
+      stock?: number
+      title: string
+      image?: string
+      price: number
+      rating?: number
+      category?: string
+    }
+  }>(),
+  { compact: false }
+)
 
 const productId = computed(
   () => props.product.id ?? props.product._id ?? props.product.title
 )
 
 const FALLBACK = '/images/NonFictionIcon(1).svg'
-
 const displayImage = computed(() => props.product.image || FALLBACK)
-
 const cartStore = useCartStore()
+
+function onCoverError(e: Event) {
+  const el = e.target as HTMLImageElement
+  if (el && !el.src.endsWith(FALLBACK)) el.src = FALLBACK
+}
 
 const formattedPrice = computed(() =>
   new Intl.NumberFormat('fa-IR').format(props.product.price) + ' تومان'
@@ -100,19 +105,22 @@ const formattedPrice = computed(() =>
 
 const productUrl = computed(() => productPath(props.product))
 
+const outOfStock = computed(() => (props.product.stock ?? 1) === 0)
 
-function isOutOfStock(stock: number): boolean {
-  return stock === 0
-}
+const cartIcon = computed(() => {
+  if (outOfStock.value) return 'mdi:cart-off'
+  if (justAdded.value) return 'mdi:check'
+  return 'mdi:cart-plus'
+})
 
-
-const outOfStock  = computed(() =>{
-  const stock = props.product.stock ?? 1
-  return isOutOfStock(stock)
+const cartLabel = computed(() => {
+  if (outOfStock.value) return 'ناموجود'
+  if (justAdded.value) return 'به سبد اضافه شد'
+  return 'افزودن به سبد خرید'
 })
 
 function addProduct() {
-  if(outOfStock.value) return
+  if (outOfStock.value) return
   cartStore.addToCart(
     {
       id: productId.value,
@@ -129,8 +137,8 @@ function addProduct() {
   })
 
   justAdded.value = true
-  setTimeout(() =>{justAdded.value = false}, 1500)
+  setTimeout(() => {
+    justAdded.value = false
+  }, 1500)
 }
-
-const sizes = '(max-width: 640px) 90vw, (max-width: 768px) 250px, 280px'
 </script>

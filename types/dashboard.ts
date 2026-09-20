@@ -10,6 +10,21 @@ export interface User {
 
 export type OrderStatus = 'pending' | 'paid' | 'failed' | 'shipped'
 
+export interface ReviewItem {
+  id: string
+  bookSlug: string
+  bookTitle: string
+  authorName: string
+  rating: number
+  comment: string
+  createdAt: string
+}
+
+export interface ReviewsResponse {
+  reviews: ReviewItem[]
+  totalCount: number
+}
+
 export interface OrderItem {
   title: string
   price: number

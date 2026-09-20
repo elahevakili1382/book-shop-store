@@ -1,0 +1,27 @@
+import { defineEventHandler, createError } from 'h3'
+import { connectDB } from '../../utils/mongodb'
+import { ensureBookCatalog } from '../../utils/ensureBookCatalog'
+import { findBookByParam, getBookRouteParam, serializeBook } from '../../utils/bookLookup'
+
+export default defineEventHandler(async (event) => {
+  await connectDB()
+  await ensureBookCatalog()
+
+  const param = getBookRouteParam(event)
+  if (!param) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Book slug is required',
+    })
+  }
+
+  const book = await findBookByParam(param)
+  if (!book) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: 'Book not found',
+    })
+  }
+
+  return serializeBook(book)
+})

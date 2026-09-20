@@ -1,7 +1,7 @@
 <template>
   <section class="overflow-x-hidden">
     <SectionHeader
-      eyebrow="New Arrivals"
+      eyebrow="تازه‌ها"
       title="جدیدترین کتاب‌ها"
       link-to="/new"
       link-label="همه تازه‌ها"
@@ -25,9 +25,10 @@
           @swiper="onSwiper"
           :space-between="12"
           :breakpoints="{
-            640: { slidesPerView: 2.15, spaceBetween: 12 },
-            768: { slidesPerView: 3, spaceBetween: 16 },
-            1024: { slidesPerView: 4, spaceBetween: 16 },
+            640: { slidesPerView: 3.1, spaceBetween: 10 },
+            768: { slidesPerView: 4.2, spaceBetween: 12 },
+            1024: { slidesPerView: 5.2, spaceBetween: 12 },
+            1280: { slidesPerView: 6, spaceBetween: 14 },
           }"
         >
           <SwiperSlide
@@ -35,7 +36,7 @@
             :key="product.id ?? product._id"
             class="peek-slide h-auto"
           >
-            <ProductCard :product="product" />
+            <ProductCard :product="product" compact />
           </SwiperSlide>
         </Swiper>
       </div>
@@ -44,18 +45,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { computed, ref } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import type SwiperClass from 'swiper'
 import ProductCard from './ui/ProductCard.vue'
 import SectionHeader from './ui/SectionHeader.vue'
 import { useProductStore } from '../stores/productStore'
-import type { Product } from '../../types/types'
 import 'swiper/css'
 
 const productStore = useProductStore()
-const localProducts = ref<Product[]>([])
-const isLoading = ref(false)
 const swiperInstance = ref<SwiperClass | null>(null)
 const swiperReady = ref(false)
 
@@ -66,17 +64,12 @@ const onSwiper = (swiper: SwiperClass) => {
 
 const slideNext = () => swiperInstance.value?.slideNext()
 const slidePrev = () => swiperInstance.value?.slidePrev()
-const products = computed(() => localProducts.value)
 
-onMounted(async () => {
-  isLoading.value = true
-  try {
-    await productStore.fetchCategoryProducts('programming')
-    localProducts.value = [...productStore.products]
-  } finally {
-    isLoading.value = false
-  }
+const { data, pending: isLoading } = await useAsyncData('new-arrivals-programming', async () => {
+  return await productStore.fetchCategoryProducts('programming')
 })
+
+const products = computed(() => data.value ?? [])
 </script>
 
 <style scoped>
@@ -84,7 +77,7 @@ onMounted(async () => {
   overflow: visible !important;
 }
 .peek-slide {
-  width: 232px;
+  width: 8.25rem;
   flex-shrink: 0;
   display: flex;
   height: auto;

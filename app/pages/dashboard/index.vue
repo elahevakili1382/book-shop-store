@@ -1,23 +1,35 @@
 <!-- pages/dashboard/index.vue -->
 <template>
   <div class="space-y-8">
-    <!-- 🔹 بخش کارت‌های بالایی -->
     <ProgressCard />
-    <ProjectAnalytics />
+
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+      <div class="xl:col-span-2">
+        <ProjectAnalytics />
+      </div>
+      <RevenueSummary />
+    </div>
+
     <DetailTable />
 
+    <div class="grid grid-cols-1 gap-5 xl:grid-cols-2">
+      <RecentReviews />
+      <div class="space-y-5">
+        <CategoryChart />
+        <UserRegistrationChart />
+      </div>
+    </div>
   </div>
-
-
 </template>
 
 <script setup lang="ts">
-
-import ProgressCard from '../../components/dashboard/ProgressCard.vue';
-import ProjectAnalytics from '../../components/dashboard/ProjectAnalytics.vue';
-import DetailTable from '../../components/dashboard/DetailTable.vue';
-
-
+import ProgressCard from '../../components/dashboard/ProgressCard.vue'
+import ProjectAnalytics from '../../components/dashboard/ProjectAnalytics.vue'
+import RevenueSummary from '../../components/dashboard/RevenueSummary.vue'
+import DetailTable from '../../components/dashboard/DetailTable.vue'
+import RecentReviews from '../../components/dashboard/RecentReviews.vue'
+import CategoryChart from '../../components/dashboard/CategoryChart.vue'
+import UserRegistrationChart from '../../components/dashboard/UserRegistrationChart.vue'
 
 definePageMeta({
   title: 'داشبورد ادمین',

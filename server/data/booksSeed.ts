@@ -1,5 +1,9 @@
-import { BOOK_COVER_DOWNLOADS, LOCAL_BOOK_IMAGES } from './localBookImages'
+import { ISBN_BY_TITLE } from './localBookImages'
 import { slugify } from '../utils/slugify'
+
+function openLibraryCover(isbn: string) {
+  return `https://covers.openlibrary.org/b/isbn/${isbn}-L.jpg`
+}
 
 export interface BookSeedEntry {
   title: string
@@ -319,16 +323,38 @@ const PERSIAN_TITLES: Record<string, string> = {
   'The Selfish Gene': 'ژن خودخواه',
 }
 
-const TITLES_EN = Object.keys(LOCAL_BOOK_IMAGES)
+const TITLES_EN = [
+  'Clean Code',
+  'JavaScript: The Good Parts',
+  'Atomic Habits',
+  'The Pragmatic Programmer',
+  'Design Patterns',
+  "You Don't Know JS",
+  'Deep Work',
+  'The 7 Habits of Highly Effective People',
+  'Mindset',
+  '1984',
+  'The Alchemist',
+  'To Kill a Mockingbird',
+  'The Kite Runner',
+  'Sapiens',
+  'Guns, Germs, and Steel',
+  'The Silk Roads',
+  "Charlotte's Web",
+  "Harry Potter and the Sorcerer's Stone",
+  'A Brief History of Time',
+  'The Selfish Gene',
+] as const
 
 export const BOOKS_SEED: BookSeedEntry[] = TITLES_EN.map((titleEn, i) => {
   const meta = BOOK_META[i]!
+  const isbn = ISBN_BY_TITLE[titleEn]!
   return {
     title: PERSIAN_TITLES[titleEn] ?? titleEn,
     titleEn,
     slug: slugify(titleEn),
-    image: LOCAL_BOOK_IMAGES[titleEn]!,
-    isbn: BOOK_COVER_DOWNLOADS[i]!.isbn,
+    image: openLibraryCover(isbn),
+    isbn,
     ...meta,
   }
 })

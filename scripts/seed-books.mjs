@@ -123,7 +123,28 @@ const BOOK_META = [
   { author: 'Richard Dawkins', description: 'نگاه تکاملی به ژن‌ها.', price: 330000, category: 'science', stock: 8, rating: 4.4, pages: 360, publisher: 'Oxford University Press', format: 'جلد شومیز', publishedYear: 1976 },
 ]
 
-const ENGLISH_TITLES = Object.keys(LOCAL_BOOK_IMAGES)
+const ENGLISH_TITLES = [
+  'Clean Code',
+  'JavaScript: The Good Parts',
+  'Atomic Habits',
+  'The Pragmatic Programmer',
+  'Design Patterns',
+  "You Don't Know JS",
+  'Deep Work',
+  'The 7 Habits of Highly Effective People',
+  'Mindset',
+  '1984',
+  'The Alchemist',
+  'To Kill a Mockingbird',
+  'The Kite Runner',
+  'Sapiens',
+  'Guns, Germs, and Steel',
+  'The Silk Roads',
+  "Charlotte's Web",
+  "Harry Potter and the Sorcerer's Stone",
+  'A Brief History of Time',
+  'The Selfish Gene',
+]
 
 const BOOKS = ENGLISH_TITLES.map((titleEn, i) => {
   const meta = BOOK_META[i]
@@ -131,7 +152,7 @@ const BOOKS = ENGLISH_TITLES.map((titleEn, i) => {
     title: TITLE_FA[titleEn] ?? titleEn,
     titleEn,
     slug: slugify(titleEn),
-    image: LOCAL_BOOK_IMAGES[titleEn] ?? '/images/default-book.jpg',
+    image: `https://covers.openlibrary.org/b/isbn/${ISBN_BY_TITLE[titleEn]}-L.jpg`,
     isbn: ISBN_BY_TITLE[titleEn] ?? '',
     reviewCount: REVIEW_COUNTS[i] ?? 0,
     ...meta,

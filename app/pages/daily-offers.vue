@@ -1,118 +1,13 @@
-<template>
-  <section class="max-w-[1400px] mx-auto px-4 py-10">
-    <!-- تیتر -->
-    <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-gray-800 mb-2 text-center">
-      پیشنهادهای روز
-    </h1>
-    <span class="block w-12 h-1 bg-[#DCF763] rounded-full mx-auto mb-6"></span>
-
- <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
-  <!-- جستجو -->
-  <input
-    v-model="searchQuery"
-    type="text"
-    placeholder="جستجوی کتاب..."
-    class="w-full sm:w-1/2 px-4 py-2 border rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-[#DCF763] "
-  />
-
-  <!-- سلکت دسته -->
-  <select
-    v-model="selectedCategory"
-    class="px-4 py-2 border rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-[#DCF763] "
-  >
-    <option value="">همه دسته‌ها</option>
-    <option v-for="cat in categoryStore.categories" :key="cat.slug" :value="cat.slug">
-      {{ cat.name }}
-    </option>
-  </select>
-
-  <!-- دکمه اعمال فیلتر -->
-  <button
-    @click="applyFilter"
-    class="bg-[#DCF763] text-gray-900 px-6 py-2 rounded-lg font-semibold hover:bg-[#c5e450] transition "
-  >
-    اعمال فیلتر
-  </button>
-</div>
-
-
-    <!-- وضعیت بارگذاری -->
-    <div v-if="store.isLoading" class="text-center py-20 text-gray-500">
-      در حال بارگذاری محصولات...
-    </div>
-
-    <!-- خطا -->
-    <div v-if="store.error" class="text-center py-20 text-red-500">
-      {{ store.error }}
-    </div>
-
-    <!-- پنج ردیف پیشنهاد روز -->
-    <div v-if="!store.isLoading && !store.error" class="space-y-12">
-      <div v-for="row in 5" :key="`row-${row}`" class="relative">
-        <client-only>
-          <Swiper
-            :modules="[Navigation, Pagination]"
-            :navigation="{prevEl:`.prev-${row}`, nextEl:`.next-${row}`}"
-            :pagination="{el:`.pagination-${row}`, clickable:true}"
-            :space-between="20"
-            :slides-per-view="5"
-            :breakpoints="{
-              320: { slidesPerView: 1 },
-              640: { slidesPerView: 2 },
-              768: { slidesPerView: 3 },
-              1024: { slidesPerView: 5 }
-            }"
-            class="pb-6"
-          >
-            <SwiperSlide
-              v-for="product in getRowProducts(row)"
-              :key="product.id"
-              class="flex justify-items-center"
-            >
-              <ProductCard :product="product" />
-            </SwiperSlide>
-
-            <!-- Pagination -->
-            <div :class="`pagination-${row}`" class="flex justify-center gap-2 mt-4"></div>
-          </Swiper>
-        </client-only>
-
-        <!-- دکمه قبلی -->
-        <button
-          :class="`prev-${row}`"
-          class="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-[#DCF763] text-gray-700 shadow hover:bg-[#dcf763eb]"
-        >
-          ◀
-        </button>
-
-        <!-- دکمه بعدی -->
-        <button
-          :class="`next-${row}`"
-          class="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-[#DCF763] text-gray-700 shadow hover:bg-[#dcf763c0]"
-        >
-          ▶
-        </button>
-      </div>
-    </div>
-  </section>
-</template>
-
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue"
-import ProductCard from "../components/ui/ProductCard.vue"
-import { useProductStore } from "../stores/productStore"
-import { useCategoryStore } from "../stores/categories"
-import { Swiper, SwiperSlide } from "swiper/vue"
-import "swiper/css"
-import "swiper/css/navigation"
-import "swiper/css/pagination"
-import { Navigation, Pagination } from "swiper/modules"
+import { onMounted, ref } from 'vue'
+import ProductGrid from '../components/ui/ProductGrid.vue'
+import { useProductStore } from '../stores/productStore'
+import { useCategoryStore } from '../stores/categories'
 
 const store = useProductStore()
 const categoryStore = useCategoryStore()
-
-const searchQuery = ref("")
-const selectedCategory = ref("")
+const searchQuery = ref('')
+const selectedCategory = ref('')
 
 const applyFilter = async () => {
   if (searchQuery.value) {
@@ -131,16 +26,43 @@ onMounted(async () => {
   }
 })
 
-// تقسیم محصولات به ردیف‌ها
-const getRowProducts = (row: number) => {
-  const perRow = 10
-  const start = (row - 1) * perRow
-  return store.products.slice(start, start + perRow)
-}
+definePageMeta({ layout: 'default' })
+useSeoMeta({ title: 'پیشنهاد روز' })
 </script>
 
-<style>
-.font-asm {
-  font-family: 'Asym', sans-serif;
-}
-</style>
+<template>
+  <section class="mx-auto max-w-[1280px] px-4 py-10 sm:px-8">
+    <h1 class="text-center text-3xl font-black text-slate sm:text-4xl">پیشنهادهای روز</h1>
+    <span class="mx-auto mb-8 mt-3 block h-1 w-12 rounded-full bg-lime" />
+
+    <div class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+      <input
+        v-model="searchQuery"
+        type="search"
+        placeholder="جستجوی کتاب..."
+        class="w-full rounded-2xl border border-slate/10 bg-white px-4 py-2.5 text-sm shadow-card focus:outline-none focus:ring-2 focus:ring-lime sm:flex-1"
+      />
+      <select
+        v-model="selectedCategory"
+        class="w-full rounded-2xl border border-slate/10 bg-white px-4 py-2.5 text-sm shadow-card focus:outline-none focus:ring-2 focus:ring-lime sm:w-48"
+      >
+        <option value="">همه دسته‌ها</option>
+        <option v-for="cat in categoryStore.categories" :key="cat.slug" :value="cat.slug">
+          {{ cat.name }}
+        </option>
+      </select>
+      <button
+        type="button"
+        class="rounded-2xl bg-lime px-6 py-2.5 text-sm font-bold text-slate hover:opacity-90"
+        @click="applyFilter"
+      >
+        اعمال فیلتر
+      </button>
+    </div>
+
+    <div v-if="store.isLoading" class="py-20 text-center text-slate/50">در حال بارگذاری محصولات...</div>
+    <div v-else-if="store.error" class="py-20 text-center text-red-500">{{ store.error }}</div>
+    <ProductGrid v-else-if="store.products.length" :products="store.products" />
+    <p v-else class="py-16 text-center text-slate/50">پیشنهادی پیدا نشد.</p>
+  </section>
+</template>

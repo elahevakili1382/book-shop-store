@@ -1,10 +1,11 @@
-import { defineEventHandler, getCookie, createError } from 'h3'
+import { defineEventHandler, getCookie } from 'h3'
 import jwt from 'jsonwebtoken'
+import { AUTH_COOKIE } from '../utils/authCookie'
 
 const SECRET = process.env.JWT_SECRET || 'dev_secret'
 
 export default defineEventHandler(async (event) => {
-  const token = getCookie(event, 'auth_token')
+  const token = getCookie(event, AUTH_COOKIE)
   if (!token) {
     return { ok: false, user: null }
   }

@@ -3,7 +3,7 @@
     <h1 class="text-3xl font-bold mb-8">کتاب‌های دسته: {{ categoryName }}</h1>
 
     <div v-if="isLoading" class="text-center py-10">در حال بارگذاری...</div>
-    <div v-else-if="products.length" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 justify-items-center">
+    <div v-else-if="products.length" class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4">
       <ProductCard v-for="book in products" :key="book._id" :product="book" />
     </div>
     <p v-else class="text-gray-500">هیچ کتابی برای این دسته پیدا نشد.</p>

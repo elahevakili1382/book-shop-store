@@ -1,19 +1,19 @@
 <template>
-  <main class="home-page bg-cream min-h-screen overflow-x-hidden">
+  <main class="home-page min-h-screen overflow-x-hidden">
     <HeroSection />
 
     <div class="home-sections max-w-[1280px] mx-auto px-4 sm:px-8 pb-16 space-y-16 lg:space-y-20">
-       <SectionReveal>
-        <Features />
-      </SectionReveal>
-      <SectionReveal :delay="0.05">
-        <NewArrival />
-      </SectionReveal>
-      <SectionReveal :delay="0.08" direction="left">
-        <BestSelling />
-      </SectionReveal>
       <SectionReveal>
         <DealsOfDay />
+      </SectionReveal>
+      <SectionReveal :delay="0.05">
+        <BestSelling />
+      </SectionReveal>
+      <SectionReveal :delay="0.08" direction="left">
+        <NewArrival />
+      </SectionReveal>
+      <SectionReveal>
+        <Features />
       </SectionReveal>
       <SectionReveal direction="right">
         <ShopWithUs />

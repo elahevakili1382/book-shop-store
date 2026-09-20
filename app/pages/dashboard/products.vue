@@ -7,18 +7,13 @@
     نتیجه جستجو برای «{{ activeSearch }}»
   </p>
 
-  <productsTable
-    :products="products"
-    :loading="isLoading"
-    @add="onAddProduct"
-    @delete="onDeleteProduct"
-    @update="onUpdateProduct"
-  />
+  <productsTable :products="products" :loading="isLoading" @add="onAddProduct" @delete="onDeleteProduct"
+    @update="onUpdateProduct" />
 </template>
 
 <script setup lang="ts">
 import { computed, onMounted, watch } from 'vue'
-import { useDashboardSearch } from '~/composables/useDashboardSearch'
+import { useDashboardSearch } from '../../composables/useDashboardSearch'
 import { useProductStore } from '../../stores/productStore'
 import type { Product } from '~/types/types'
 import productsTable from '../../components/dashboard/productsTable.vue'
@@ -81,26 +76,31 @@ onMounted(() => {
   }
 })
 
-function onAddProduct(product: {
+async function onAddProduct(product: {
   title: string
   price: number
   category: string
   quantity: number
 }) {
-  const id = crypto.randomUUID()
-  store.addProduct({
-    id,
-    _id: id,
-    title: product.title,
-    price: product.price,
-    category: product.category,
-    quantity: product.quantity,
-    stock: product.quantity,
-    description: '',
-    image: '/images/NonFictionIcon(1).svg',
-    rating: 0,
-  })
+  try {
+    const created = await $fetch('/api/books', {
+      method: 'POST',
+      credentials: 'include',
+      body: {
+        title: product.title,
+        price: product.price,
+        category: product.category,
+        stock: product.quantity,
+      },
+    })
+
+    await store.fetchAllCategoriesProducts()
+  } catch (error) {
+    console.error('Create product failed:', error)
+  }
 }
+
+
 
 function onDeleteProduct(id: string) {
   store.deleteProduct(id)

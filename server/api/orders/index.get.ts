@@ -1,12 +1,12 @@
 import {defineEventHandler , createError, getQuery} from 'h3'
 import {connectDB} from '../../utils/mongodb'
 import {Order} from '../../models/Order'
-import {requireAuth} from '../../utils/requireAuth'
+import {requireAdmin} from '../../utils/requireAuth'
 
 export default defineEventHandler(async (event) => {
   try{
+  requireAdmin(event)
   await connectDB()
-      requireAuth(event)
   
         const query = getQuery(event)
         const limitRaw = query.limit
@@ -19,7 +19,8 @@ export default defineEventHandler(async (event) => {
 
   }))
 
-  } catch{
+  } catch(err: any){
+    if(err?.statusCode) throw err
     throw createError({
       statusMessage: 'سفارش ها نیامد',
       statusCode:500

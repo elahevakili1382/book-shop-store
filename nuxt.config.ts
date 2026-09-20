@@ -20,7 +20,7 @@ export default defineNuxtConfig({
     compatibilityVersion:4,
   },
     css: [
-    "@fontsource/vazir/index.css",
+    "~/assets/main.css",
   ],
   
 runtimeConfig: {
@@ -31,22 +31,39 @@ runtimeConfig: {
 
   app:{
     head:{
+      htmlAttrs: { lang: 'fa', dir: 'rtl' },
       title:"website",
-      titleTemplate:'%s | Book-store'
+      titleTemplate:'%s | Book-store',
+      link: [
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&display=swap',
+        },
+      ],
     }
-
   },
 
   $development:{
     app:{
       head:{
-        title:'Dev'
+        title:'Dev',
+        htmlAttrs: { lang: 'fa', dir: 'rtl' },
       }
     }
   },
 
+  build: {
+    transpile: ['vue-echarts', 'echarts', 'zrender'],
+  },
+  vite: {
+    ssr: {
+      noExternal: ['vue-echarts', 'echarts'],
+    },
+  },
   image: {
-    domains: ['fakestoreapi.com'],
+    domains: ['fakestoreapi.com', 'images.unsplash.com', 'covers.openlibrary.org'],
   },
 toast: {
   duration: 3000,

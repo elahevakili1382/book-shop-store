@@ -1,11 +1,11 @@
 import {defineEventHandler , createError, getQuery} from 'h3'
 import {connectDB} from '../../utils/mongodb'
 import {Invoice} from '../../models/Invoice'
-import {requireAuth} from '../../utils/requireAuth'
+import {requireAdmin} from '../../utils/requireAuth'
 
 export default defineEventHandler(async (event) => {
   try{
-    requireAuth(event)
+    requireAdmin(event)
     await connectDB()
 
     const query = getQuery(event)

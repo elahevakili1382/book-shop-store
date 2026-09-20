@@ -1,6 +1,9 @@
 <template>
   <div class="space-y-6">
-    <h2 class="text-2xl font-bold text-[#F5F2EB]">داشبورد ادمین</h2>
+    <div>
+      <h2 class="text-2xl font-bold text-[#F5F2EB]">نمای کلی کتاب‌فروشی</h2>
+      <p class="mt-1 text-sm text-[#A8A29E]">فروش، سفارش، موجودی و نظر مشتری‌ها</p>
+    </div>
 
     <div v-if="dashboardStore.loading" class="text-[#A8A29E]">
       در حال بارگذاری...
@@ -16,7 +19,6 @@
     </div>
 
     <template v-else>
-      <!-- متریک‌ها -->
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div v-for="(item, index) in dashboardCards" :key="item.label" class="rounded-2xl p-5 border border-[#2A2D36] shadow-lg shadow-black/30
                  transition duration-300 hover:-translate-y-0.5" :style="cardStyle(index)">
@@ -24,6 +26,7 @@
             <div>
               <h3 class="mb-2 text-sm font-medium text-[#A8A29E]">{{ item.label }}</h3>
               <p class="text-3xl font-bold text-[#F5F2EB]">{{ item.value }}</p>
+              <p v-if="item.hint" class="mt-1 text-xs text-[#A8A29E]">{{ item.hint }}</p>
             </div>
             <span class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" :style="iconBg(index)">
               <span class="text-sm font-black" :style="{ color: accentColor(index) }">
@@ -37,29 +40,39 @@
           </div>
         </div>
       </div>
-
-      <!-- جداول -->
-
     </template>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { useDashboardStore } from '../../stores/dashboard'
-import type { OrderStatus } from '../../../types/dashboard'
 
 const dashboardStore = useDashboardStore()
 dashboardStore.fetchDashboardData()
 
 const retry = () => dashboardStore.fetchDashboardData()
 
-
-
 const dashboardCards = computed(() => [
-  { label: 'تعداد کتاب‌ها', value: dashboardStore.totalBooks },
-  { label: 'کاربران فعال', value: dashboardStore.totalUsers },
-  { label: 'سفارشات امروز', value: dashboardStore.ordersToday },
-  { label: 'موجودی کل', value: dashboardStore.totalStock },
+  {
+    label: 'فروش',
+    value: `${dashboardStore.totalRevenue.toLocaleString('fa-IR')}`,
+    hint: 'تومان از سفارش‌های موفق',
+  },
+  {
+    label: 'سفارش',
+    value: dashboardStore.ordersToday.toLocaleString('fa-IR'),
+    hint: `${dashboardStore.pendingOrdersCount.toLocaleString('fa-IR')} در انتظار پرداخت`,
+  },
+  {
+    label: 'موجودی کم',
+    value: dashboardStore.lowStockCount.toLocaleString('fa-IR'),
+    hint: 'کمتر از ۵ نسخه',
+  },
+  {
+    label: 'نظرها',
+    value: dashboardStore.reviewsTotal.toLocaleString('fa-IR'),
+    hint: `میانگین امتیاز ${dashboardStore.averageRating.toLocaleString('fa-IR')}`,
+  },
 ])
 
 const accents = ['#DCF763', '#7EDCB5', '#FB7185', '#38BDF8']
@@ -78,7 +91,4 @@ function cardStyle(index: number) {
 function iconBg(index: number) {
   return { background: `${accentColor(index)}22` }
 }
-
-
-
 </script>

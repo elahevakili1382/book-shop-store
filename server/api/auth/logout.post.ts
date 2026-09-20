@@ -1,11 +1,7 @@
-import { defineEventHandler, setCookie } from 'h3'
+import { defineEventHandler } from 'h3'
+import { clearAuthCookie } from '../../utils/authCookie'
 
 export default defineEventHandler(async (event) => {
-  setCookie(event, 'auth_token', '', {
-    httpOnly: true,
-    sameSite: 'lax',
-    expires: new Date(0),
-    secure: process.env.NODE_ENV === 'production',
-  })
+  clearAuthCookie(event)
   return { ok: true }
 })

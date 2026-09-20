@@ -1,5 +1,5 @@
 <template>
-  <main class="cart-page bg-cream min-h-screen overflow-x-hidden">
+  <main class="cart-page min-h-screen overflow-x-hidden">
     <div class="relative max-w-[1120px] mx-auto px-4 sm:px-8 pt-8 sm:pt-12 pb-28 lg:pb-16">
       <!-- soft atmosphere -->
       <div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
@@ -45,6 +45,8 @@
             </NuxtLink>
           </div>
         </motion.header>
+
+        <CheckoutStepper v-if="cart.cartItems.length" current="cart" />
 
         <!-- empty state -->
         <motion.div
@@ -325,8 +327,8 @@
         :initial="{ y: 80, opacity: 0 }"
         :animate="{ y: 0, opacity: 1 }"
         :transition="{ duration: 0.4, delay: 0.2 }"
-        class="lg:hidden fixed bottom-0 inset-x-0 z-40 border-t border-slate/10
-               bg-white/95 backdrop-blur-md px-4 py-3 safe-bottom"
+        class="lg:hidden fixed bottom-[4.75rem] inset-x-0 z-30 border-t border-slate/10
+               bg-white/95 backdrop-blur-md px-4 py-3"
       >
         <div class="max-w-[1120px] mx-auto flex items-center gap-3">
           <div class="min-w-0 flex-1">
@@ -355,6 +357,7 @@
 import { ref, onMounted } from 'vue'
 import { AnimatePresence, motion } from 'motion-v'
 import { useCartStore } from '../stores/cart'
+import CheckoutStepper from '../components/ui/CheckoutStepper.vue'
 
 definePageMeta({
   layout: 'default',

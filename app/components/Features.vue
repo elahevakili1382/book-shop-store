@@ -1,7 +1,7 @@
 <template>
   <section>
     <SectionHeader
-      eyebrow="Browse"
+      eyebrow="دسته‌بندی"
       title="خرید با دسته‌بندی"
       subtitle="دسته را انتخاب کن و کتاب‌های همان موضوع را ببین"
       link-to="/new"
@@ -76,7 +76,7 @@
           <SwiperSlide
             v-for="product in products"
             :key="product.id ?? product._id"
-            class="!w-[240px] sm:!w-[260px] flex-shrink-0"
+            class="!w-[11.5rem] sm:!w-[13.5rem] flex-shrink-0"
           >
             <ProductCard :product="product" />
           </SwiperSlide>

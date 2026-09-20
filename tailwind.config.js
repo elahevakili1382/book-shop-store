@@ -33,6 +33,9 @@ export default {
         card: '0 8px 32px rgba(67,80,88,0.08)',
         'card-hover': '0 16px 48px rgba(67,80,88,0.12)',
       },
+      fontFamily: {
+        sans: ['Vazirmatn', 'Vazir', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
       backgroundImage: {
         'custom-gradient':
           'linear-gradient(180deg, #F1F2EE 0%, #D8D5D2 71.31%, rgba(235, 235, 231, 0) 100%)',
@@ -57,10 +60,6 @@ export default {
           '100%': { transform: 'translateX(50%)' },
         },
       },
-    },
-
-    fontFamily: {
-      sans: ['Vazir', 'sans-serif'],
     },
     container: {
       center: true,

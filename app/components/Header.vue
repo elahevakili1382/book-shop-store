@@ -1,5 +1,8 @@
 <template>
-  <header class="header-root sticky top-0 z-50 border-b border-slate/8 bg-white/85 backdrop-blur-md">
+  <header
+    class="header-root fixed inset-x-0 top-0 z-50 border-b transition-[transform,background-color,box-shadow,border-color] duration-300"
+    :class="headerClass"
+  >
     <div
       class="max-w-[1280px] mx-auto w-full px-4 sm:px-8 h-[4.25rem] flex items-center justify-between gap-3 md:gap-4"
     >
@@ -56,13 +59,13 @@
       <div class="hidden md:block relative flex-1 max-w-md" click-outside="closeDropdown">
         <AppIcon
           icon="mdi:magnify"
-          class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate/40 pointer-events-none"
+          class="pointer-events-none absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate/40"
         />
         <input
           v-model="searchQuery"
           type="text"
           placeholder="جستجو..."
-          class="w-full rounded-2xl py-2.5 pr-10 pl-3 bg-cream/80 border border-slate/10 text-right text-sm focus:outline-none focus:ring-1 focus:ring-slate/20"
+          class="w-full rounded-2xl py-2.5 pr-10 pl-3 text-right text-sm bg-cream/80 border border-slate/10 focus:outline-none focus:ring-1 focus:ring-slate/20"
           @input="handleInput"
         />
         <button
@@ -118,7 +121,7 @@
       <div class="relative flex md:hidden items-center gap-0.5 shrink-0">
         <button
           type="button"
-          class="p-2 text-slate rounded-full hover:bg-cream"
+          class="p-2 rounded-full text-slate hover:bg-cream"
           aria-label="جستجو"
           @click="isMobileSearchOpen = !isMobileSearchOpen"
         >
@@ -126,7 +129,7 @@
         </button>
         <button
           type="button"
-          class="p-2 text-slate rounded-full hover:bg-cream"
+          class="p-2 rounded-full text-slate hover:bg-cream"
           aria-label="منو"
           @click="ui.toggleMobileMenu()"
         >
@@ -181,17 +184,34 @@
           </span>
         </NuxtLink>
 
+        <template v-if="auth.isAuthenticated">
+          <NuxtLink
+            v-if="isAdmin"
+            to="/dashboard"
+            class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold border border-slate/15 bg-slate text-white hover:opacity-90 transition-colors"
+          >
+            داشبورد
+          </NuxtLink>
+          <button
+            type="button"
+            class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-slate hover:bg-cream"
+            @click="auth.logout()"
+          >
+            خروج
+          </button>
+        </template>
         <NuxtLink
+          v-else
           to="/login"
-          class="flex items-center gap-2 px-4 py-2 rounded-full border border-slate/15 bg-slate text-white text-sm font-bold hover:opacity-90 transition-colors"
+          class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold border border-slate/15 bg-slate text-white hover:opacity-90 transition-colors"
         >
           <AppIcon icon="mdi:account-outline" class="w-5 h-5" />
-          <span>ورود </span>
+          <span>ورود</span>
         </NuxtLink>
       </div>
     </div>
 
-    <!-- mobile drawer -->
+    <!-- drawer موبایل -->
     <Teleport to="body">
       <div
         v-if="ui.isMobileMenuOpen"
@@ -259,6 +279,23 @@
               </span>
             </NuxtLink>
             <NuxtLink
+              v-if="isAdmin"
+              to="/dashboard"
+              class="flex-1 text-center py-2.5 rounded-full bg-slate text-white text-sm font-bold"
+              @click="ui.closeMobileMenu()"
+            >
+              داشبورد
+            </NuxtLink>
+            <button
+              v-else-if="auth.isAuthenticated"
+              type="button"
+              class="flex-1 text-center py-2.5 rounded-full bg-slate text-white text-sm font-bold"
+              @click="ui.closeMobileMenu(); auth.logout()"
+            >
+              خروج
+            </button>
+            <NuxtLink
+              v-else
               to="/login"
               class="flex-1 text-center py-2.5 rounded-full bg-slate text-white text-sm font-bold"
               @click="ui.closeMobileMenu()"
@@ -270,6 +307,7 @@
       </div>
     </Teleport>
   </header>
+  <div class="h-[4.25rem]" aria-hidden="true" />
 </template>
 
 <script setup lang="ts">
@@ -284,20 +322,36 @@ import type { Product } from '~/types/types'
 const ui = useUIStore()
 const cart = useCartStore()
 const store = useProductStore()
+const auth = useAuthStore()
 const router = useRouter()
 const route = useRoute()
 const categoryStore = useCategoryStore()
 const isCategoryOpen = ref(false)
+const isAdmin = computed(() => {
+  const role = auth.user?.role
+  return role === 'admin' || role === 'super-admin'
+})
 
 const searchQuery = ref('')
 const isMobileSearchOpen = ref(false)
 const typing = ref(false)
+const headerHidden = ref(false)
+const headerSolid = ref(false)
+
+const headerClass = computed(() => {
+  const hidden = headerHidden.value && !ui.isMobileMenuOpen ? '-translate-y-full' : 'translate-y-0'
+  const look = headerSolid.value
+    ? 'border-solid border-slate/15 bg-white shadow-card'
+    : 'border-dashed border-slate/15 bg-white/90 backdrop-blur-md'
+  return `${hidden} ${look}`
+})
 
 const mobileNav = [
   { label: 'خانه', to: '/' },
   { label: 'تازه‌ها', to: '/new' },
   { label: 'پرفروش‌ها', to: '/bestseller' },
   { label: 'پیشنهاد روز', to: '/daily-offers' },
+  { label: 'علاقه‌مندی‌ها', to: '/wishlist' },
   { label: 'درباره ما', to: '/about' },
 ]
 
@@ -315,7 +369,7 @@ function navLinkClass(path: string, exact = true, block = false) {
   const base = block
     ? 'block px-4 py-3 rounded-xl text-sm font-bold transition-colors'
     : 'px-4 py-2 rounded-full text-sm font-bold transition-colors'
-  return isNavActive(path,exact)
+  return isNavActive(path, exact)
     ? `${base} bg-slate text-white`
     : `${base} text-slate/60 hover:text-slate hover:bg-cream`
 }
@@ -359,13 +413,36 @@ function closeOnDesktop() {
   if (window.innerWidth >= 768) ui.closeMobileMenu()
 }
 
+let lastScrollY = 0
+
+function onScroll() {
+  const y = window.scrollY
+  headerSolid.value = y > 8
+  if (ui.isMobileMenuOpen || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    headerHidden.value = false
+    lastScrollY = y
+    return
+  }
+  if (y < 56) {
+    headerHidden.value = false
+  } else if (y > lastScrollY + 8) {
+    headerHidden.value = true
+  } else if (y < lastScrollY - 8) {
+    headerHidden.value = false
+  }
+  lastScrollY = y
+}
+
 onMounted(() => {
   categoryStore.fetchCategories()
   window.addEventListener('resize', closeOnDesktop)
+  window.addEventListener('scroll', onScroll, { passive: true })
+  onScroll()
 })
 
 onUnmounted(() => {
   window.removeEventListener('resize', closeOnDesktop)
+  window.removeEventListener('scroll', onScroll)
 })
 
 watch(
@@ -405,5 +482,11 @@ watch(
 
 .mobile-drawer {
   animation: drawer-in 0.28s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-root {
+    transition: none;
+  }
 }
 </style>

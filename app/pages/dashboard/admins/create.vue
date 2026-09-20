@@ -2,6 +2,11 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+definePageMeta({
+  title: 'افزودن ادمین',
+  layout: 'dashboard',
+})
+
 const router = useRouter()
 const adminStore = useAdminStore()
 

@@ -1,4 +1,4 @@
-const DASHBOARD_ROLES = new Set<string>(['user', 'admin', 'super-admin'])
+const DASHBOARD_ROLES = new Set<string>(['admin', 'super-admin'])
 
 type AuthMeResponse = {
   ok: boolean
@@ -12,8 +12,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   let res: AuthMeResponse | null = null
 
+
   try {
-    // شاخه‌ها جدا — تا TS تایپ $fetch و useRequestFetch را با هم قاطی نکند
     if (import.meta.server) {
       const requestFetch = useRequestFetch() as (url: string) => Promise<AuthMeResponse>
       res = await requestFetch('/api/user')

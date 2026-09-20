@@ -8,7 +8,19 @@ export function slugify(text: string): string {
     .replace(/^-+|-+$/g, '')
 }
 
-export function productPath(product: { slug?: string; title: string }): string {
-  const slug = product.slug ?? slugify(product.title)
-  return `/product/${slug}`
+export function productPath(product: {
+  slug?: string
+  title?: string
+  titleEn?: string
+  id?: string | number
+  _id?: string
+}): string {
+  const slug =
+    product.slug?.trim() ||
+    slugify(product.titleEn || '') ||
+    slugify(product.title || '')
+  if (slug) return `/product/${encodeURIComponent(slug)}`
+  const id = product.id ?? product._id
+  if (id) return `/product/${id}`
+  return '/new'
 }

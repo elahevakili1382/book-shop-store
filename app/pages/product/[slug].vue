@@ -1,5 +1,5 @@
 <template>
-  <main class="product-page bg-cream min-h-screen pb-24 lg:pb-16">
+  <main class="product-page min-h-screen pb-36 lg:pb-16">
     <div class="max-w-[1280px] mx-auto px-4 sm:px-8 pt-6 lg:pt-8">
       <!-- breadcrumb -->
       <nav class="flex flex-wrap items-center gap-1.5 text-xs text-slate/50 mb-6 lg:mb-8">
@@ -56,13 +56,12 @@
             >
               <div class="rounded-[1.75rem] overflow-hidden bg-white border border-slate/8 shadow-card p-4 sm:p-5">
                 <div class="relative rounded-2xl overflow-hidden bg-cream/60">
-                  <NuxtImg
+                  <img
                     :src="activeImage"
                     :alt="product.title"
                     width="420"
                     height="560"
                     class="w-full aspect-[4/5] object-cover"
-                    format="webp"
                   />
                   <span
                     v-if="categoryLabel"
@@ -83,7 +82,7 @@
                     ]"
                     @click="activeImage = img"
                   >
-                    <NuxtImg :src="img" :alt="`${product.title} ${idx + 1}`" class="w-full h-full object-cover" format="webp" />
+                    <img :src="img" :alt="`${product.title} ${idx + 1}`" class="w-full h-full object-cover" />
                   </button>
                 </div>
               </div>
@@ -238,10 +237,10 @@
                       class="w-full py-3.5 px-6 rounded-2xl bg-slate text-white font-bold text-sm
                              flex items-center justify-center gap-2 hover:bg-lime hover:text-slate transition-colors
                              disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate disabled:hover:text-white"
-                      @click="addToCart"
+                      @click="justAdded ? goToCart() : addToCart"
                     >
-                      <AppIcon icon="mdi:cart-plus" class="w-5 h-5" />
-                      {{ justAdded ? 'اضافه شد ✓' : inStock ? 'افزودن به سبد' : 'ناموجود' }}
+                      <AppIcon :icon="justAdded ? 'mdi:arrow-left' : 'mdi:cart-plus'" class="w-5 h-5" />
+                      {{ justAdded ? 'رفتن به سبد' : inStock ? 'افزودن به سبد' : 'ناموجود' }}
                     </motion.button>
                   </div>
                 </div>
@@ -279,10 +278,10 @@
                     class="flex-1 min-w-[140px] py-3.5 px-6 rounded-2xl bg-slate text-white font-bold text-sm
                            flex items-center justify-center gap-2 hover:bg-lime hover:text-slate transition-colors
                            disabled:opacity-50 disabled:cursor-not-allowed"
-                    @click="addToCart"
+                    @click="justAdded ? goToCart() : addToCart"
                   >
-                    <AppIcon icon="mdi:cart-plus" class="w-5 h-5" />
-                    {{ justAdded ? 'اضافه شد ✓' : inStock ? 'افزودن به سبد' : 'ناموجود' }}
+                    <AppIcon :icon="justAdded ? 'mdi:arrow-left' : 'mdi:cart-plus'" class="w-5 h-5" />
+                    {{ justAdded ? 'رفتن به سبد' : inStock ? 'افزودن به سبد' : 'ناموجود' }}
                   </button>
                 </div>
               </div>
@@ -326,7 +325,7 @@
             :show-nav="false"
           />
           <ClientOnly>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mt-6">
+            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 mt-6">
               <motion.div
                 v-for="(item, i) in relatedProducts"
                 :key="item._id"
@@ -346,7 +345,7 @@
     <!-- Sticky mobile bar -->
     <div
       v-if="product && !pending && !fetchError"
-      class="fixed inset-x-0 bottom-0 z-40 lg:hidden border-t border-slate/10 bg-white/95 backdrop-blur-md px-4 py-3 safe-bottom"
+      class="fixed inset-x-0 bottom-[4.75rem] z-30 lg:hidden border-t border-slate/10 bg-white/95 backdrop-blur-md px-4 py-3"
     >
       <div class="max-w-[1280px] mx-auto flex items-center gap-3">
         <div class="shrink-0">
@@ -380,10 +379,10 @@
           class="flex-1 py-3 rounded-2xl bg-slate text-white font-bold text-sm flex items-center justify-center gap-2
                  hover:bg-lime hover:text-slate transition-colors
                  disabled:opacity-50 disabled:cursor-not-allowed"
-          @click="addToCart"
+          @click="justAdded ? goToCart() : addToCart"
         >
-          <AppIcon icon="mdi:cart-plus" class="w-5 h-5" />
-          {{ justAdded ? 'اضافه شد ✓' : inStock ? 'افزودن به سبد' : 'ناموجود' }}
+          <AppIcon :icon="justAdded ? 'mdi:arrow-left' : 'mdi:cart-plus'" class="w-5 h-5" />
+          {{ justAdded ? 'رفتن به سبد' : inStock ? 'افزودن به سبد' : 'ناموجود' }}
         </button>
       </div>
     </div>
@@ -391,9 +390,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { motion } from 'motion-v'
 import { useCartStore } from '../../stores/cart'
+import { useWishlistStore } from '../../stores/wishlist'
 import type { ProductDetail } from '../../stores/productStore'
 import { mapBookToProduct } from '../../stores/productStore'
 import type { Product } from '~/types/types'
@@ -405,6 +405,7 @@ import { useCategoryStore } from '../../stores/categories'
 import type { ReviewsResponse } from '~/types/types'
 
 const cartStore = useCartStore()
+const wishlist = useWishlistStore()
 const categoryStore = useCategoryStore()
 const quantity = ref(1)
 const justAdded = ref(false)
@@ -423,7 +424,9 @@ const {
   () => `product-${slug.value}`,
   async () => {
     try {
-      return await $fetch<ProductDetail>(`/api/books/${slug.value}`)
+      const key = String(slug.value || '').trim()
+      if (!key) return null
+      return await $fetch<ProductDetail>(`/api/books/${encodeURIComponent(key)}`)
     } catch {
       return null
     }
@@ -470,41 +473,20 @@ const displayReviewCount = computed(() => {
   return product.value?.reviewCount ?? 0
 })
 
-const WISHLIST_KEY = 'booklett-wishlist'
-const wishlistIds = ref<string[]>([])
-
-onMounted(() => {
-  try {
-    const raw = localStorage.getItem(WISHLIST_KEY)
-    wishlistIds.value = raw ? JSON.parse(raw) : []
-  } catch {
-    wishlistIds.value = []
-  }
-})
-
 const isWishlisted = computed(() => {
   const id = product.value?._id ?? product.value?.id
-  return id ? wishlistIds.value.includes(String(id)) : false
+  return wishlist.has(id)
 })
-
-function persistWishlist() {
-  if (import.meta.client) {
-    localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlistIds.value))
-  }
-}
 
 function toggleWishlist() {
   const id = product.value?._id ?? product.value?.id
   if (!id) return
-  const key = String(id)
-  if (isWishlisted.value) {
-    wishlistIds.value = wishlistIds.value.filter((x) => x !== key)
-    toast.info({ message: 'از علاقه‌مندی‌ها حذف شد', position: 'topRight', timeout: 2000 })
-  } else {
-    wishlistIds.value = [...wishlistIds.value, key]
+  const added = wishlist.toggle(id)
+  if (added) {
     toast.success({ message: 'به علاقه‌مندی‌ها اضافه شد', position: 'topRight', timeout: 2000 })
+  } else {
+    toast.info({ message: 'از علاقه‌مندی‌ها حذف شد', position: 'topRight', timeout: 2000 })
   }
-  persistWishlist()
 }
 
 const fetchError = computed(() => {
@@ -630,7 +612,11 @@ const addToCart = () => {
   justAdded.value = true
   setTimeout(() => {
     justAdded.value = false
-  }, 1500)
+  }, 4000)
+}
+
+function goToCart() {
+  navigateTo('/cart')
 }
 </script>
 

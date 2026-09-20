@@ -1,7 +1,7 @@
 <template>
   <section class="rounded-[2rem] bg-white border border-slate/8 p-6 sm:p-8 lg:p-10 shadow-card overflow-x-hidden">
     <SectionHeader
-      eyebrow="Trending"
+      eyebrow="پرفروش"
       title="پرفروش‌ترین‌ها"
       subtitle="بر اساس دسته‌بندی انتخاب کن"
       link-to="/bestseller"
@@ -131,14 +131,14 @@ function selectCategory(slug: string) {
   overflow: visible !important;
 }
 .peek-slide {
-  width: 220px;
+  width: 11.5rem;
   flex-shrink: 0;
   display: flex;
   height: auto;
 }
 @media (min-width: 640px) {
   .peek-slide {
-    width: auto;
+    width: 13.5rem;
   }
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-custom-gradient">
+    <div class="font-sans">
         <NuxtLayout>
           <ToastContainer/>
             <NuxtPage/>
@@ -7,17 +7,18 @@
     </div>
 </template>
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { useCartStore } from '../app/stores/cart'
-import ToastContainer from './components/ToastContainer.vue'
+    import { onMounted } from 'vue'
+    import { useCartStore } from '../app/stores/cart'
+    import { useWishlistStore } from '../app/stores/wishlist'
+    import ToastContainer from './components/ToastContainer.vue'
 
+    const cartStore = useCartStore()
+    const wishlistStore = useWishlistStore()
 
-const cartStore = useCartStore()
-
-onMounted(() => {
-  useAuthStore().loadFromStorage()
-  cartStore.loadCart()
-})
+    onMounted(() => {
+      cartStore.loadCart()
+      wishlistStore.load()
+    })
 </script>
 <style>
 body {

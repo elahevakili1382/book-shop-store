@@ -1,142 +1,232 @@
 <template>
-  <div class="min-h-screen flex">
-    <!-- ستون تصویر -->
-    <div class="hidden md:flex w-1/2 bg-cover bg-center" style="background-image: url('/images/6870525.jpg')" ;>
-      <!-- لایه نیمه شفاف روی عکس -->
-      <!-- <div class="w-full h-full bg-black/30 flex items-center justify-center">
-        <h2 class="text-pink-800 text-4xl font-bold"></h2>
-      </div> -->
-    </div>
-
-    <!-- ستون فرم -->
-    <div class="flex-1 flex flex-col justify-center items-center px-6 sm:px-12 py-12 bg-gray-50">
-      <!-- لوگو یا عنوان -->
-      <h1 class="text-3xl font-bold mb-8 text-gray-800"> ورود | ثبت نام</h1>
-
-      <!-- تب‌ها -->
-      <div class="flex mb-8 border-b w-full max-w-md">
-        <button class="flex-1 py-2 font-semibold text-center"
-          :class="activeTab === 'login' ? 'border-b-2 border-pink-500 text-pink-600' : 'text-gray-500'"
-          @click="activeTab = 'login'">
-          ورود
-        </button>
-        <button class="flex-1 py-2 font-semibold text-center"
-          :class="activeTab === 'signup' ? 'border-b-2 border-pink-500 text-pink-600' : 'text-gray-500'"
-          @click="activeTab = 'signup'">
-          ثبت‌نام
-        </button>
+  <div class="min-h-screen bg-cream">
+    <div class="grid min-h-screen lg:grid-cols-2">
+      <div class="relative hidden overflow-hidden bg-slate lg:flex lg:flex-col lg:justify-between lg:p-12">
+        <NuxtLink to="/" class="text-lg font-black text-white">Booklett</NuxtLink>
+        <div>
+          <p class="text-sm font-bold text-lime">فروشگاه کتاب</p>
+          <h2 class="mt-3 max-w-sm text-3xl font-black leading-snug text-white">
+            ورود برای پیگیری سفارش، یا داشبورد اگر ادمین هستی
+          </h2>
+          <p class="mt-4 max-w-sm text-sm leading-relaxed text-white/60">
+            خرید بدون حساب هم ممکن است. این صفحه برای ورود ادمین و ثبت‌نام مشتری در محیط توسعه است.
+          </p>
+        </div>
+        <p class="text-xs text-white/40">بازگشت به فروشگاه از لوگوی بالا</p>
       </div>
 
-      <!-- فرم ورود -->
-      <form
-        v-if="activeTab === 'login'"
-        class="space-y-4 w-full max-w-md"
-        autocomplete="on"
-        @submit.prevent="() => handleLogin()"
-      >
-        <input v-model="loginData.email" type="email"
-          class="w-full border px-4 py-3 rounded-lg focus:ring-2 focus:ring-pink-200 outline-none" placeholder="ایمیل"
-          required />
-        <input v-model="loginData.password" type="password"
-          class="w-full border px-4 py-3 rounded-lg focus:ring-2 focus:ring-pink-200 outline-none"
-          placeholder="رمز عبور" required />
-        <button type="submit"
-          class="w-full bg-pink-500 text-white py-3 rounded-lg font-semibold hover:bg-pink-600 transition">
-          ورود
-        </button>
-      </form>
+      <div class="flex flex-col justify-center px-6 py-12 sm:px-12">
+        <NuxtLink to="/" class="mb-8 text-sm font-bold text-slate/50 hover:text-slate lg:hidden">
+          بازگشت به فروشگاه
+        </NuxtLink>
 
-      <!-- فرم ثبت‌نام -->
-      <form v-else @submit.prevent="handleSignup" class="space-y-4 w-full max-w-md" autocomplete="on">
-        <input v-model="signupData.name" type="text"
-          class="w-full border px-4 py-3 rounded-lg focus:ring-2 focus:ring-pink-200 outline-none"
-          placeholder="نام و نام خانوادگی" required />
-        <input v-model="signupData.email" type="email"
-          class="w-full border px-4 py-3 rounded-lg focus:ring-2 focus:ring-pink-200 outline-none" placeholder="ایمیل"
-          required />
-        <input v-model="signupData.password" type="password"
-          class="w-full border px-4 py-3 rounded-lg focus:ring-2 focus:ring-pink-200 outline-none"
-          placeholder="رمز عبور" required />
-        <button type="submit"
-          class="w-full bg-pink-500 text-white py-3 rounded-lg font-semibold hover:bg-pink-600 transition">
-          ثبت‌نام
-        </button>
-      </form>
+        <h1 class="text-3xl font-black text-slate">{{ isRegister ? 'ثبت‌نام' : 'ورود' }}</h1>
+        <p class="mt-2 text-sm text-slate/50">
+          {{ isRegister ? 'یک حساب مشتری بساز و بعد وارد شو.' : 'ایمیل و رمز را وارد کن.' }}
+        </p>
+
+        <div v-if="canRegister" class="mt-6 grid grid-cols-2 rounded-2xl border border-slate/10 bg-white p-1">
+          <button
+            type="button"
+            class="rounded-xl py-2.5 text-sm font-bold transition-colors"
+            :class="!isRegister ? 'bg-slate text-white' : 'text-slate/50 hover:text-slate'"
+            @click="isRegister = false"
+          >
+            ورود
+          </button>
+          <button
+            type="button"
+            class="rounded-xl py-2.5 text-sm font-bold transition-colors"
+            :class="isRegister ? 'bg-slate text-white' : 'text-slate/50 hover:text-slate'"
+            @click="isRegister = true"
+          >
+            ثبت‌نام
+          </button>
+        </div>
+
+        <form v-if="isRegister" class="mt-8 space-y-4" autocomplete="on" @submit.prevent="handleRegister">
+          <label class="block text-sm font-bold text-slate">
+            نام
+            <input
+              v-model="registerData.name"
+              type="text"
+              required
+              class="mt-1.5 w-full rounded-2xl border border-slate/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-lime/60"
+              placeholder="نام و نام خانوادگی"
+            />
+          </label>
+          <label class="block text-sm font-bold text-slate">
+            ایمیل
+            <input
+              v-model="registerData.email"
+              type="email"
+              required
+              autocomplete="email"
+              class="mt-1.5 w-full rounded-2xl border border-slate/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-lime/60"
+              placeholder="you@email.com"
+            />
+          </label>
+          <label class="block text-sm font-bold text-slate">
+            رمز عبور
+            <input
+              v-model="registerData.password"
+              :type="showPassword ? 'text' : 'password'"
+              required
+              minlength="6"
+              autocomplete="new-password"
+              class="mt-1.5 w-full rounded-2xl border border-slate/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-lime/60"
+              placeholder="حداقل ۶ کاراکتر"
+            />
+          </label>
+          <button
+            type="submit"
+            :disabled="busy"
+            class="w-full rounded-2xl bg-slate py-3.5 text-sm font-bold text-white hover:bg-lime hover:text-slate disabled:opacity-50"
+          >
+            ساخت حساب
+          </button>
+        </form>
+
+        <form v-else class="mt-8 space-y-4" autocomplete="on" @submit.prevent="handleLogin()">
+          <label class="block text-sm font-bold text-slate">
+            ایمیل
+            <input
+              v-model="loginData.email"
+              type="email"
+              required
+              autocomplete="email"
+              class="mt-1.5 w-full rounded-2xl border border-slate/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-lime/60"
+              placeholder="ایمیل"
+            />
+          </label>
+          <label class="block text-sm font-bold text-slate">
+            رمز عبور
+            <div class="relative mt-1.5">
+              <input
+                v-model="loginData.password"
+                :type="showPassword ? 'text' : 'password'"
+                required
+                autocomplete="current-password"
+                class="w-full rounded-2xl border border-slate/10 bg-white px-4 py-3 pl-12 text-sm outline-none focus:ring-2 focus:ring-lime/60"
+                placeholder="رمز عبور"
+              />
+              <button
+                type="button"
+                class="absolute left-3 top-1/2 -translate-y-1/2 text-slate/40 hover:text-slate"
+                :aria-label="showPassword ? 'پنهان کردن رمز' : 'نمایش رمز'"
+                @click="showPassword = !showPassword"
+              >
+                <AppIcon :icon="showPassword ? 'mdi:eye-off-outline' : 'mdi:eye-outline'" class="h-5 w-5" />
+              </button>
+            </div>
+          </label>
+          <button
+            type="submit"
+            :disabled="busy"
+            class="w-full rounded-2xl bg-slate py-3.5 text-sm font-bold text-white hover:bg-lime hover:text-slate disabled:opacity-50"
+          >
+            ورود
+          </button>
+        </form>
+
+        <p v-if="isDev" class="mt-8 rounded-2xl border border-slate/10 bg-white px-4 py-3 text-xs leading-relaxed text-slate/55">
+          برای دیدن داشبورد ادمین:
+          <span class="font-bold text-slate" dir="ltr">admin@booklett.ir</span>
+          با رمز
+          <span class="font-bold text-slate" dir="ltr">BooklettAdmin123</span>
+        </p>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { reactive, ref } from 'vue'
 
 const toast = useToast()
 const auth = useAuthStore()
+const route = useRoute()
 
-const activeTab = ref<'login' | 'signup'>('login')
+const isRegister = ref(false)
+const showPassword = ref(false)
+const busy = ref(false)
+const canRegister = import.meta.dev
+const isDev = import.meta.dev
 
-// بهتر reactive برای اشیاء فرم
 const loginData = reactive({ email: '', password: '' })
-const signupData = reactive({ name: '', email: '', password: '' })
+const registerData = reactive({ name: '', email: '', password: '' })
 
-const handleLogin = async (email?: string, password?: string) => {
+function isAdminRole(role?: string) {
+  return role === 'admin' || role === 'super-admin'
+}
+
+function nextPath(role?: string) {
+  const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : ''
+  if (redirect.startsWith('/') && !redirect.startsWith('//')) return redirect
+  return isAdminRole(role) ? '/dashboard' : '/'
+}
+
+function persianAuthError(err: any) {
+  const raw = String(err?.data?.statusMessage || err?.statusMessage || err?.message || '')
+  const map: Record<string, string> = {
+    'User not found': 'ایمیلی با این مشخصات پیدا نشد',
+    'Invalid password': 'رمز عبور اشتباه است',
+    'Email and password are required': 'ایمیل و رمز را کامل کن',
+    'All fields are required': 'همه فیلدها الزامی است',
+    'Password must be at least 6 characters': 'رمز باید حداقل ۶ کاراکتر باشد',
+    'Email already registered': 'این ایمیل قبلاً ثبت شده',
+    'Registration is disabled': 'ثبت‌نام در این محیط بسته است',
+  }
+  return map[raw] || raw || 'خطا در ورود'
+}
+
+async function handleLogin(email?: string, password?: string) {
+  busy.value = true
   try {
-    const emailToSend =
-      typeof email === 'string' ? email : loginData.email
-    const passwordToSend = typeof password === 'string' ? password : loginData.password
     const res: any = await $fetch('/api/auth/login', {
       method: 'POST',
       body: {
-        email: String(emailToSend || '').trim(),
-        password: String(passwordToSend || ''),
+        email: String(email ?? loginData.email).trim(),
+        password: String(password ?? loginData.password),
       },
     })
 
     if (res?.ok) {
-      auth.login(res.user, res.token)
-
+      auth.login(res.user)
       toast.success({
         title: 'موفق',
         message: 'ورود موفقیت‌آمیز بود',
         position: 'topRight',
       })
-
-      await navigateTo('/dashboard')
+      await navigateTo(nextPath(res.user?.role))
     }
   } catch (err: any) {
-    toast.error(err?.data?.statusMessage || err?.statusMessage || err?.message || 'خطا در ورود')
+    toast.error(persianAuthError(err))
+  } finally {
+    busy.value = false
   }
 }
 
-const handleSignup = async () => {
+async function handleRegister() {
+  busy.value = true
   try {
-    const res = await $fetch('/api/auth/register', {
+    await $fetch('/api/auth/register', {
       method: 'POST',
       body: {
-        name: signupData.name,
-        email: signupData.email,
-        password: signupData.password,
+        name: registerData.name.trim(),
+        email: registerData.email.trim(),
+        password: registerData.password,
       },
     })
-
-    if ((res as any).ok) {
-      toast.success({
-        title: 'ثبت‌نام موفق',
-        message: `${signupData.name} عزیز، خوش آمدی!`,
-        position: 'topRight',
-      })
-
-      await handleLogin(signupData.email, signupData.password)
-    }
+    await handleLogin(registerData.email, registerData.password)
   } catch (err: any) {
-    toast.error(err?.data?.statusMessage || err?.statusMessage || err?.message || 'خطا در ثبت‌نام')
+    toast.error(persianAuthError(err))
+    busy.value = false
   }
 }
 
-definePageMeta({ layout: 'auth' })
+definePageMeta({
+  layout: 'auth',
+  middleware: 'guest-only',
+})
 </script>
-<style>
-div.bg-cover {
-  min-height: 100vh;
-  /* یا هر ارتفاعی که باید باشه */
-}
-</style>

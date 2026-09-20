@@ -1,4 +1,4 @@
-import {defineStore} from 'pinia'
+import { defineStore } from 'pinia'
 
 interface User {
   id: string
@@ -7,57 +7,55 @@ interface User {
   role?: string
 }
 
-export const useAuthStore = defineStore('auth', {
-    state: () =>({
-        user: null as User | null,
-        token: null as string | null,
-        isAuthenticated: false
-    }),
-
-    actions:{
-        login(user: User, token: string) {
-            this.user = user
-            this.token = token
-            this.isAuthenticated = true
-
-            //برای رفرش صفحه
-            if(process.client){
-                 localStorage.setItem('token', token)
-            localStorage.setItem('user', JSON.stringify(user))
-
-            }
-           
-        },
-
-        loadFromStorage(){
-            if(!process.client) return
-            const token = localStorage.getItem('token')
-            const user = localStorage.getItem('user')
-
-            if (token && user) {
-                this.token = token
-                this.user = JSON.parse(user)
-                this.isAuthenticated = true  
-            }
-        },
-
-        initAuth(){
-            if (process.server) return
-            this.loadFromStorage()
-
-        },
-
-       logout() {
-  this.user = null
-  this.token = null
-  this.isAuthenticated = false
-
-  if (process.client) {
-    localStorage.clear()
-  }
-
-  navigateTo('/login')
+type MeResponse = {
+  ok: boolean
+  user: User | null
 }
 
-    }
+function clearLegacyAuthStorage() {
+  if (!import.meta.client) return
+  localStorage.removeItem('token')
+  localStorage.removeItem('user')
+}
+
+export const useAuthStore = defineStore('auth', {
+  state: () => ({
+    user: null as User | null,
+    isAuthenticated: false,
+  }),
+
+  actions: {
+    setUser(user: User | null) {
+      this.user = user
+      this.isAuthenticated = Boolean(user)
+    },
+
+    login(user: User) {
+      this.setUser(user)
+      clearLegacyAuthStorage()
+    },
+
+    async fetchSession() {
+      try {
+        const fetcher = import.meta.server ? useRequestFetch() : $fetch
+        const res = await fetcher<MeResponse>('/api/user')
+        this.setUser(res?.ok && res.user ? res.user : null)
+      } catch {
+        this.setUser(null)
+      } finally {
+        clearLegacyAuthStorage()
+      }
+    },
+
+    async logout() {
+      try {
+        await $fetch('/api/auth/logout', { method: 'POST' })
+      } catch {
+        // cookie may already be gone
+      }
+      this.setUser(null)
+      clearLegacyAuthStorage()
+      await navigateTo('/login')
+    },
+  },
 })
