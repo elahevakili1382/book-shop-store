@@ -6,10 +6,6 @@
       subtitle="دسته را انتخاب کن و کتاب‌های همان موضوع را ببین"
       link-to="/new"
       link-label="مشاهده همه"
-      :show-nav="!!products.length && !isLoading"
-      :nav-ready="swiperReady"
-      @prev="slidePrev"
-      @next="slideNext"
     />
 
     <ClientOnly>
@@ -70,13 +66,12 @@
           :slides-per-view="'auto'"
           :space-between="16"
           grab-cursor
-          @swiper="onSwiper"
           class="!pb-2 !overflow-visible"
         >
           <SwiperSlide
             v-for="product in products"
             :key="product.id ?? product._id"
-            class="!w-[11.5rem] sm:!w-[13.5rem] flex-shrink-0"
+            class="!w-[min(72vw,17.5rem)] sm:!w-[15.5rem] lg:!w-[14.75rem] flex-shrink-0"
           >
             <ProductCard :product="product" />
           </SwiperSlide>
@@ -99,7 +94,6 @@ import { motion } from 'motion-v'
 import { useCategoryStore } from '../stores/categories'
 import { useProductStore } from '../stores/productStore'
 import { Swiper, SwiperSlide } from 'swiper/vue'
-import type { Swiper as SwiperClass } from 'swiper'
 import ProductCard from './ui/ProductCard.vue'
 import SectionHeader from './ui/SectionHeader.vue'
 import type { Category } from '../stores/categories'
@@ -121,17 +115,6 @@ const activeCategoryName = computed(() =>
 )
 
 const products = computed(() => localProducts.value)
-
-const swiperInstance = ref<SwiperClass | null>(null)
-const swiperReady = ref(false)
-
-const onSwiper = (swiper: SwiperClass) => {
-  swiperInstance.value = swiper
-  swiperReady.value = true
-}
-
-const slideNext = () => swiperInstance.value?.slideNext()
-const slidePrev = () => swiperInstance.value?.slidePrev()
 
 async function loadCategoryProducts(slug: string) {
   isLoading.value = true

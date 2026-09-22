@@ -23,20 +23,14 @@
           class="peek-swiper"
           slides-per-view="auto"
           @swiper="onSwiper"
-          :space-between="12"
-          :breakpoints="{
-            640: { slidesPerView: 3.1, spaceBetween: 10 },
-            768: { slidesPerView: 4.2, spaceBetween: 12 },
-            1024: { slidesPerView: 5.2, spaceBetween: 12 },
-            1280: { slidesPerView: 6, spaceBetween: 14 },
-          }"
+          :space-between="14"
         >
           <SwiperSlide
             v-for="product in products"
             :key="product.id ?? product._id"
             class="peek-slide h-auto"
           >
-            <ProductCard :product="product" compact />
+            <ProductCard :product="product" />
           </SwiperSlide>
         </Swiper>
       </div>
@@ -77,14 +71,19 @@ const products = computed(() => data.value ?? [])
   overflow: visible !important;
 }
 .peek-slide {
-  width: 8.25rem;
+  width: min(72vw, 17.5rem);
   flex-shrink: 0;
   display: flex;
   height: auto;
 }
 @media (min-width: 640px) {
   .peek-slide {
-    width: auto;
+    width: 15.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .peek-slide {
+    width: 14.75rem;
   }
 }
 </style>

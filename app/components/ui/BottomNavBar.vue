@@ -61,13 +61,13 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { motion } from 'motion-v'
-import { Heart, Home, ShoppingBag, User } from 'lucide-vue-next'
+import { Heart, Home, LayoutDashboard, ShoppingBag, User } from 'lucide-vue-next'
 import { cn } from '~/lib/utils'
 import { useAuthStore } from '../../stores/authStore'
 import { useCartStore } from '../../stores/cart'
 import { useWishlistStore } from '../../stores/wishlist'
 
-const LABEL_WIDTH = 56
+const LABEL_WIDTH = 72
 
 const props = withDefaults(
   defineProps<{
@@ -94,7 +94,22 @@ const accountTo = computed(() =>
   auth.isAuthenticated ? '/account' : '/login?redirect=/account',
 )
 
-const items = computed(() => [
+const isAdmin = computed(() => {
+  const role = auth.user?.role
+  return role === 'admin' || role === 'super-admin'
+})
+
+const dashboardTo = computed(() => (isAdmin.value ? '/dashboard' : '/login#demo'))
+
+type NavItem = {
+  label: string
+  to: string
+  icon: typeof Home
+  badge?: number
+  match: (path: string) => boolean
+}
+
+const items = computed((): NavItem[] => [
   { label: 'خانه', to: '/', icon: Home, match: (path: string) => path === '/' },
   {
     label: 'علاقه‌ها',
@@ -116,6 +131,12 @@ const items = computed(() => [
     icon: User,
     match: (path: string) =>
       path.startsWith('/account') || path.startsWith('/login'),
+  },
+  {
+    label: 'داشبورد',
+    to: dashboardTo.value,
+    icon: LayoutDashboard,
+    match: (path: string) => path.startsWith('/dashboard'),
   },
 ])
 

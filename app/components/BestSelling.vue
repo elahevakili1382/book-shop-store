@@ -47,14 +47,8 @@
               grab-cursor
               class="peek-swiper"
               slides-per-view="auto"
-              :space-between="12"
+              :space-between="14"
               @swiper="onSwiper"
-              :breakpoints="{
-                640: { slidesPerView: 1.5, spaceBetween: 12 },
-                768: { slidesPerView: 2.15, spaceBetween: 16 },
-                1024: { slidesPerView: 3, spaceBetween: 16 },
-                1280: { slidesPerView: 3.5, spaceBetween: 16 },
-              }"
             >
               <SwiperSlide
                 v-for="product in products"
@@ -133,14 +127,19 @@ function selectCategory(slug: string) {
   overflow: visible !important;
 }
 .peek-slide {
-  width: 11.5rem;
+  width: min(72vw, 17.5rem);
   flex-shrink: 0;
   display: flex;
   height: auto;
 }
 @media (min-width: 640px) {
   .peek-slide {
-    width: 13.5rem;
+    width: 15.5rem;
+  }
+}
+@media (min-width: 1024px) {
+  .peek-slide {
+    width: 14.75rem;
   }
 }
 </style>

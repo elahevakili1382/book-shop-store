@@ -1,9 +1,9 @@
 <template>
   <footer class="footer-root mt-16 bg-slate text-white">
     <div class="h-1 w-full bg-lime" aria-hidden="true" />
-    <div class="mx-auto max-w-[1280px] px-4 py-12 pb-28 sm:px-8 lg:py-14 lg:pb-14">
-      <div class="grid gap-10 lg:grid-cols-12 lg:gap-8">
-        <div class="text-right lg:col-span-5">
+    <div class="mx-auto max-w-[1280px] px-4 py-10 pb-[calc(6.75rem+env(safe-area-inset-bottom))] sm:px-8 lg:py-14 lg:pb-14">
+      <div class="grid grid-cols-1 gap-8 min-w-0 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
+        <div class="min-w-0 text-right sm:col-span-2 lg:col-span-5">
           <NuxtLink to="/" class="inline-flex items-center">
             <span class="text-xl font-black tracking-tight">Booklett</span>
           </NuxtLink>
@@ -25,7 +25,7 @@
               تهران، میدان انقلاب
             </li>
           </ul>
-          <div class="mt-5 flex gap-2">
+          <div class="mt-5 flex flex-wrap gap-2">
             <a
               v-for="social in socialLinks"
               :key="social.label"
@@ -43,13 +43,13 @@
         <div
           v-for="section in footerSections"
           :key="section.title"
-          class="text-right lg:col-span-2"
-          :class="section.wide ? 'lg:col-span-3' : ''"
+          class="min-w-0 text-right lg:col-span-2"
+          :class="section.wide ? 'sm:col-span-2 lg:col-span-3' : ''"
         >
-          <h2 class="mb-4 text-sm font-bold text-white">{{ section.title }}</h2>
-          <ul class="space-y-2.5">
+          <h2 class="mb-3 text-sm font-bold text-white">{{ section.title }}</h2>
+          <ul class="space-y-1">
             <li v-for="link in section.links" :key="link.label">
-              <NuxtLink :to="link.to" class="text-sm text-white/65 transition-colors hover:text-lime">
+              <NuxtLink :to="link.to" class="inline-flex min-h-10 items-center text-sm text-white/65 transition-colors hover:text-lime">
                 {{ link.label }}
               </NuxtLink>
             </li>
@@ -57,18 +57,18 @@
         </div>
       </div>
 
-      <div class="mt-10 grid gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-4 sm:grid-cols-3 sm:px-5">
+      <div class="mt-8 grid grid-cols-1 gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-4 sm:grid-cols-3 sm:px-5">
         <p
           v-for="badge in trustBadges"
           :key="badge.label"
-          class="flex items-center gap-2 text-xs font-bold text-white/75"
+          class="flex min-h-10 items-center gap-2 text-xs font-bold leading-snug text-white/75"
         >
           <AppIcon :icon="badge.icon" class="h-4 w-4 shrink-0 text-lime" />
           {{ badge.label }}
         </p>
       </div>
 
-      <div class="mt-8 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/45 sm:flex-row">
+      <div class="mt-8 flex flex-col items-center justify-between gap-2 border-t border-white/10 pt-5 text-center text-xs leading-relaxed text-white/45 sm:flex-row sm:text-right">
         <p>© {{ currentYear }} Booklett — فروشگاه آنلاین کتاب</p>
         <p>پرداخت امن با زرین‌پال (حالت آزمایشی)</p>
       </div>

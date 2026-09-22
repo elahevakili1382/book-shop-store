@@ -227,60 +227,82 @@
           >
           <nav class="flex flex-col gap-1">
             <NuxtLink
+              to="/"
+              :class="navLinkClass('/', true, true)"
+              @click="ui.closeMobileMenu()"
+            >
+              <AppIcon icon="mdi:home-outline" class="h-5 w-5 shrink-0" />
+              خانه
+            </NuxtLink>
+
+            <button
+              type="button"
+              class="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-slate/70 transition-colors hover:bg-cream"
+              @click="isCategoryOpen = !isCategoryOpen"
+            >
+              <AppIcon icon="mdi:shape-outline" class="h-5 w-5 shrink-0" />
+              <span class="flex-1 text-right">دسته‌بندی‌ها</span>
+              <AppIcon
+                :icon="isCategoryOpen ? 'mdi:chevron-up' : 'mdi:chevron-down'"
+                class="h-5 w-5 text-slate/45"
+              />
+            </button>
+            <div v-show="isCategoryOpen" class="flex flex-col gap-1 pb-1">
+              <NuxtLink
+                v-for="cat in categoryStore.categories"
+                :key="cat.slug"
+                :to="`/category/${cat.slug}`"
+                class="flex items-center gap-3 rounded-xl px-4 py-2.5 pr-8 text-sm font-semibold text-slate/70 transition-colors hover:bg-cream hover:text-slate"
+                @click="ui.closeMobileMenu()"
+              >
+                <AppIcon icon="mdi:book-outline" class="h-4 w-4 shrink-0 text-slate/40" />
+                <span class="min-w-0 truncate">{{ cat.name }}</span>
+                <span class="text-xs text-slate/40">({{ cat.items }})</span>
+              </NuxtLink>
+            </div>
+
+            <NuxtLink
               v-for="item in mobileNav"
               :key="item.to"
               :to="item.to"
               :class="navLinkClass(item.to, true, true)"
               @click="ui.closeMobileMenu()"
             >
+              <AppIcon :icon="item.icon" class="h-5 w-5 shrink-0" />
               {{ item.label }}
             </NuxtLink>
           </nav>
 
-          <div class="flex flex-col gap-2">
-            <button type="button" @click="isCategoryOpen = !isCategoryOpen" class="flex items-center justify-between w-full px-4 py-3 rounded-xl text-sm font-bold text-slate/70 hover:bg-cream transition-colors" >
-                <span>دسته‌بندی‌ها</span>
-                  <AppIcon
-                    :icon="isCategoryOpen ? 'mdi:chevron-up' : 'mdi:chevron-down'"
-                    class="w-5 h-5 text-slate/45"
-                  />
-            </button>
-
-            <div v-show="isCategoryOpen" class="flex flex-col gap-1">
-               <NuxtLink
-              v-for="cat in categoryStore.categories"
-              :key="cat.slug"
-              :to="`/category/${cat.slug}`"
-              class="block px-4 py-2.5 rounded-xl text-sm font-semibold text-slate/70 hover:bg-cream hover:text-slate transition-colors"
-              @click="ui.closeMobileMenu()"
-            >
-              {{ cat.name }}
-              <span class="text-slate/40 text-xs">({{ cat.items }})</span>
-            </NuxtLink>
-            </div>
-           
-          </div>
-
-          <div class="flex items-center gap-3 pt-4 mt-auto border-t border-slate/10">
+          <div class="mt-auto flex items-center gap-3 border-t border-slate/10 pt-4">
             <NuxtLink
               to="/cart"
-              class="relative w-10 h-10 flex items-center justify-center rounded-full bg-slate text-white shrink-0"
+              class="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate text-white"
+              aria-label="سبد خرید"
               @click="ui.closeMobileMenu()"
             >
-              <AppIcon icon="mdi:cart-outline" class="w-5 h-5" />
+              <AppIcon icon="mdi:cart-outline" class="h-5 w-5" />
               <span
                 v-if="cart.cartCount"
-                class="absolute -bottom-0.5 -left-0.5 bg-lime text-slate text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full"
+                class="absolute -bottom-0.5 -left-0.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-lime px-1 text-[10px] font-bold text-slate"
               >
                 {{ cart.cartCount }}
               </span>
             </NuxtLink>
             <NuxtLink
               :to="accountTo"
-              class="flex-1 text-center py-2.5 rounded-full bg-slate text-white text-sm font-bold"
+              class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-slate/15 bg-white text-slate"
+              aria-label="پنل کاربری"
               @click="ui.closeMobileMenu()"
             >
-              پنل کاربری
+              <AppIcon icon="mdi:account-outline" class="h-5 w-5" />
+            </NuxtLink>
+            <NuxtLink
+              :to="dashboardTo"
+              class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-lime text-slate"
+              aria-label="داشبورد"
+              @click="ui.closeMobileMenu()"
+            >
+              <AppIcon icon="mdi:view-dashboard-outline" class="h-5 w-5" />
             </NuxtLink>
           </div>
           </aside>
@@ -319,6 +341,8 @@ const accountTo = computed(() =>
   auth.isAuthenticated ? '/account' : '/login?redirect=/account',
 )
 
+const dashboardTo = computed(() => (isAdmin.value ? '/dashboard' : '/login#demo'))
+
 const searchQuery = ref('')
 const isMobileSearchOpen = ref(false)
 const typing = ref(false)
@@ -334,13 +358,11 @@ const headerClass = computed(() => {
 })
 
 const mobileNav = [
-  { label: 'خانه', to: '/' },
-  { label: 'تازه‌ها', to: '/new' },
-  { label: 'پرفروش‌ها', to: '/bestseller' },
-  { label: 'پیشنهاد روز', to: '/daily-offers' },
-  { label: 'علاقه‌مندی‌ها', to: '/wishlist' },
-  { label: 'پنل کاربری', to: '/account' },
-  { label: 'درباره ما', to: '/about' },
+  { label: 'تازه‌ها', to: '/new', icon: 'mdi:new-box' },
+  { label: 'پرفروش‌ها', to: '/bestseller', icon: 'mdi:fire' },
+  { label: 'پیشنهاد روز', to: '/daily-offers', icon: 'mdi:brightness-percent' },
+  { label: 'علاقه‌مندی‌ها', to: '/wishlist', icon: 'mdi:heart-outline' },
+  { label: 'درباره ما', to: '/about', icon: 'mdi:information-outline' },
 ]
 
 let timer: ReturnType<typeof setTimeout> | null = null
@@ -355,7 +377,7 @@ function isNavActive(path: string, exact = true): boolean {
 
 function navLinkClass(path: string, exact = true, block = false) {
   const base = block
-    ? 'block px-4 py-3 rounded-xl text-sm font-bold transition-colors'
+    ? 'flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-colors'
     : 'px-4 py-2 rounded-full text-sm font-bold transition-colors'
   return isNavActive(path, exact)
     ? `${base} bg-slate text-white`
