@@ -55,14 +55,14 @@
 
       <!-- mini sparkline chart -->
       <client-only>
-        <ApexChart v-if="series.length > 0" type="area" height="120" :options="chartOptions" :series="series" />
+        <ApexChart v-if="chartAlive && series.length > 0" type="area" height="120" :options="chartOptions" :series="series" />
       </client-only>
     </template>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import type { ApexOptions } from 'apexcharts'
 
 type RevenueData = {
@@ -85,6 +85,7 @@ const data = ref<RevenueData>({
 const loading = ref(true)
 const error = ref<string | null>(null)
 const ApexChart = defineAsyncComponent(() => import('vue3-apexcharts'))
+const chartAlive = ref(true)
 
 const series = computed(() => [
   { name: 'درآمد', data: [data.value.lastMonthRevenue, data.value.currentMonthRevenue] },
@@ -96,6 +97,7 @@ const chartOptions = computed<ApexOptions>(() => ({
     toolbar: { show: false },
     background: 'transparent',
     sparkline: { enabled: true },
+    animations: { enabled: false },
   },
   theme: { mode: 'dark' },
   colors: ['#DCF763'],
@@ -134,4 +136,7 @@ async function fetchRevenue() {
 }
 
 onMounted(fetchRevenue)
+onBeforeUnmount(() => {
+  chartAlive.value = false
+})
 </script>

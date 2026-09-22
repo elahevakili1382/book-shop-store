@@ -139,29 +139,83 @@
       <div class="max-h-[92vh] w-full max-w-lg overflow-y-auto rounded-t-3xl border border-dash-border bg-dash-card p-5 text-dash-text sm:rounded-2xl sm:p-6">
         <h3 class="mb-4 text-lg font-semibold">ویرایش محصول</h3>
 
-        <form v-if="editProduct" class="space-y-3" @submit.prevent="submitEditProduct">
-          <input v-model="editProduct.title" type="text" required placeholder="نام کتاب" :class="fieldClass" />
-          <div class="grid grid-cols-2 gap-2">
-            <input v-model="editProduct.author" type="text" placeholder="نویسنده" :class="fieldClass" />
-            <input v-model="editProduct.publisher" type="text" placeholder="ناشر" :class="fieldClass" />
-          </div>
-          <select v-model="editProduct.category" required :class="fieldClass">
-            <option v-for="cat in categoryOptions" :key="cat" :value="cat">{{ categoryLabel(cat) }}</option>
-          </select>
-          <div class="grid grid-cols-2 gap-2">
-            <input v-model.number="editProduct.price" type="number" required placeholder="قیمت" :class="fieldClass" />
-            <input v-model.number="editProduct.quantity" type="number" min="0" placeholder="موجودی" :class="fieldClass" />
-          </div>
-          <input v-model.number="editProduct.pages" type="number" min="0" placeholder="تعداد صفحات" :class="fieldClass" />
+        <form v-if="editProduct" class="space-y-5" @submit.prevent="submitEditProduct">
+          <section class="space-y-3">
+            <p class="text-xs font-bold text-dash-muted">مشخصات کتاب</p>
+            <label class="block">
+              <span class="mb-1 block text-xs text-dash-muted">نام کتاب</span>
+              <input v-model="editProduct.title" type="text" required :class="fieldClass" />
+            </label>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">نویسنده</span>
+                <input v-model="editProduct.author" type="text" :class="fieldClass" />
+              </label>
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">مترجم</span>
+                <input v-model="editProduct.translator" type="text" :class="fieldClass" />
+              </label>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">ناشر</span>
+                <input v-model="editProduct.publisher" type="text" :class="fieldClass" />
+              </label>
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">شابک</span>
+                <input v-model="editProduct.isbn" type="text" dir="ltr" :class="fieldClass" />
+              </label>
+            </div>
+            <label class="block">
+              <span class="mb-1 block text-xs text-dash-muted">دسته‌بندی</span>
+              <select v-model="editProduct.category" required :class="fieldClass">
+                <option v-for="cat in categoryOptions" :key="cat" :value="cat">{{ categoryLabel(cat) }}</option>
+              </select>
+            </label>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">قیمت</span>
+                <input v-model.number="editProduct.price" type="number" required :class="fieldClass" />
+              </label>
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">موجودی</span>
+                <input v-model.number="editProduct.quantity" type="number" min="0" :class="fieldClass" />
+              </label>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">صفحات</span>
+                <input v-model.number="editProduct.pages" type="number" min="0" :class="fieldClass" />
+              </label>
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">سال نشر</span>
+                <input v-model.number="editProduct.publishedYear" type="number" min="1300" :class="fieldClass" />
+              </label>
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">قطع / جلد</span>
+                <select v-model="editProduct.format" :class="fieldClass">
+                  <option value="">انتخاب</option>
+                  <option v-for="fmt in formatOptions" :key="fmt" :value="fmt">{{ fmt }}</option>
+                </select>
+              </label>
+            </div>
+          </section>
 
-          <label class="block text-xs font-bold text-dash-muted">
-            توضیحات
-            <textarea v-model="editProduct.description" rows="4" placeholder="خلاصه کتاب برای صفحه محصول" :class="fieldClass + ' mt-1'" />
-          </label>
-          <label class="block text-xs font-bold text-dash-muted">
-            ویژگی‌ها
-            <textarea v-model="editFeaturesText" rows="4" placeholder="هر خط یک ویژگی، مثلاً جلد سخت" :class="fieldClass + ' mt-1'" />
-          </label>
+          <section class="space-y-2 border-t border-dash-border pt-4">
+            <label class="block">
+              <span class="mb-1 block text-sm font-bold text-dash-text">توضیحات</span>
+              <p class="mb-2 text-[11px] leading-relaxed text-dash-muted">خلاصه کتاب که در صفحه محصول دیده می‌شود.</p>
+              <textarea v-model="editProduct.description" rows="5" placeholder="این کتاب درباره چیست و برای چه کسی مناسب است؟" :class="fieldClass" />
+            </label>
+          </section>
+
+          <section class="space-y-2 border-t border-dash-border pt-4">
+            <label class="block">
+              <span class="mb-1 block text-sm font-bold text-dash-text">ویژگی‌ها</span>
+              <p class="mb-2 text-[11px] leading-relaxed text-dash-muted">هر خط یک مورد، مثل جلد سخت، ترجمه فارسی، قطع رقعی.</p>
+              <textarea v-model="editFeaturesText" rows="5" placeholder="جلد سخت&#10;ترجمه فارسی&#10;قطع رقعی" :class="fieldClass" />
+            </label>
+          </section>
 
           <div class="flex justify-end gap-3 pt-2">
             <button type="button" class="min-h-11 rounded-xl bg-dash-border px-4 text-sm" @click="closeEditModal">انصراف</button>
@@ -179,30 +233,84 @@
           <button type="button" class="text-dash-muted hover:text-dash-text" aria-label="بستن" @click="closeAddModal">✕</button>
         </div>
 
-        <form class="space-y-3" @submit.prevent="submitProduct">
-          <input v-model="form.title" type="text" required placeholder="نام کتاب" :class="fieldClass" />
-          <div class="grid grid-cols-2 gap-2">
-            <input v-model="form.author" type="text" placeholder="نویسنده" :class="fieldClass" />
-            <input v-model="form.publisher" type="text" placeholder="ناشر" :class="fieldClass" />
-          </div>
-          <select v-model="form.category" required :class="fieldClass">
-            <option value="" disabled>دسته‌بندی</option>
-            <option v-for="cat in categoryOptions" :key="cat" :value="cat">{{ categoryLabel(cat) }}</option>
-          </select>
-          <div class="grid grid-cols-2 gap-2">
-            <input v-model.number="form.price" type="number" required placeholder="قیمت" :class="fieldClass" />
-            <input v-model.number="form.quantity" type="number" min="0" placeholder="موجودی" :class="fieldClass" />
-          </div>
-          <input v-model.number="form.pages" type="number" min="0" placeholder="تعداد صفحات" :class="fieldClass" />
+        <form class="space-y-5" @submit.prevent="submitProduct">
+          <section class="space-y-3">
+            <p class="text-xs font-bold text-dash-muted">مشخصات کتاب</p>
+            <label class="block">
+              <span class="mb-1 block text-xs text-dash-muted">نام کتاب</span>
+              <input v-model="form.title" type="text" required :class="fieldClass" />
+            </label>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">نویسنده</span>
+                <input v-model="form.author" type="text" :class="fieldClass" />
+              </label>
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">مترجم</span>
+                <input v-model="form.translator" type="text" :class="fieldClass" />
+              </label>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">ناشر</span>
+                <input v-model="form.publisher" type="text" :class="fieldClass" />
+              </label>
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">شابک</span>
+                <input v-model="form.isbn" type="text" dir="ltr" :class="fieldClass" />
+              </label>
+            </div>
+            <label class="block">
+              <span class="mb-1 block text-xs text-dash-muted">دسته‌بندی</span>
+              <select v-model="form.category" required :class="fieldClass">
+                <option value="" disabled>انتخاب دسته</option>
+                <option v-for="cat in categoryOptions" :key="cat" :value="cat">{{ categoryLabel(cat) }}</option>
+              </select>
+            </label>
+            <div class="grid grid-cols-2 gap-2">
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">قیمت</span>
+                <input v-model.number="form.price" type="number" required :class="fieldClass" />
+              </label>
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">موجودی</span>
+                <input v-model.number="form.quantity" type="number" min="0" :class="fieldClass" />
+              </label>
+            </div>
+            <div class="grid grid-cols-3 gap-2">
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">صفحات</span>
+                <input v-model.number="form.pages" type="number" min="0" :class="fieldClass" />
+              </label>
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">سال نشر</span>
+                <input v-model.number="form.publishedYear" type="number" min="1300" :class="fieldClass" />
+              </label>
+              <label class="block">
+                <span class="mb-1 block text-xs text-dash-muted">قطع / جلد</span>
+                <select v-model="form.format" :class="fieldClass">
+                  <option value="">انتخاب</option>
+                  <option v-for="fmt in formatOptions" :key="fmt" :value="fmt">{{ fmt }}</option>
+                </select>
+              </label>
+            </div>
+          </section>
 
-          <label class="block text-xs font-bold text-dash-muted">
-            توضیحات
-            <textarea v-model="form.description" rows="4" placeholder="خلاصه کتاب برای صفحه محصول" :class="fieldClass + ' mt-1'" />
-          </label>
-          <label class="block text-xs font-bold text-dash-muted">
-            ویژگی‌ها
-            <textarea v-model="form.featuresText" rows="4" placeholder="هر خط یک ویژگی، مثلاً ترجمه فارسی" :class="fieldClass + ' mt-1'" />
-          </label>
+          <section class="space-y-2 border-t border-dash-border pt-4">
+            <label class="block">
+              <span class="mb-1 block text-sm font-bold text-dash-text">توضیحات</span>
+              <p class="mb-2 text-[11px] leading-relaxed text-dash-muted">خلاصه کتاب که در صفحه محصول دیده می‌شود.</p>
+              <textarea v-model="form.description" rows="5" placeholder="این کتاب درباره چیست و برای چه کسی مناسب است؟" :class="fieldClass" />
+            </label>
+          </section>
+
+          <section class="space-y-2 border-t border-dash-border pt-4">
+            <label class="block">
+              <span class="mb-1 block text-sm font-bold text-dash-text">ویژگی‌ها</span>
+              <p class="mb-2 text-[11px] leading-relaxed text-dash-muted">هر خط یک مورد، مثل جلد سخت، ترجمه فارسی، قطع رقعی.</p>
+              <textarea v-model="form.featuresText" rows="5" placeholder="جلد سخت&#10;ترجمه فارسی&#10;قطع رقعی" :class="fieldClass" />
+            </label>
+          </section>
 
           <div class="flex justify-end gap-3 pt-2">
             <button type="button" class="min-h-11 rounded-xl bg-dash-border px-4 text-sm" @click="closeAddModal">انصراف</button>
@@ -239,9 +347,15 @@ type NewProductInput = {
   description: string
   features: string[]
   author?: string
+  translator?: string
   publisher?: string
+  isbn?: string
   pages?: number
+  publishedYear?: number
+  format?: string
 }
+
+const formatOptions = ['جلد سخت', 'جلد نرم', 'رقعی', 'وزیری', 'جیبی']
 
 const store = useProductStore()
 
@@ -278,8 +392,12 @@ const form = reactive({
   description: '',
   featuresText: '',
   author: '',
+  translator: '',
   publisher: '',
+  isbn: '',
   pages: undefined as number | undefined,
+  publishedYear: undefined as number | undefined,
+  format: '',
 })
 
 watch(
@@ -321,8 +439,12 @@ function resetForm() {
   form.description = ''
   form.featuresText = ''
   form.author = ''
+  form.translator = ''
   form.publisher = ''
+  form.isbn = ''
   form.pages = undefined
+  form.publishedYear = undefined
+  form.format = ''
 }
 
 function openEditModal(product: Product) {
@@ -355,8 +477,12 @@ function submitProduct() {
     description: form.description.trim(),
     features: parseFeatures(form.featuresText),
     author: form.author.trim() || undefined,
+    translator: form.translator.trim() || undefined,
     publisher: form.publisher.trim() || undefined,
+    isbn: form.isbn.trim() || undefined,
     pages: form.pages,
+    publishedYear: form.publishedYear,
+    format: form.format || undefined,
   })
   closeAddModal()
   currentPage.value = 1

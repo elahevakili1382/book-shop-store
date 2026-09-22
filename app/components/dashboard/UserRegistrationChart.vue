@@ -18,19 +18,28 @@
     </p>
 
     <client-only>
-      <ApexChart v-if="!dashboardStore.loading && totalUsers > 0"
-        type="area" height="280" :options="chartOptions" :series="userTrend.series" />
+      <ApexChart
+        v-if="chartAlive && !dashboardStore.loading && totalUsers > 0"
+        type="area"
+        height="280"
+        :options="chartOptions"
+        :series="userTrend.series"
+      />
     </client-only>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref, onBeforeUnmount } from 'vue'
 import type { ApexOptions } from 'apexcharts'
 import { useDashboardStore } from '../../stores/dashboard'
 
 const dashboardStore = useDashboardStore()
 const ApexChart = defineAsyncComponent(() => import('vue3-apexcharts'))
+const chartAlive = ref(true)
+onBeforeUnmount(() => {
+  chartAlive.value = false
+})
 
 const totalUsers = computed(() => dashboardStore.totalUsers)
 
@@ -73,7 +82,7 @@ const chartOptions = computed<ApexOptions>(() => ({
     type: 'area',
     background: 'transparent',
     toolbar: { show: false },
-    animations: { enabled: true, speed: 800 },
+    animations: { enabled: false },
   },
   theme: { mode: 'dark' },
   colors: ['#38BDF8'],

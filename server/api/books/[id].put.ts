@@ -24,8 +24,11 @@ export default defineEventHandler(async(event) =>{
     if (body?.titleEn != null) payload.titleEn = body.titleEn
     if (body?.isbn != null) payload.isbn = body.isbn
     if (body?.author != null) payload.author = String(body.author)
+    if (body?.translator != null) payload.translator = String(body.translator)
     if (body?.publisher != null) payload.publisher = String(body.publisher)
+    if (body?.format != null) payload.format = String(body.format)
     if (body?.pages != null) payload.pages = Number(body.pages)
+    if (body?.publishedYear != null) payload.publishedYear = Number(body.publishedYear)
     if (body?.features != null) {
       payload.features = Array.isArray(body.features)
         ? body.features.map((item: unknown) => String(item).trim()).filter(Boolean)

@@ -92,8 +92,12 @@ async function onAddProduct(product: {
   description: string
   features: string[]
   author?: string
+  translator?: string
   publisher?: string
+  isbn?: string
   pages?: number
+  publishedYear?: number
+  format?: string
 }) {
   try {
     await $fetch('/api/books', {
@@ -107,8 +111,12 @@ async function onAddProduct(product: {
         description: product.description,
         features: product.features,
         author: product.author,
+        translator: product.translator,
         publisher: product.publisher,
+        isbn: product.isbn,
         pages: product.pages,
+        publishedYear: product.publishedYear,
+        format: product.format,
       },
     })
 
@@ -137,8 +145,12 @@ async function onUpdateProduct(product: Product) {
         description: product.description,
         features: product.features || [],
         author: product.author,
+        translator: product.translator,
         publisher: product.publisher,
+        isbn: product.isbn,
         pages: product.pages,
+        publishedYear: product.publishedYear,
+        format: product.format,
       },
     })
     await store.fetchAllCategoriesProducts()

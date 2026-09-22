@@ -226,6 +226,8 @@ function placeOf(user: Customer) {
   if (user.city) return { primary: user.city, secondary: '—' }
   return { primary: '—', secondary: '—' }
 }
+
+function contactOf(user: Customer) {
   if (user.phone) return toEnglishDigits(user.phone)
   if (isPlaceholderEmail(user.email)) return '—'
   return '—'

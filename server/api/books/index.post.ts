@@ -17,10 +17,13 @@ export default defineEventHandler(async(event) =>{
     const stock = Number(body?.stock ?? body?.quantity?? 0)
     const description = body?.description ?? ''
     const image = body?.image ?? '/images/NonFictionIcon(1).svg'
-    const isbn = typeof body?.isbn === 'string' ? body.isbn : undefined
+    const isbn = typeof body?.isbn === 'string' ? body.isbn.trim() : undefined
     const author = typeof body?.author === 'string' ? body.author.trim() : undefined
+    const translator = typeof body?.translator === 'string' ? body.translator.trim() : undefined
     const publisher = typeof body?.publisher === 'string' ? body.publisher.trim() : undefined
+    const format = typeof body?.format === 'string' ? body.format.trim() : undefined
     const pages = body?.pages != null && body.pages !== '' ? Number(body.pages) : undefined
+    const publishedYear = body?.publishedYear != null && body.publishedYear !== '' ? Number(body.publishedYear) : undefined
     const features = Array.isArray(body?.features)
       ? body.features.map((item: unknown) => String(item).trim()).filter(Boolean)
       : []
@@ -42,8 +45,11 @@ export default defineEventHandler(async(event) =>{
     image,
     isbn,
     author,
+    translator,
     publisher,
+    format,
     pages: Number.isFinite(pages) ? pages : undefined,
+    publishedYear: Number.isFinite(publishedYear) ? publishedYear : undefined,
     features,
     slug: slug || undefined,
   })

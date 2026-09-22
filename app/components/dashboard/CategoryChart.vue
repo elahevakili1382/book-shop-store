@@ -19,14 +19,19 @@
     </p>
 
     <client-only>
-      <ApexChart v-if="!chartLoading && !chartError && categories.length > 0"
-        type="donut" height="320" :options="chartOptions" :series="series" />
+      <ApexChart
+        v-if="chartAlive && !chartLoading && !chartError && categories.length > 0"
+        type="donut"
+        height="320"
+        :options="chartOptions"
+        :series="series"
+      />
     </client-only>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import type { ApexOptions } from 'apexcharts'
 import { formatChartTooltip } from '../../utils/orderChartData'
 import { categoryLabel } from '../../utils/categoryLabel'
@@ -42,6 +47,7 @@ const categories = ref<string[]>([])
 const series = ref<number[]>([])
 const chartLoading = ref(true)
 const chartError = ref<string | null>(null)
+const chartAlive = ref(true)
 const ApexChart = defineAsyncComponent(() => import('vue3-apexcharts'))
 
 const palette = ['#DCF763', '#7EDCB5', '#FB7185', '#38BDF8', '#8B5CF6', '#F59E0B', '#EC4899', '#14B8A6']
@@ -50,6 +56,7 @@ const chartOptions = computed<ApexOptions>(() => ({
   chart: {
     type: 'donut',
     background: 'transparent',
+    animations: { enabled: false },
   },
   theme: { mode: 'dark' },
   labels: categories.value,
@@ -100,4 +107,7 @@ async function fetchData() {
 }
 
 onMounted(fetchData)
+onBeforeUnmount(() => {
+  chartAlive.value = false
+})
 </script>
