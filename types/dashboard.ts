@@ -3,6 +3,10 @@ export interface User {
   id?: string
   name: string
   email: string
+  phone?: string
+  city?: string
+  province?: string
+  address?: string
   role?: 'user' | 'admin' | 'super-admin'
   createdAt?: string
   updatedAt?: string

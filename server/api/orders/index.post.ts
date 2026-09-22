@@ -2,6 +2,7 @@ import { defineEventHandler, createError, readBody } from 'h3'
 import { connectDB } from '../../utils/mongodb'
 import { Order } from '../../models/Order'
 import { buildOrderFromItems } from '../../utils/orderPricing'
+import { getAuthOptional } from '../../utils/requireAuth'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -17,7 +18,10 @@ export default defineEventHandler(async (event) => {
     const priced = await buildOrderFromItems(body?.items, body?.shippingMethod)
     const paymentMethod = body?.paymentMethod === 'cod' ? 'cod' : 'online'
 
+    const session = getAuthOptional(event)
+
     const order = await Order.create({
+      userId: session?.id || '',
       customerName,
       phone,
       address: String(body?.address || ''),

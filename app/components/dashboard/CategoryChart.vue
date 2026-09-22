@@ -29,6 +29,7 @@
 import { ref, computed, onMounted } from 'vue'
 import type { ApexOptions } from 'apexcharts'
 import { formatChartTooltip } from '../../utils/orderChartData'
+import { categoryLabel } from '../../utils/categoryLabel'
 
 type CategoryStats = {
   categories: string[]
@@ -89,7 +90,7 @@ async function fetchData() {
   chartError.value = null
   try {
     const res = await $fetch<CategoryStats>('/api/dashboard/category-stats')
-    categories.value = res.categories
+    categories.value = res.categories.map((slug) => categoryLabel(slug))
     series.value = res.series
   } catch {
     chartError.value = 'خطا در دریافت آمار دسته‌بندی'

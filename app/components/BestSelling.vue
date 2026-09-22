@@ -16,20 +16,22 @@
       <aside class="lg:w-56 shrink-0">
         <p class="text-xs font-bold tracking-wide text-slate/45 mb-3">دسته‌بندی</p>
         <ul class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0">
-          <li v-for="cat in categories" :key="cat.slug">
-            <button
-              type="button"
-              :class="[
-                'whitespace-nowrap w-full text-right px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors',
-                selectedSlug === cat.slug
-                  ? 'bg-slate text-white border-slate'
-                  : 'bg-cream border-slate/10 text-slate/65 hover:border-slate/20 hover:text-slate',
-              ]"
-              @click="selectCategory(cat.slug)"
-            >
-              {{ cat.name }}
-            </button>
-          </li>
+          <ClientOnly>
+            <li v-for="cat in categories" :key="cat.slug">
+              <button
+                type="button"
+                :class="[
+                  'whitespace-nowrap w-full text-right px-4 py-2.5 rounded-xl text-sm font-semibold border transition-colors',
+                  selectedSlug === cat.slug
+                    ? 'bg-slate text-white border-slate'
+                    : 'bg-cream border-slate/10 text-slate/65 hover:border-slate/20 hover:text-slate',
+                ]"
+                @click="selectCategory(cat.slug)"
+              >
+                {{ cat.name }}
+              </button>
+            </li>
+          </ClientOnly>
         </ul>
       </aside>
 

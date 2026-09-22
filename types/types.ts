@@ -19,6 +19,7 @@ export interface Product {
   publishedYear?: number
   translator?: string
   isbn?: string
+  features?: string[]
 }
 
 export interface ProductReview {

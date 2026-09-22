@@ -6,6 +6,7 @@
       class="flex min-w-0 flex-1 items-center gap-2 sm:gap-3"
     >
       <NuxtLink
+        v-if="canOpen(index)"
         :to="step.to"
         :aria-current="step.key === current ? 'step' : undefined"
         class="flex min-w-0 items-center gap-2"
@@ -32,6 +33,20 @@
         </span>
       </NuxtLink>
       <span
+        v-else
+        class="flex min-w-0 items-center gap-2"
+        aria-disabled="true"
+      >
+        <span
+          class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate/15 bg-white text-xs font-black text-slate/40"
+        >
+          {{ (index + 1).toLocaleString('fa-IR') }}
+        </span>
+        <span class="truncate text-xs font-bold text-slate/35 sm:text-sm">
+          {{ step.label }}
+        </span>
+      </span>
+      <span
         v-if="index < steps.length - 1"
         class="hidden h-px flex-1 bg-slate/15 sm:block"
         aria-hidden="true"
@@ -54,5 +69,10 @@ const steps = [
 function isDone(index: number) {
   const order = ['cart', 'address', 'payment']
   return order.indexOf(props.current) > index
+}
+
+function canOpen(index: number) {
+  const order = ['cart', 'address', 'payment']
+  return order.indexOf(props.current) >= index
 }
 </script>

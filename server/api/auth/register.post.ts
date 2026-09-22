@@ -2,32 +2,31 @@ import { defineEventHandler, readBody, createError } from 'h3'
 import bcrypt from 'bcryptjs'
 import { connectDB } from '../../utils/mongodb'
 import { User } from '../../models/User'
+import { isIranMobile, phoneToPlaceholderEmail, toEnglishDigits } from '../../utils/phone'
 
 export default defineEventHandler(async (event) => {
-  if(process.env.NODE_ENV === 'production'){
-    throw createError({
-      statusCode:403,
-      statusMessage:'Registration is disabled'
-    })
-  }
   const body = await readBody(event)
   const name = (body?.name || '').toString().trim()
-  const email = (body?.email || '').toString().trim().toLowerCase()
+  const phone = toEnglishDigits(String(body?.phone || ''))
   const password = (body?.password || '').toString()
 
-  if (!name || !email || !password) {
-    throw createError({ statusCode: 400, statusMessage: 'All fields are required' })
+  if (!name || !phone || !password) {
+    throw createError({ statusCode: 400, statusMessage: 'نام، موبایل و رمز الزامی است' })
+  }
+
+  if (!isIranMobile(phone)) {
+    throw createError({ statusCode: 400, statusMessage: 'موبایل را با ۰۹ و ۱۱ رقم وارد کن' })
   }
 
   if (password.length < 6) {
-    throw createError({ statusCode: 400, statusMessage: 'Password must be at least 6 characters' })
+    throw createError({ statusCode: 400, statusMessage: 'رمز باید حداقل ۶ کاراکتر باشد' })
   }
 
   await connectDB()
 
-  const existing = await User.findOne({ email }).lean()
+  const existing = await User.findOne({ phone }).lean()
   if (existing) {
-    throw createError({ statusCode: 409, statusMessage: 'Email already registered' })
+    throw createError({ statusCode: 409, statusMessage: 'این شماره قبلاً ثبت شده' })
   }
 
   const salt = await bcrypt.genSalt(10)
@@ -35,7 +34,8 @@ export default defineEventHandler(async (event) => {
 
   const newUser = await User.create({
     name,
-    email,
+    phone,
+    email: phoneToPlaceholderEmail(phone),
     password: hashed,
     role: 'user',
   })
@@ -46,6 +46,7 @@ export default defineEventHandler(async (event) => {
       id: newUser._id.toString(),
       name: newUser.name,
       email: newUser.email,
+      phone: newUser.phone,
       role: newUser.role,
     },
   }

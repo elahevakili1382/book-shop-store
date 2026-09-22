@@ -71,6 +71,7 @@ function addToCart() {
       name: props.product.title,
       price: props.product.price,
       image: props.product.image || '/images/default-book.jpg',
+      slug: props.product.slug,
     },
     1
   )

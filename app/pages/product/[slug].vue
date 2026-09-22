@@ -307,6 +307,18 @@
           </div>
         </section>
 
+        <section v-if="productFeatures.length" class="mt-6">
+          <div class="rounded-2xl border border-slate/8 bg-white p-5 sm:p-6 lg:p-8">
+            <h2 class="mb-4 border-b border-slate/8 pb-3 text-base font-bold text-slate">ویژگی‌ها</h2>
+            <ul class="space-y-2 text-sm text-slate/70">
+              <li v-for="item in productFeatures" :key="item" class="flex gap-2">
+                <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate" />
+                <span>{{ item }}</span>
+              </li>
+            </ul>
+          </div>
+        </section>
+
         <!-- Reviews (MongoDB) -->
         <ProductReviews
           v-if="product.slug"
@@ -551,6 +563,7 @@ const inStock = computed(() => maxStock.value > 0)
 const canIncrease = computed(() => inStock.value && quantity.value < maxStock.value)
 
 const descriptionText = computed(() => product.value?.description || '')
+const productFeatures = computed(() => product.value?.features?.filter(Boolean) ?? [])
 
 const specRows = computed(() => {
   if (!product.value) return []
@@ -599,6 +612,7 @@ const addToCart = () => {
       name: product.value.title,
       price: product.value.price,
       image: product.value.image || '/images/default-book.jpg',
+      slug: product.value.slug,
     },
     quantity.value
   )

@@ -100,7 +100,8 @@
                      bg-white border border-slate/8 shadow-card
                      hover:shadow-card-hover hover:border-slate/12 transition-shadow"
             >
-              <div
+              <NuxtLink
+                :to="itemHref(item)"
                 class="shrink-0 w-[88px] sm:w-[104px] aspect-[3/4] rounded-2xl overflow-hidden
                        bg-cream border border-slate/6"
               >
@@ -120,13 +121,15 @@
                 >
                   <AppIcon icon="mdi:book-outline" class="w-8 h-8" />
                 </div>
-              </div>
+              </NuxtLink>
 
               <div class="flex-1 min-w-0 flex flex-col">
                 <div class="flex items-start justify-between gap-3">
                   <div class="min-w-0">
                     <h2 class="font-bold text-slate text-[15px] sm:text-base leading-snug line-clamp-2">
-                      {{ item.name }}
+                      <NuxtLink :to="itemHref(item)" class="hover:underline">
+                        {{ item.name }}
+                      </NuxtLink>
                     </h2>
                     <p class="mt-1.5 text-sm text-slate/45">
                       {{ formatPrice(item.price) }}
@@ -233,11 +236,16 @@
                   </div>
                   <div class="flex items-center justify-between text-slate/60">
                     <span>هزینه ارسال</span>
-                    <span class="font-semibold text-emerald-600">محاسبه در مرحله بعد</span>
+                    <span class="font-semibold text-slate tabular-nums">
+                      رایگان تا {{ formatPrice(courierFee) }} تومان
+                    </span>
                   </div>
+                  <p class="text-[11px] leading-relaxed text-slate/40">
+                    پیک {{ formatPrice(courierFee) }} تومان · تحویل حضوری رایگان. روش ارسال را در مرحله بعد انتخاب می‌کنی.
+                  </p>
                   <div class="h-px bg-slate/8" />
                   <div class="flex items-center justify-between">
-                    <span class="font-bold text-slate">مبلغ قابل پرداخت</span>
+                    <span class="font-bold text-slate">جمع کالاها</span>
                     <span class="text-xl font-black text-slate tabular-nums">
                       {{ formatPrice(cart.cartTotal) }}
                       <span class="text-xs font-bold text-slate/40">تومان</span>
@@ -245,56 +253,15 @@
                   </div>
                 </div>
 
-                <!-- payment -->
-                <div class="space-y-2.5">
-                  <p class="text-xs font-bold text-slate/45">روش پرداخت</p>
-                  <div class="grid grid-cols-1 gap-2">
-                    <label
-                      v-for="method in paymentMethods"
-                      :key="method.value"
-                      :class="[
-                        'flex items-center gap-3 p-3 rounded-2xl border cursor-pointer transition-all',
-                        payment === method.value
-                          ? 'border-slate/25 bg-cream shadow-sm'
-                          : 'border-slate/8 hover:border-slate/15 bg-white',
-                      ]"
-                    >
-                      <input
-                        v-model="payment"
-                        type="radio"
-                        name="payment"
-                        :value="method.value"
-                        class="sr-only"
-                      />
-                      <span
-                        :class="[
-                          'w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0',
-                          payment === method.value ? 'border-slate' : 'border-slate/25',
-                        ]"
-                      >
-                        <span
-                          v-if="payment === method.value"
-                          class="w-2 h-2 rounded-full bg-slate"
-                        />
-                      </span>
-                      <span class="flex-1 text-sm font-semibold text-slate">{{ method.label }}</span>
-                      <AppIcon :icon="method.icon" class="w-4 h-4 text-slate/35" />
-                    </label>
-                  </div>
-                </div>
-
-                <motion.button
-                  type="button"
-                  :while-hover="{ scale: 1.015 }"
-                  :while-tap="{ scale: 0.985 }"
+                <NuxtLink
+                  to="/address"
                   class="w-full py-3.5 rounded-2xl bg-slate text-white font-bold text-sm
                          flex items-center justify-center gap-2 shadow-card
                          hover:bg-lime hover:text-slate transition-colors"
-                  @click="checkout"
                 >
-                  تایید و ادامه
+                  ادامه به ارسال
                   <AppIcon icon="mdi:arrow-left" class="w-4 h-4" />
-                </motion.button>
+                </NuxtLink>
 
                 <p class="text-[11px] leading-relaxed text-slate/40 text-center">
                   سفارش‌ها طی ۳ تا ۵ روز کاری ارسال می‌شوند. قبل از پرداخت نهایی، اطلاعات را بررسی کنید.
@@ -332,21 +299,19 @@
       >
         <div class="max-w-[1120px] mx-auto flex items-center gap-3">
           <div class="min-w-0 flex-1">
-            <p class="text-[11px] text-slate/45 font-medium">قابل پرداخت</p>
+            <p class="text-[11px] text-slate/45 font-medium">جمع کالاها</p>
             <p class="text-base font-black text-slate tabular-nums truncate">
               {{ formatPrice(cart.cartTotal) }}
               <span class="text-[10px] font-bold text-slate/40">تومان</span>
             </p>
           </div>
-          <motion.button
-            type="button"
-            :while-tap="{ scale: 0.97 }"
+          <NuxtLink
+            to="/address"
             class="shrink-0 px-6 py-3 rounded-2xl bg-slate text-white font-bold text-sm
                    hover:bg-lime hover:text-slate transition-colors"
-            @click="checkout"
           >
-            ادامه
-          </motion.button>
+            ادامه به ارسال
+          </NuxtLink>
         </div>
       </motion.div>
     </ClientOnly>
@@ -354,10 +319,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { AnimatePresence, motion } from 'motion-v'
 import { useCartStore } from '../stores/cart'
+import type { CartItem } from '../stores/cart'
 import CheckoutStepper from '../components/ui/CheckoutStepper.vue'
+import { SHIPPING_COST } from '../utils/checkout'
+import { productPath } from '../utils/slugify'
 
 definePageMeta({
   layout: 'default',
@@ -369,17 +337,13 @@ useSeoMeta({
 })
 
 const cart = useCartStore()
-const router = useRouter()
 
 const easeOut = [0.22, 1, 0.36, 1] as const
+const courierFee = SHIPPING_COST.courier
 
-const payment = ref<'online' | 'delivery'>('online')
-const address = ref('')
-
-const paymentMethods = [
-  { value: 'online' as const, label: 'پرداخت آنلاین', icon: 'mdi:credit-card-outline' },
-  { value: 'delivery' as const, label: 'پرداخت در محل', icon: 'mdi:cash-multiple' },
-]
+function itemHref(item: CartItem) {
+  return productPath({ slug: item.slug, title: item.name, id: item.id })
+}
 
 function formatPrice(value: number) {
   return new Intl.NumberFormat('fa-IR').format(value)
@@ -391,20 +355,6 @@ function removeItem(uniqueId: string) {
 
 function clearAll() {
   cart.clearCart()
-}
-
-function checkout() {
-  if (import.meta.client) {
-    try {
-      sessionStorage.setItem(
-        'checkout',
-        JSON.stringify({ payment: payment.value }),
-      )
-    } catch {
-      /* ignore */
-    }
-  }
-  router.push('/address')
 }
 
 onMounted(() => {

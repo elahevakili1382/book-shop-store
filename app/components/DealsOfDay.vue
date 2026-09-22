@@ -163,8 +163,6 @@ function tick() {
   }
 }
 
-tick()
-
 onMounted(() => {
   tick()
   timer = setInterval(tick, 1000)

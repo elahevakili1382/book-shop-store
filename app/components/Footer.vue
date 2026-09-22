@@ -90,9 +90,10 @@ const footerSections = [
   {
     title: 'حساب کاربری',
     links: [
+      { label: 'پنل کاربری', to: '/account' },
       { label: 'ورود / ثبت‌نام', to: '/login' },
+      { label: 'دمو داشبورد', to: '/login#demo' },
       { label: 'سبد خرید', to: '/cart' },
-      { label: 'آدرس‌ها', to: '/address' },
     ],
   },
   {

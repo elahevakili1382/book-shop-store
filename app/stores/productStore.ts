@@ -69,6 +69,9 @@ export function mapBookToProduct(book: Record<string, unknown>): Product {
     format: book.format as string | undefined,
     publishedYear: book.publishedYear as number | undefined,
     translator: book.translator as string | undefined,
+    features: Array.isArray(book.features)
+      ? (book.features as unknown[]).map((item) => String(item)).filter(Boolean)
+      : [],
   }
 }
 

@@ -156,6 +156,12 @@ function onSearch() {
   will-change: transform;
 }
 
+html.shot .hero-marquee-track {
+  animation: none;
+  will-change: auto;
+  transform: none;
+}
+
 .hero-cover {
   transition: transform 0.35s ease;
 }

@@ -10,27 +10,45 @@
       <h1 class="text-2xl font-black text-slate">
         {{ isSuccess ? 'سفارش ثبت شد' : 'پرداخت انجام نشد' }}
       </h1>
-      <p class="mx-auto mt-3 mb-8 max-w-sm text-sm leading-relaxed text-slate/55">
+      <p class="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-slate/55">
         {{ message }}
       </p>
 
-      <div class="flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <div
+        v-if="isSuccess && orderId"
+        class="mx-auto mt-6 rounded-2xl border border-slate/10 bg-white px-4 py-4"
+      >
+        <p class="text-xs font-bold text-slate/45">شماره سفارش</p>
+        <p class="mt-1 font-black tracking-wide text-slate" dir="ltr">{{ displayOrderId }}</p>
+        <p class="mt-2 text-xs leading-relaxed text-slate/45">
+          این شماره را نگه دار. با آن می‌توانی سفارش را پیگیری کنی.
+        </p>
+      </div>
+
+      <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
         <NuxtLink
-          v-if="isSuccess"
+          v-if="isSuccess && auth.isAuthenticated"
+          to="/account"
+          class="rounded-2xl bg-slate px-6 py-3 text-sm font-bold text-white"
+        >
+          پیگیری در پنل کاربری
+        </NuxtLink>
+        <NuxtLink
+          v-else-if="isSuccess"
           to="/"
           class="rounded-2xl bg-slate px-6 py-3 text-sm font-bold text-white"
         >
           بازگشت به فروشگاه
         </NuxtLink>
         <template v-else>
-          <NuxtLink to="/cart" class="rounded-2xl bg-slate px-6 py-3 text-sm font-bold text-white">
-            بازگشت به سبد خرید
+          <NuxtLink to="/payment" class="rounded-2xl bg-slate px-6 py-3 text-sm font-bold text-white">
+            تلاش دوباره
           </NuxtLink>
           <NuxtLink
-            to="/"
+            to="/cart"
             class="rounded-2xl border border-slate/15 bg-white px-6 py-3 text-sm font-bold text-slate"
           >
-            صفحه اصلی
+            سبد خرید
           </NuxtLink>
         </template>
       </div>
@@ -39,23 +57,41 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import { useCartStore } from '../../stores/cart'
+import { loadCheckout, clearCheckout } from '../../utils/checkout'
 
 definePageMeta({ layout: 'default' })
 
+useSeoMeta({
+  title: 'رسید سفارش',
+})
+
 const route = useRoute()
 const cart = useCartStore()
+const auth = useAuthStore()
 
 const message = ref('در حال بررسی پرداخت...')
 const isSuccess = ref(false)
+const orderId = ref('')
+
+const displayOrderId = computed(() => {
+  const id = orderId.value
+  if (!id) return ''
+  return id.length > 8 ? id.slice(-8).toUpperCase() : id
+})
 
 onMounted(async () => {
   if (!import.meta.client) return
 
+  const draft = loadCheckout()
+  if (draft.orderId) orderId.value = draft.orderId
+
   if (String(route.query.cod || '') === 'ok') {
     isSuccess.value = true
+    orderId.value = String(route.query.order || draft.orderId || '')
     message.value = 'سفارش با پرداخت در محل ثبت شد. هنگام تحویل مبلغ را پرداخت می‌کنی.'
+    clearCheckout()
     return
   }
 
@@ -86,9 +122,10 @@ onMounted(async () => {
 
     if (res?.ok) {
       cart.clearCart()
-      sessionStorage.removeItem('checkout')
+      orderId.value = res.orderId || draft.orderId || ''
+      clearCheckout()
       isSuccess.value = true
-      message.value = 'پرداخت تأیید شد و موجودی کتاب‌ها به‌روز شد.'
+      message.value = 'پرداخت تأیید شد. موجودی کتاب‌ها به‌روز شد و سفارش در صف ارسال است.'
       return
     }
 

@@ -23,9 +23,15 @@ body,
   color: #435058;
 }
 
-html,
-body {
-  overflow-x: hidden;
+html.shot *,
+html.shot *::before,
+html.shot *::after {
+  animation-play-state: paused !important;
+}
+
+html.shot .mobile-drawer {
+  animation: none !important;
+  transform: none !important;
 }
 
 button,

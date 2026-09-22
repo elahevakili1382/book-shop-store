@@ -27,7 +27,7 @@
 
       <!-- growth -->
       <div class="flex items-center justify-center gap-2 text-sm">
-        <span class="text-[#A8A29E]">رشت ماهانه:</span>
+        <span class="text-[#A8A29E]">رشد ماهانه:</span>
         <span :class="data.growthRate >= 0 ? 'text-[#7EDCB5]' : 'text-rose-300'" class="font-semibold">
           {{ data.growthRate >= 0 ? '+' : '' }}{{ data.growthRate }}%
         </span>

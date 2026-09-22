@@ -18,6 +18,12 @@ export default defineEventHandler(async(event) =>{
     const description = body?.description ?? ''
     const image = body?.image ?? '/images/NonFictionIcon(1).svg'
     const isbn = typeof body?.isbn === 'string' ? body.isbn : undefined
+    const author = typeof body?.author === 'string' ? body.author.trim() : undefined
+    const publisher = typeof body?.publisher === 'string' ? body.publisher.trim() : undefined
+    const pages = body?.pages != null && body.pages !== '' ? Number(body.pages) : undefined
+    const features = Array.isArray(body?.features)
+      ? body.features.map((item: unknown) => String(item).trim()).filter(Boolean)
+      : []
     const slug =
       (typeof body?.slug === 'string' && body.slug.trim()) ||
       slugify(titleEn || '') ||
@@ -35,6 +41,10 @@ export default defineEventHandler(async(event) =>{
     description,
     image,
     isbn,
+    author,
+    publisher,
+    pages: Number.isFinite(pages) ? pages : undefined,
+    features,
     slug: slug || undefined,
   })
 

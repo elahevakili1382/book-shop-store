@@ -1,35 +1,62 @@
 <template>
-  <header class="flex items-center gap-3 sm:gap-4 px-4 sm:px-6 py-3 sticky top-0 z-10
-           border border-dash-border rounded-2xl m-3 sm:m-4
-           bg-dash-card shadow-lg shadow-black/20">
-    <button type="button" class="lg:hidden text-xl shrink-0 text-dash-text" aria-label="باز کردن منو"
-      @click="$emit('toggle-sidebar')">
-      ☰
-    </button>
-
-    <!-- سرچ فشرده، روشن — مثل نمونه Dribbble -->
-    <form class="relative w-44 sm:w-52 md:w-60 shrink-0" @submit.prevent="onSubmit">
-      <AppIcon icon="mdi:magnify"
-        class="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
-      <input v-model="query" type="search" name="dashboard-search" autocomplete="off" placeholder="جستجو محصول" class="w-full h-9 pr-9 pl-8 rounded-lg border-0
-               bg-[#8888887b] text-gray-900 text-md
-               placeholder:text-gray-500 outline-none transition
-               focus:ring-2 focus:ring-dash-accent/50" />
-      <button v-if="query.length" type="button" class="absolute left-2 top-1/2 -translate-y-1/2 p-0.5 rounded
-               text-gray-500 hover:text-gray-800 transition" aria-label="پاک کردن جستجو" @click="clearSearch">
-        <AppIcon icon="mdi:close" class="w-3.5 h-3.5" />
+  <header class="sticky top-0 z-20 border-b border-dash-border bg-dash-bg/90 backdrop-blur-md">
+    <div class="flex items-center gap-2 px-4 py-2.5 sm:gap-3 sm:px-6 lg:px-8">
+      <button
+        type="button"
+        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-dash-text lg:hidden"
+        aria-label="منوی بیشتر"
+        @click="$emit('toggle-sidebar')"
+      >
+        <AppIcon icon="mdi:menu" class="h-5 w-5" />
       </button>
-    </form>
 
-    <div class="flex-1 min-w-0" />
+      <div class="min-w-0 flex-1">
+        <h1 class="truncate text-base font-black text-dash-text sm:text-lg">
+          {{ pageTitle }}
+        </h1>
+      </div>
 
-    <div class="relative w-9 h-9 flex items-center justify-center shrink-0
-             border border-dash-border rounded-full bg-dash-bg
-             hover:border-dash-accent/40 transition-colors">
-      <AppIcon icon="mdi:email-outline" class="text-dash-accent w-4 h-4" />
-      <span class="absolute top-0.5 right-0.5 w-2 h-2 bg-rose-400
-               rounded-full border-2 border-dash-card" />
+      <button
+        type="button"
+        class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-dash-muted hover:text-dash-text md:hidden"
+        aria-label="جستجوی کتاب"
+        @click="searchOpen = !searchOpen"
+      >
+        <AppIcon icon="mdi:magnify" class="h-5 w-5" />
+      </button>
+
+      <form class="relative hidden min-w-0 md:block md:w-56" @submit.prevent="onSubmit">
+        <AppIcon
+          icon="mdi:magnify"
+          class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-dash-muted"
+        />
+        <input
+          v-model="query"
+          type="search"
+          name="dashboard-search"
+          autocomplete="off"
+          placeholder="جستجوی کتاب"
+          class="h-10 w-full rounded-xl border border-dash-border bg-dash-card pr-9 pl-3 text-sm text-dash-text outline-none placeholder:text-dash-muted focus:ring-2 focus:ring-dash-accent/50"
+        />
+      </form>
+
+      <NuxtLink
+        to="/"
+        class="flex h-11 shrink-0 items-center rounded-xl px-3 text-xs font-bold text-dash-muted hover:bg-dash-card hover:text-dash-text"
+      >
+        فروشگاه
+      </NuxtLink>
     </div>
+
+    <form v-if="searchOpen" class="border-t border-dash-border px-4 py-2 md:hidden" @submit.prevent="onSubmit">
+      <input
+        v-model="query"
+        type="search"
+        autocomplete="off"
+        placeholder="جستجوی کتاب"
+        class="h-11 w-full rounded-xl border border-dash-border bg-dash-card px-3 text-sm text-dash-text outline-none placeholder:text-dash-muted"
+      />
+    </form>
   </header>
 </template>
 
@@ -40,19 +67,19 @@ defineEmits(['toggle-sidebar'])
 
 const route = useRoute()
 const { query } = useDashboardSearch()
+const searchOpen = ref(false)
+
+const pageTitle = computed(() => {
+  const title = route.meta.title
+  return typeof title === 'string' && title ? title : 'داشبورد'
+})
 
 function onSubmit() {
   const q = query.value.trim()
   if (!q) return
+  searchOpen.value = false
   if (route.path !== '/dashboard/products') {
     return navigateTo({ path: '/dashboard/products', query: { q } })
-  }
-}
-
-function clearSearch() {
-  query.value = ''
-  if (route.path === '/dashboard/products') {
-    navigateTo({ path: '/dashboard/products', query: {} })
   }
 }
 </script>

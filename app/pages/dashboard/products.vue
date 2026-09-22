@@ -23,6 +23,10 @@ definePageMeta({
   layout: 'dashboard',
 })
 
+useSeoMeta({
+  title: 'محصولات',
+})
+
 const store = useProductStore()
 const route = useRoute()
 const { query: searchQuery } = useDashboardSearch()
@@ -30,6 +34,10 @@ const { query: searchQuery } = useDashboardSearch()
 const activeSearch = ref('')
 const products = computed(() => store.products)
 const isLoading = computed(() => store.isLoading)
+
+if (!store.products.length) {
+  store.isLoading = true
+}
 
 let debounceTimer: ReturnType<typeof setTimeout> | undefined
 
@@ -81,9 +89,14 @@ async function onAddProduct(product: {
   price: number
   category: string
   quantity: number
+  description: string
+  features: string[]
+  author?: string
+  publisher?: string
+  pages?: number
 }) {
   try {
-    const created = await $fetch('/api/books', {
+    await $fetch('/api/books', {
       method: 'POST',
       credentials: 'include',
       body: {
@@ -91,6 +104,11 @@ async function onAddProduct(product: {
         price: product.price,
         category: product.category,
         stock: product.quantity,
+        description: product.description,
+        features: product.features,
+        author: product.author,
+        publisher: product.publisher,
+        pages: product.pages,
       },
     })
 
@@ -100,15 +118,32 @@ async function onAddProduct(product: {
   }
 }
 
-
-
 function onDeleteProduct(id: string) {
   store.deleteProduct(id)
 }
 
-function onUpdateProduct(product: Product) {
-  const list = store.products
-  const idx = list.findIndex((p) => p.id === product.id || p._id === product._id)
-  if (idx !== -1) list[idx] = { ...list[idx], ...product }
+async function onUpdateProduct(product: Product) {
+  const id = product._id || product.id
+  if (!id) return
+  try {
+    await $fetch(`/api/books/${id}`, {
+      method: 'PUT',
+      credentials: 'include',
+      body: {
+        title: product.title,
+        price: product.price,
+        category: product.category,
+        stock: product.quantity ?? product.stock,
+        description: product.description,
+        features: product.features || [],
+        author: product.author,
+        publisher: product.publisher,
+        pages: product.pages,
+      },
+    })
+    await store.fetchAllCategoriesProducts()
+  } catch (error) {
+    console.error('Update product failed:', error)
+  }
 }
 </script>

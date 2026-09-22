@@ -31,6 +31,14 @@ export function requireAuth(event: H3Event): AuthUser {
   }
 }
 
+export function getAuthOptional(event: H3Event): AuthUser | null {
+  try {
+    return requireAuth(event)
+  } catch {
+    return null
+  }
+}
+
 const ADMIN_ROLES = new Set(['admin', 'super-admin'])
 
 export function requireAdmin(event: H3Event): AuthUser {

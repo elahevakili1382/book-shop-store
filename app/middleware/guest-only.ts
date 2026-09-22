@@ -25,7 +25,7 @@ export default defineNuxtRouteMiddleware(async () => {
     if (role === 'admin' || role === 'super-admin') {
       return navigateTo('/dashboard')
     }
-    return navigateTo('/')
+    return navigateTo('/account')
   }
 })
 //  روی سرور، با ابزاری که کوکی را هم می‌برد، می‌پرسی کاربر لاگین است یا نه

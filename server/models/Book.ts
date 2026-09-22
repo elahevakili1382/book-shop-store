@@ -18,6 +18,7 @@ export interface IBook {
   publishedYear?: number
   translator?: string
   isbn?: string
+  features?: string[]
 }
 
 const BookSchema = new mongoose.Schema<IBook>(
@@ -83,6 +84,10 @@ const BookSchema = new mongoose.Schema<IBook>(
     },
     isbn: {
       type: String,
+    },
+    features: {
+      type: [String],
+      default: [],
     },
   },
   { timestamps: true }

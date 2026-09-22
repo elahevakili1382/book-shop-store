@@ -1,7 +1,7 @@
 <template>
   <header
-    class="header-root fixed inset-x-0 top-0 z-50 border-b transition-[transform,background-color,box-shadow,border-color] duration-300"
-    :class="headerClass"
+    class="header-root fixed inset-x-0 top-0 border-b transition-[transform,background-color,box-shadow,border-color] duration-300"
+    :class="[headerClass, ui.isMobileMenuOpen ? 'z-[110]' : 'z-50']"
   >
     <div
       class="max-w-[1280px] mx-auto w-full px-4 sm:px-8 h-[4.25rem] flex items-center justify-between gap-3 md:gap-4"
@@ -34,15 +34,17 @@
             class="absolute right-0 top-full pt-2 hidden group-hover:block min-w-[220px] z-50"
           >
             <div class="rounded-2xl bg-white border border-slate/10 shadow-card py-2 overflow-hidden">
-              <NuxtLink
-                v-for="cat in categoryStore.categories"
-                :key="cat.slug"
-                :to="`/category/${cat.slug}`"
-                class="block px-4 py-2.5 text-sm text-slate/70 hover:bg-cream hover:text-slate transition-colors"
-              >
-                {{ cat.name }}
-                <span class="text-slate/40 text-xs">({{ cat.items }})</span>
-              </NuxtLink>
+              <ClientOnly>
+                <NuxtLink
+                  v-for="cat in categoryStore.categories"
+                  :key="cat.slug"
+                  :to="`/category/${cat.slug}`"
+                  class="block px-4 py-2.5 text-sm text-slate/70 hover:bg-cream hover:text-slate transition-colors"
+                >
+                  {{ cat.name }}
+                  <span class="text-slate/40 text-xs">({{ cat.items }})</span>
+                </NuxtLink>
+              </ClientOnly>
             </div>
           </div>
         </div>
@@ -129,9 +131,11 @@
         </button>
         <button
           type="button"
-          class="p-2 rounded-full text-slate hover:bg-cream"
-          aria-label="منو"
-          @click="ui.toggleMobileMenu()"
+          class="relative z-[111] p-2 rounded-full text-slate hover:bg-cream"
+          :aria-label="ui.isMobileMenuOpen ? 'بستن منو' : 'منو'"
+          :aria-expanded="ui.isMobileMenuOpen"
+          aria-controls="mobile-menu"
+          @click.stop.prevent="onMenuButtonClick"
         >
           <AppIcon :icon="ui.isMobileMenuOpen ? 'mdi:close' : 'mdi:menu'" class="w-6 h-6" />
         </button>
@@ -184,50 +188,43 @@
           </span>
         </NuxtLink>
 
-        <template v-if="auth.isAuthenticated">
-          <NuxtLink
-            v-if="isAdmin"
-            to="/dashboard"
-            class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold border border-slate/15 bg-slate text-white hover:opacity-90 transition-colors"
-          >
-            داشبورد
-          </NuxtLink>
-          <button
-            type="button"
-            class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold text-slate hover:bg-cream"
-            @click="auth.logout()"
-          >
-            خروج
-          </button>
-        </template>
         <NuxtLink
-          v-else
-          to="/login"
-          class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold border border-slate/15 bg-slate text-white hover:opacity-90 transition-colors"
+          :to="accountTo"
+          class="relative w-10 h-10 flex items-center justify-center rounded-full border border-slate/15 bg-white text-slate hover:bg-cream transition-colors"
+          aria-label="پنل کاربری"
         >
           <AppIcon icon="mdi:account-outline" class="w-5 h-5" />
-          <span>ورود</span>
+        </NuxtLink>
+        <NuxtLink
+          v-if="isAdmin"
+          to="/dashboard"
+          class="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-bold border border-slate/15 bg-slate text-white hover:opacity-90 transition-colors"
+        >
+          داشبورد
         </NuxtLink>
       </div>
     </div>
 
-    <!-- drawer موبایل -->
     <Teleport to="body">
-      <div
-        v-if="ui.isMobileMenuOpen"
-        class="fixed inset-0 z-[60] md:hidden"
-        role="dialog"
-        aria-modal="true"
-        aria-label="منوی موبایل"
-      >
+      <Transition name="mobile-drawer">
         <div
-          class="absolute inset-0 bg-slate/30 backdrop-blur-sm"
-          aria-hidden="true"
-          @click="ui.closeMobileMenu()"
-        />
-        <aside
-          class="mobile-drawer fixed inset-y-0 right-0 z-[61] w-72 max-w-[85vw] shrink-0 bg-white border-l border-slate/10 p-6 pt-[4.75rem] flex flex-col gap-6 shadow-card overflow-y-auto"
+          v-if="ui.isMobileMenuOpen"
+          id="mobile-menu"
+          class="fixed inset-0 z-[100]"
+          role="dialog"
+          aria-modal="true"
+          aria-label="منوی موبایل"
         >
+          <button
+            type="button"
+            class="absolute inset-0 bg-slate/25"
+            aria-label="بستن منو"
+            @click="onOverlayClick"
+          />
+          <aside
+            class="mobile-drawer pointer-events-auto absolute inset-y-0 right-0 z-[101] flex w-[min(18.5rem,88vw)] flex-col gap-6 overflow-y-auto border-l border-white/50 p-6 pt-[4.75rem] text-slate shadow-[0_8px_32px_rgba(67,80,88,0.12)]"
+            @click.stop
+          >
           <nav class="flex flex-col gap-1">
             <NuxtLink
               v-for="item in mobileNav"
@@ -279,39 +276,23 @@
               </span>
             </NuxtLink>
             <NuxtLink
-              v-if="isAdmin"
-              to="/dashboard"
+              :to="accountTo"
               class="flex-1 text-center py-2.5 rounded-full bg-slate text-white text-sm font-bold"
               @click="ui.closeMobileMenu()"
             >
-              داشبورد
-            </NuxtLink>
-            <button
-              v-else-if="auth.isAuthenticated"
-              type="button"
-              class="flex-1 text-center py-2.5 rounded-full bg-slate text-white text-sm font-bold"
-              @click="ui.closeMobileMenu(); auth.logout()"
-            >
-              خروج
-            </button>
-            <NuxtLink
-              v-else
-              to="/login"
-              class="flex-1 text-center py-2.5 rounded-full bg-slate text-white text-sm font-bold"
-              @click="ui.closeMobileMenu()"
-            >
-              ورود | ثبت‌نام
+              پنل کاربری
             </NuxtLink>
           </div>
-        </aside>
-      </div>
+          </aside>
+        </div>
+      </Transition>
     </Teleport>
   </header>
   <div class="h-[4.25rem]" aria-hidden="true" />
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useCategoryStore } from '../stores/categories'
 import { useCartStore } from '../stores/cart'
 import { useProductStore } from '../stores/productStore'
@@ -327,10 +308,16 @@ const router = useRouter()
 const route = useRoute()
 const categoryStore = useCategoryStore()
 const isCategoryOpen = ref(false)
+const overlayReady = ref(false)
+let overlayTimer: ReturnType<typeof setTimeout> | null = null
 const isAdmin = computed(() => {
   const role = auth.user?.role
   return role === 'admin' || role === 'super-admin'
 })
+
+const accountTo = computed(() =>
+  auth.isAuthenticated ? '/account' : '/login?redirect=/account',
+)
 
 const searchQuery = ref('')
 const isMobileSearchOpen = ref(false)
@@ -352,6 +339,7 @@ const mobileNav = [
   { label: 'پرفروش‌ها', to: '/bestseller' },
   { label: 'پیشنهاد روز', to: '/daily-offers' },
   { label: 'علاقه‌مندی‌ها', to: '/wishlist' },
+  { label: 'پنل کاربری', to: '/account' },
   { label: 'درباره ما', to: '/about' },
 ]
 
@@ -413,6 +401,16 @@ function closeOnDesktop() {
   if (window.innerWidth >= 768) ui.closeMobileMenu()
 }
 
+function onMenuButtonClick() {
+  overlayReady.value = false
+  ui.toggleMobileMenu()
+}
+
+function onOverlayClick() {
+  if (!overlayReady.value) return
+  ui.closeMobileMenu()
+}
+
 let lastScrollY = 0
 
 function onScroll() {
@@ -443,12 +441,28 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('resize', closeOnDesktop)
   window.removeEventListener('scroll', onScroll)
+  if (overlayTimer) clearTimeout(overlayTimer)
+  ui.closeMobileMenu()
 })
 
 watch(
   () => ui.isMobileMenuOpen,
-  (open) => {if (!open) isCategoryOpen.value = false},
- 
+  async (open) => {
+    if (!open) {
+      isCategoryOpen.value = false
+      overlayReady.value = false
+      if (overlayTimer) {
+        clearTimeout(overlayTimer)
+        overlayTimer = null
+      }
+      return
+    }
+    overlayReady.value = false
+    await nextTick()
+    overlayTimer = setTimeout(() => {
+      overlayReady.value = true
+    }, 280)
+  },
 )
 
 watch(
@@ -471,17 +485,34 @@ watch(
   transform: translateY(-4px);
 }
 
-@keyframes drawer-in {
-  from {
-    transform: translate3d(100%, 0, 0);
-  }
-  to {
-    transform: translate3d(0, 0, 0);
-  }
+.mobile-drawer-enter-active,
+.mobile-drawer-leave-active {
+  transition: opacity 0.2s ease;
+}
+.mobile-drawer-enter-active .mobile-drawer,
+.mobile-drawer-leave-active .mobile-drawer {
+  transition: transform 0.28s ease-out;
+}
+.mobile-drawer-enter-from,
+.mobile-drawer-leave-to {
+  opacity: 1;
+}
+.mobile-drawer-enter-from .mobile-drawer,
+.mobile-drawer-leave-to .mobile-drawer {
+  transform: translate3d(100%, 0, 0);
 }
 
 .mobile-drawer {
-  animation: drawer-in 0.28s ease-out;
+  background: rgba(255, 255, 255, 0.42);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+}
+
+html.shot .mobile-drawer,
+html.shot .mobile-drawer-enter-from .mobile-drawer,
+html.shot .mobile-drawer-leave-to .mobile-drawer {
+  animation: none !important;
+  transform: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

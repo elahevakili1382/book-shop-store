@@ -5,6 +5,10 @@ interface User {
   name: string
   email: string
   role?: string
+  phone?: string
+  address?: string
+  city?: string
+  postalCode?: string
 }
 
 type MeResponse = {
@@ -55,7 +59,7 @@ export const useAuthStore = defineStore('auth', {
       }
       this.setUser(null)
       clearLegacyAuthStorage()
-      await navigateTo('/login')
+      await navigateTo('/')
     },
   },
 })

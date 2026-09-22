@@ -1,11 +1,7 @@
 <template>
-  <div class="space-y-6">
-    <!-- هدر -->
-    <div class="flex flex-col gap-3">
-      <div>
-        <p class="text-sm text-dash-muted mb-1">داشبورد / سفارشات</p>
-        <h1 class="text-2xl font-semibold text-dash-text">سفارشات</h1>
-      </div>
+  <div class="space-y-4 sm:space-y-6">
+    <div class="hidden sm:block">
+      <h1 class="text-2xl font-semibold text-dash-text">سفارشات</h1>
     </div>
 
     <!-- فقط لود اول — موقع refresh کل صفحه خالی نشود -->
@@ -40,9 +36,9 @@
       </div>
 
       <!-- تب‌ها -->
-      <div class="flex gap-2 overflow-x-auto pb-1">
+      <div class="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
         <button v-for="t in tabs" :key="t.key" type="button"
-          class="px-4 py-2 rounded-2xl text-sm font-semibold border transition shrink-0" :class="activeTab === t.key
+          class="min-h-11 shrink-0 rounded-2xl border px-4 text-sm font-semibold transition" :class="activeTab === t.key
             ? 'bg-dash-accent/15 text-dash-accent border-dash-accent/40'
             : 'bg-dash-card text-dash-muted border-dash-border hover:text-dash-text'
             " @click="activeTab = t.key">
@@ -70,7 +66,35 @@
           سفارشی یافت نشد.
         </div>
 
-        <table v-else class="min-w-[800px] w-full text-right text-sm text-dash-text border-separate border-spacing-y-2">
+        <template v-else>
+          <ul class="space-y-3 md:hidden">
+            <li
+              v-for="order in filtered"
+              :key="order.id || order._id"
+              class="rounded-2xl bg-dash-bg p-4"
+              @click="openDetail(order)"
+            >
+              <div class="flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                  <p class="font-mono text-xs text-dash-muted">#{{ orderIdShort(order) }}</p>
+                  <p class="mt-1 truncate font-bold text-dash-text">{{ order.customerName }}</p>
+                  <p class="mt-0.5 text-xs text-dash-muted">{{ formatDate(order.createdAt) }} · {{ order.city || 'بدون شهر' }}</p>
+                </div>
+                <span class="shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold" :class="statusClass(order.status)">
+                  {{ statusLabel(order.status) }}
+                </span>
+              </div>
+              <div class="mt-3 flex items-center justify-between">
+                <p class="text-sm font-black text-dash-accent">
+                  {{ Number(order.amount || 0).toLocaleString('fa-IR') }} تومان
+                </p>
+                <span class="text-xs text-dash-muted">{{ order.items?.length || 0 }} قلم</span>
+              </div>
+            </li>
+          </ul>
+
+          <div class="hidden overflow-x-auto md:block">
+            <table class="min-w-[800px] w-full border-separate border-spacing-y-2 text-right text-sm text-dash-text">
           <thead>
             <tr class="text-dash-muted">
               <th class="p-3 font-medium">سفارش</th>
@@ -111,6 +135,8 @@
             </tr>
           </tbody>
         </table>
+          </div>
+        </template>
       </div>
     </template>
 
@@ -256,6 +282,8 @@ import type { Order } from '~/types/dashboard'
 
 definePageMeta({ layout: 'dashboard', title: 'سفارشات' })
 
+const route = useRoute()
+
 // as any: جلوگیری از Excessive stack depth روی تایپ‌های Nuxt $fetch/useFetch
 const { data, pending, error, refresh } = await (useFetch as any)('/api/orders', {
   query: { limit: 50 },
@@ -266,6 +294,11 @@ const orders = computed((): Order[] => (Array.isArray(data.value) ? (data.value 
 /** اسپینر تمام‌صفحه فقط وقتی هنوز هیچ داده‌ای نیست */
 const isInitialLoading = computed(() => Boolean(pending.value) && !data.value)
 const searchTerm = ref('')
+
+onMounted(() => {
+  const q = typeof route.query.q === 'string' ? route.query.q : ''
+  if (q) searchTerm.value = q
+})
 
 const tabs = [
   { key: 'all', label: 'همه' },

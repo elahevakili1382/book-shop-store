@@ -11,6 +11,7 @@ export interface IOrderItem {
 }
 
 export interface IOrder {
+  userId?: string
   customerName: string
   phone: string
   address?: string
@@ -39,6 +40,11 @@ const OrderItemSchema = new mongoose.Schema<IOrderItem>(
 
 const OrderSchema = new mongoose.Schema<IOrder>(
   {
+    userId: {
+      type: String,
+      default: '',
+      index: true,
+    },
     customerName: {
       type: String,
       required: true,

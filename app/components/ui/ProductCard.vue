@@ -87,7 +87,7 @@ const props = withDefaults(
 )
 
 const productId = computed(
-  () => props.product.id ?? props.product._id ?? props.product.title
+  () => String(props.product.id ?? props.product._id ?? '').trim(),
 )
 
 const FALLBACK = '/images/NonFictionIcon(1).svg'
@@ -120,13 +120,14 @@ const cartLabel = computed(() => {
 })
 
 function addProduct() {
-  if (outOfStock.value) return
+  if (outOfStock.value || !productId.value) return
   cartStore.addToCart(
     {
       id: productId.value,
       name: props.product.title,
       price: props.product.price,
       image: props.product.image || FALLBACK,
+      slug: props.product.slug,
     },
     1
   )

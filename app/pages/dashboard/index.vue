@@ -1,9 +1,9 @@
 <!-- pages/dashboard/index.vue -->
 <template>
-  <div class="space-y-8">
+  <div class="space-y-5">
     <ProgressCard />
 
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+    <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
       <div class="xl:col-span-2">
         <ProjectAnalytics />
       </div>
@@ -12,11 +12,13 @@
 
     <DetailTable />
 
-    <div class="grid grid-cols-1 gap-5 xl:grid-cols-2">
+    <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
       <RecentReviews />
-      <div class="space-y-5">
+      <div class="space-y-4">
         <CategoryChart />
-        <UserRegistrationChart />
+        <div class="hidden lg:block">
+          <UserRegistrationChart />
+        </div>
       </div>
     </div>
   </div>
@@ -32,7 +34,11 @@ import CategoryChart from '../../components/dashboard/CategoryChart.vue'
 import UserRegistrationChart from '../../components/dashboard/UserRegistrationChart.vue'
 
 definePageMeta({
-  title: 'داشبورد ادمین',
+  title: 'خانه',
   layout: 'dashboard',
+})
+
+useSeoMeta({
+  title: 'داشبورد',
 })
 </script>

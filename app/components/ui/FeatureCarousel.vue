@@ -126,6 +126,7 @@ const books = ref<CarouselBook[]>([])
 const currentIndex = ref(0)
 const isPaused = ref(false)
 const reduceMotion = ref(false)
+const route = useRoute()
 let pointerStartX = 0
 
 const cardTransition = computed(() =>
@@ -206,6 +207,9 @@ let timer: ReturnType<typeof setInterval> | null = null
 
 onMounted(async () => {
   reduceMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  if (route.query.shot === '1' || route.query.shot === 'true') {
+    isPaused.value = true
+  }
   try {
     const data = await $fetch<Product[]>('/api/books', { query: { limit: 24 } })
     const ranked = [...(data ?? [])].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))

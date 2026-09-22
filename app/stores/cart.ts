@@ -9,6 +9,7 @@ export interface CartItem {
   quantity: number
   uniqueId: string
   image?: string
+  slug?: string
 }
 
 const STORAGE_KEY = 'cart'
@@ -50,10 +51,14 @@ export const useCartStore = defineStore('cart', () => {
   const cartTotal = computed(() => cartItems.value.reduce((t, i) => t + i.price * i.quantity, 0))
 
   // actions
-  function addToCart(product: { id: string | number; name: string; price: number; image?: string }, quantity = 1) {
+  function addToCart(
+    product: { id: string | number; name: string; price: number; image?: string; slug?: string },
+    quantity = 1,
+  ) {
     const existing = cartItems.value.find((i) => i.id === product.id)
     if (existing) {
       existing.quantity += quantity
+      if (product.slug) existing.slug = product.slug
     } else {
       const uniqueId = generateUniqueId()
       cartItems.value.push({
@@ -61,6 +66,7 @@ export const useCartStore = defineStore('cart', () => {
         name: product.name,
         price: product.price,
         image: product.image ?? '',
+        slug: product.slug,
         quantity,
         uniqueId,
       })

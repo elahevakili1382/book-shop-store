@@ -90,12 +90,9 @@ onMounted(() => {
   reduceMotion.value = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 })
 
-const accountTo = computed(() => {
-  if (!auth.isAuthenticated) return '/login'
-  const role = auth.user?.role
-  if (role === 'admin' || role === 'super-admin') return '/dashboard'
-  return '/address'
-})
+const accountTo = computed(() =>
+  auth.isAuthenticated ? '/account' : '/login?redirect=/account',
+)
 
 const items = computed(() => [
   { label: 'خانه', to: '/', icon: Home, match: (path: string) => path === '/' },
@@ -114,11 +111,11 @@ const items = computed(() => [
     match: (path: string) => path.startsWith('/cart') || path.startsWith('/payment'),
   },
   {
-    label: 'حساب',
+    label: 'پنل',
     to: accountTo.value,
     icon: User,
     match: (path: string) =>
-      path.startsWith('/login') || path.startsWith('/dashboard') || path.startsWith('/address'),
+      path.startsWith('/account') || path.startsWith('/login'),
   },
 ])
 

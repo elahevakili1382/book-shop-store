@@ -22,7 +22,15 @@ export default defineEventHandler(async(event) =>{
     if (body?.image != null) payload.image = body.image
     if (body?.slug != null) payload.slug = body.slug
     if (body?.titleEn != null) payload.titleEn = body.titleEn
-    if (body?.isbn != null) payload.isbn = body.isbn 
+    if (body?.isbn != null) payload.isbn = body.isbn
+    if (body?.author != null) payload.author = String(body.author)
+    if (body?.publisher != null) payload.publisher = String(body.publisher)
+    if (body?.pages != null) payload.pages = Number(body.pages)
+    if (body?.features != null) {
+      payload.features = Array.isArray(body.features)
+        ? body.features.map((item: unknown) => String(item).trim()).filter(Boolean)
+        : []
+    } 
 
     if (Object.keys(payload).length === 0) {
   throw createError({ statusCode: 400, statusMessage: 'Nothing to update' })

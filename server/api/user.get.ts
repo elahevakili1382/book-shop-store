@@ -1,28 +1,44 @@
-import { defineEventHandler, getCookie } from 'h3'
-import jwt from 'jsonwebtoken'
-import { AUTH_COOKIE } from '../utils/authCookie'
+import { defineEventHandler } from 'h3'
+import { connectDB } from '../utils/mongodb'
+import { User } from '../models/User'
+import { getAuthOptional } from '../utils/requireAuth'
 
-const SECRET = process.env.JWT_SECRET || 'dev_secret'
+function publicUser(user: {
+  _id: { toString: () => string }
+  name: string
+  email: string
+  role?: string
+  phone?: string
+  address?: string
+  city?: string
+  postalCode?: string
+}) {
+  return {
+    id: user._id.toString(),
+    name: user.name,
+    email: user.email,
+    role: user.role,
+    phone: user.phone || '',
+    address: user.address || '',
+    city: user.city || '',
+    postalCode: user.postalCode || '',
+  }
+}
 
 export default defineEventHandler(async (event) => {
-  const token = getCookie(event, AUTH_COOKIE)
-  if (!token) {
+  const session = getAuthOptional(event)
+  if (!session) {
     return { ok: false, user: null }
   }
 
-  try {
-    const decoded = jwt.verify(token, SECRET) as any
-    // decoded شامل id,name,email
-    return {
-      ok: true,
-      user: {
-        id: decoded.id,
-        name: decoded.name,
-        email: decoded.email,
-        role: decoded.role as string | undefined,
-      },
-    }
-  } catch (err) {
+  await connectDB()
+  const user = await User.findById(session.id).select('name email role phone address city postalCode')
+  if (!user) {
     return { ok: false, user: null }
+  }
+
+  return {
+    ok: true,
+    user: publicUser(user),
   }
 })
