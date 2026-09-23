@@ -1,9 +1,16 @@
 <template>
   <article
-    class="group flex h-full w-full flex-col overflow-hidden border border-slate/8 bg-white shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
-    :class="compact ? 'rounded-xl' : 'rounded-2xl'"
+    class="group relative flex h-full w-full flex-col overflow-hidden bg-white"
+    :class="compact
+      ? 'rounded-xl'
+      : 'rounded-2xl border border-slate/8 shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover'"
   >
-    <NuxtLink v-if="productUrl" :to="productUrl" class="relative block overflow-hidden">
+    <NuxtLink
+      v-if="productUrl"
+      :to="productUrl"
+      class="relative block overflow-hidden bg-cream/60"
+      :class="compact ? 'rounded-xl' : ''"
+    >
       <img
         :src="displayImage"
         :alt="props.product.title"
@@ -15,44 +22,67 @@
       />
 
       <span
-        v-if="props.product.category && !compact"
+        v-if="index"
+        class="absolute right-2 top-1 text-2xl font-black leading-none text-slate/25"
+      >
+        {{ index }}
+      </span>
+
+      <span
+        v-if="categoryName && !compact && !index"
         class="absolute right-2.5 top-2.5 rounded-full bg-slate/90 px-2 py-0.5 text-[10px] font-bold text-white"
       >
-        {{ props.product.category }}
+        {{ categoryName }}
       </span>
+
       <div
-        v-if="props.product.rating"
-        :class="compact ? 'bottom-1.5 left-1.5 px-1.5 py-0.5 text-[10px]' : 'bottom-2.5 left-2.5 px-2 py-1 text-xs'"
-        class="absolute flex items-center gap-1 rounded-full bg-white/95 font-bold text-slate shadow-card"
+        v-if="props.product.rating && !compact"
+        class="absolute bottom-2.5 left-2.5 flex items-center gap-1 rounded-full bg-white/95 px-2 py-1 text-xs font-bold text-slate shadow-card"
       >
         <AppIcon icon="mdi:star" class="h-3.5 w-3.5 text-lime" />
         {{ props.product.rating }}
       </div>
+
+      <button
+        v-if="compact"
+        type="button"
+        :disabled="outOfStock"
+        class="absolute bottom-2 left-2 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full bg-slate text-white shadow-card transition-colors hover:bg-lime hover:text-slate disabled:bg-slate/30"
+        :aria-label="cartLabel"
+        @click.prevent.stop="addProduct"
+      >
+        <AppIcon :icon="cartIcon" class="h-4 w-4" />
+      </button>
     </NuxtLink>
 
-    <div class="flex flex-1 flex-col" :class="compact ? 'px-2 pb-2 pt-2' : 'px-3 pb-3 pt-3'">
-      <NuxtLink v-if="productUrl" :to="productUrl" :class="compact ? 'min-h-[2rem]' : 'min-h-[2.5rem]'">
+    <div class="flex flex-1 flex-col" :class="compact ? 'px-1.5 pb-2 pt-2' : 'px-3 pb-3 pt-3'">
+      <NuxtLink v-if="productUrl" :to="productUrl">
         <h2
           class="line-clamp-2 font-bold leading-snug text-slate group-hover:text-slate/80"
-          :class="compact ? 'text-xs' : 'text-sm'"
+          :class="compact ? 'min-h-[2.25rem] text-[13px]' : 'min-h-[2.5rem] text-sm'"
         >
           {{ props.product.title }}
         </h2>
       </NuxtLink>
 
-      <div class="mt-auto flex items-center justify-between gap-2" :class="compact ? 'pt-2' : 'pt-3'">
-        <p class="truncate font-black text-slate" :class="compact ? 'text-xs' : 'text-sm'">
+      <p v-if="compact && props.product.rating" class="mt-1 flex items-center gap-1 text-[11px] text-slate/50">
+        <AppIcon icon="mdi:star" class="h-3 w-3 text-lime" />
+        <span class="font-bold text-slate">{{ props.product.rating }}</span>
+      </p>
+
+      <div class="mt-auto flex items-center justify-between gap-2" :class="compact ? 'pt-1.5' : 'pt-3'">
+        <p class="truncate font-black text-slate" :class="compact ? 'text-[13px]' : 'text-sm'">
           {{ formattedPrice }}
         </p>
         <button
+          v-if="!compact"
           type="button"
           :disabled="outOfStock"
-          :class="compact ? 'h-8 w-8' : 'h-10 w-10'"
-          class="inline-flex shrink-0 items-center justify-center rounded-full bg-slate text-white transition-all duration-300 hover:bg-lime hover:text-slate active:scale-95 disabled:cursor-not-allowed disabled:bg-slate/30 disabled:text-white"
+          class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate text-white transition-all duration-300 hover:bg-lime hover:text-slate active:scale-95 disabled:cursor-not-allowed disabled:bg-slate/30 disabled:text-white"
           :aria-label="cartLabel"
           @click.prevent.stop="addProduct"
         >
-          <AppIcon :icon="cartIcon" :class="compact ? 'h-4 w-4' : 'h-5 w-5'" />
+          <AppIcon :icon="cartIcon" class="h-5 w-5" />
         </button>
       </div>
     </div>
@@ -63,6 +93,7 @@
 import { computed, ref } from 'vue'
 import { useCartStore } from '../../stores/cart'
 import { productPath } from '../../utils/slugify'
+import { categoryLabel } from '../../utils/categoryLabel'
 
 const toast = useToast()
 const justAdded = ref(false)
@@ -70,6 +101,7 @@ const justAdded = ref(false)
 const props = withDefaults(
   defineProps<{
     compact?: boolean
+    index?: number
     product: {
       id?: string | number
       _id?: string
@@ -92,6 +124,7 @@ const productId = computed(
 
 const FALLBACK = '/images/NonFictionIcon(1).svg'
 const displayImage = computed(() => props.product.image || FALLBACK)
+const categoryName = computed(() => categoryLabel(props.product.category))
 const cartStore = useCartStore()
 
 function onCoverError(e: Event) {

@@ -5,7 +5,7 @@
 </script>
 
 <template>
-  <div class="overflow-x-hidden font-sans">
+  <div class="storefront overflow-x-hidden font-sans">
     <Header />
     <main>
     <NuxtPage />

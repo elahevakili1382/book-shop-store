@@ -2,12 +2,12 @@
   <footer class="footer-root mt-16 bg-slate text-white">
     <div class="h-1 w-full bg-lime" aria-hidden="true" />
     <div class="mx-auto max-w-[1280px] px-4 py-10 pb-[calc(6.75rem+env(safe-area-inset-bottom))] sm:px-8 lg:py-14 lg:pb-14">
-      <div class="grid grid-cols-1 gap-8 min-w-0 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
-        <div class="min-w-0 text-right sm:col-span-2 lg:col-span-5">
+      <div class="grid grid-cols-2 gap-x-4 gap-y-8 min-w-0 lg:grid-cols-12 lg:gap-8">
+        <div class="col-span-2 min-w-0 text-right lg:col-span-5">
           <NuxtLink to="/" class="inline-flex items-center">
             <span class="text-xl font-black tracking-tight">Booklett</span>
           </NuxtLink>
-          <p class="mt-3 max-w-sm text-sm leading-relaxed text-white/65">
+          <p class="mt-3 hidden max-w-sm text-sm leading-relaxed text-white/65 sm:block">
             فروشگاه آنلاین کتاب با جلد اصل، قیمت روی جلد و ارسال به سراسر کشور.
             از انتخاب کتاب تا پرداخت زرین‌پال، مسیر کوتاه است.
           </p>
@@ -44,7 +44,6 @@
           v-for="section in footerSections"
           :key="section.title"
           class="min-w-0 text-right lg:col-span-2"
-          :class="section.wide ? 'sm:col-span-2 lg:col-span-3' : ''"
         >
           <h2 class="mb-3 text-sm font-bold text-white">{{ section.title }}</h2>
           <ul class="space-y-1">
@@ -57,7 +56,7 @@
         </div>
       </div>
 
-      <div class="mt-8 grid grid-cols-1 gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-4 sm:grid-cols-3 sm:px-5">
+      <div class="mt-8 grid grid-cols-2 gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-4 sm:grid-cols-3 sm:px-5">
         <p
           v-for="badge in trustBadges"
           :key="badge.label"
@@ -98,7 +97,6 @@ const footerSections = [
   },
   {
     title: 'راهنما و پشتیبانی',
-    wide: true,
     links: [
       { label: 'درباره ما', to: '/about' },
       { label: 'راهنمای خرید', to: '/about#guide' },

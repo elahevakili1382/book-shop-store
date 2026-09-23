@@ -1,49 +1,73 @@
 <template>
-  <section class="max-w-[1400px] mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold mb-8">کتاب‌های دسته: {{ categoryName }}</h1>
+  <section class="mx-auto max-w-[1280px] px-4 py-6 sm:px-8 sm:py-10">
+    <p class="text-xs font-bold text-slate/45">فروشگاه</p>
+    <h1 class="mt-1 text-xl font-black text-slate sm:text-3xl">{{ categoryName || 'دسته‌بندی' }}</h1>
+    <p v-if="!isLoading" class="mt-1 text-sm text-slate/50">{{ products.length.toLocaleString('fa-IR') }} کتاب</p>
 
-    <div v-if="isLoading" class="text-center py-10">در حال بارگذاری...</div>
-    <div v-else-if="products.length" class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 md:grid-cols-4">
-      <ProductCard v-for="book in products" :key="book._id" :product="book" />
-    </div>
-    <p v-else class="text-gray-500">هیچ کتابی برای این دسته پیدا نشد.</p>
+    <nav
+      class="-mx-4 mt-5 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden"
+      aria-label="دسته‌بندی‌ها"
+    >
+      <NuxtLink
+        v-for="cat in categoryStore.categories"
+        :key="cat.slug"
+        :to="`/category/${cat.slug}`"
+        :class="[
+          'inline-flex h-9 shrink-0 items-center rounded-full border px-3.5 text-xs font-semibold transition-colors',
+          slug === cat.slug
+            ? 'border-slate bg-slate text-white'
+            : 'border-slate/10 bg-white text-slate/65 hover:border-slate/20 hover:text-slate',
+        ]"
+      >
+        {{ cat.name }}
+      </NuxtLink>
+    </nav>
+
+    <div v-if="isLoading" class="py-20 text-center text-slate/50">در حال بارگذاری...</div>
+    <ProductGrid v-else-if="products.length" class="mt-6" :products="products" />
+    <p v-else class="mt-10 py-12 text-center text-slate/50">هیچ کتابی برای این دسته پیدا نشد.</p>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { computed, watch, watchEffect } from 'vue'
 import { useCategoryStore } from '../../stores/categories'
 import { useProductStore } from '../../stores/productStore'
-import ProductCard from '../../components/ui/ProductCard.vue'
+import ProductGrid from '../../components/ui/ProductGrid.vue'
 
 const route = useRoute()
-const router = useRouter()
-const slug = (route.params.slug as string) || ''
+const slug = computed(() => String(route.params.slug || ''))
 
 const categoryStore = useCategoryStore()
 const productStore = useProductStore()
 
-// اگر دسته‌ها هنوز لود نشده باشند، ابتدا آنها را بار می‌کنیم
-onMounted(async () => {
-  if (!categoryStore.categories.length) {
-    await categoryStore.fetchCategories()
-  }
+await categoryStore.fetchCategories().catch(() => undefined)
 
-  const cat = categoryStore.categories.find(c => c.slug === slug)
-  if (!cat) {
-    // صفحه 404
-    return router.replace('/404') // یا throw createError({ statusCode: 404, statusMessage: 'دسته یافت نشد' })
-  }
-
-  // fetch با slug انگلیسی — همان مقداری که در MongoDB books.category ذخیره شده
-  await productStore.fetchCategoryProducts(cat.slug)
-})
+watch(
+  slug,
+  async (value) => {
+    if (!value) return
+    const cat = categoryStore.categories.find((c) => c.slug === value)
+    if (!cat) {
+      await navigateTo('/new')
+      return
+    }
+    await productStore.fetchCategoryProducts(cat.slug)
+  },
+  { immediate: true }
+)
 
 const categoryName = computed(() => {
-  const c = categoryStore.categories.find(c => c.slug === slug)
+  const c = categoryStore.categories.find((c) => c.slug === slug.value)
   return c?.name ?? ''
 })
 
 const products = computed(() => productStore.products)
 const isLoading = computed(() => productStore.isLoading)
+
+watchEffect(() => {
+  useSeoMeta({
+    title: categoryName.value ? `${categoryName.value} | Booklett` : 'دسته‌بندی | Booklett',
+  })
+})
 </script>

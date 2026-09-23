@@ -1,8 +1,7 @@
 <template>
   <main class="product-page min-h-screen pb-36 lg:pb-16">
-    <div class="max-w-[1280px] mx-auto px-4 sm:px-8 pt-6 lg:pt-8">
-      <!-- breadcrumb -->
-      <nav class="flex flex-wrap items-center gap-1.5 text-xs text-slate/50 mb-6 lg:mb-8">
+    <div class="mx-auto max-w-[1280px] px-4 pt-3 sm:px-8 sm:pt-6 lg:pt-8">
+      <nav class="mb-6 hidden flex-wrap items-center gap-1.5 text-xs text-slate/50 sm:flex lg:mb-8">
         <NuxtLink to="/" class="hover:text-slate transition-colors">خانه</NuxtLink>
         <AppIcon icon="mdi:chevron-left" class="w-3.5 h-3.5 shrink-0" />
         <NuxtLink
@@ -54,8 +53,8 @@
               :transition="{ duration: 0.55, delay: 0.08 }"
               class="lg:col-span-5 order-1"
             >
-              <div class="rounded-[1.75rem] overflow-hidden bg-white border border-slate/8 shadow-card p-4 sm:p-5">
-                <div class="relative rounded-2xl overflow-hidden bg-cream/60">
+              <div class="-mx-4 overflow-hidden bg-white sm:mx-0 sm:rounded-[1.75rem] sm:border sm:border-slate/8 sm:p-4 sm:shadow-card lg:p-5">
+                <div class="relative overflow-hidden bg-cream/60 sm:rounded-2xl">
                   <img
                     :src="activeImage"
                     :alt="product.title"
@@ -65,24 +64,40 @@
                   />
                   <span
                     v-if="categoryLabel"
-                    class="absolute top-4 right-4 px-3 py-1 rounded-full bg-slate/90 text-white text-xs font-bold"
+                    class="absolute top-4 right-4 hidden rounded-full bg-slate/90 px-3 py-1 text-xs font-bold text-white sm:inline-flex"
                   >
                     {{ categoryLabel }}
                   </span>
+                  <div
+                    v-if="galleryImages.length > 1"
+                    class="absolute inset-x-0 bottom-3 flex items-center justify-center gap-1.5 sm:hidden"
+                  >
+                    <button
+                      v-for="(img, idx) in galleryImages"
+                      :key="idx"
+                      type="button"
+                      :aria-label="`تصویر ${idx + 1}`"
+                      :class="[
+                        'h-1.5 rounded-full transition-all',
+                        activeImage === img ? 'w-4 bg-slate' : 'w-1.5 bg-slate/30',
+                      ]"
+                      @click="activeImage = img"
+                    />
+                  </div>
                 </div>
 
-                <div v-if="galleryImages.length > 1" class="flex gap-2 mt-3 overflow-x-auto pb-1">
+                <div v-if="galleryImages.length > 1" class="mt-3 hidden gap-2 overflow-x-auto pb-1 sm:flex">
                   <button
                     v-for="(img, idx) in galleryImages"
                     :key="idx"
                     type="button"
                     :class="[
-                      'shrink-0 w-16 h-20 rounded-xl overflow-hidden border-2 transition-colors',
+                      'h-20 w-16 shrink-0 overflow-hidden rounded-xl border-2 transition-colors',
                       activeImage === img ? 'border-lime' : 'border-transparent hover:border-slate/20',
                     ]"
                     @click="activeImage = img"
                   >
-                    <img :src="img" :alt="`${product.title} ${idx + 1}`" class="w-full h-full object-cover" />
+                    <img :src="img" :alt="`${product.title} ${idx + 1}`" class="h-full w-full object-cover" />
                   </button>
                 </div>
               </div>
@@ -92,14 +107,30 @@
             <div class="lg:col-span-7 order-2">
               <div class="lg:grid lg:grid-cols-5 lg:gap-8 items-start">
                 <!-- Main info -->
-                <div class="lg:col-span-3 space-y-5">
+                <div class="space-y-5 pb-8 lg:col-span-3 lg:pb-0">
                   <div>
-                    <h1 class="text-2xl sm:text-3xl font-black text-slate leading-tight">
-                      {{ product.title }}
-                    </h1>
-                    <p v-if="displayTitleEn" class="mt-1.5 text-sm sm:text-base text-slate/45 font-medium ltr-inline" dir="ltr">
-                      {{ displayTitleEn }}
-                    </p>
+                    <div class="flex items-start gap-2">
+                      <div class="min-w-0 flex-1">
+                        <h1 class="text-xl font-black leading-tight text-slate sm:text-3xl">
+                          {{ product.title }}
+                        </h1>
+                        <p v-if="displayTitleEn" class="mt-1.5 w-full text-right text-sm font-medium text-slate/45 sm:text-base" dir="ltr">
+                          {{ displayTitleEn }}
+                        </p>
+                        <p class="mt-2 text-lg font-black text-slate sm:hidden">{{ formattedPrice }}</p>
+                      </div>
+                      <div class="flex shrink-0 items-center gap-1">
+                        <button
+                          type="button"
+                          :aria-label="isWishlisted ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'"
+                          class="inline-flex h-10 w-10 items-center justify-center text-slate/55 transition-colors hover:text-red-500"
+                          @click="toggleWishlist"
+                        >
+                          <AppIcon :icon="isWishlisted ? 'mdi:heart' : 'mdi:heart-outline'" class="h-6 w-6" :class="isWishlisted ? 'text-red-500' : ''" />
+                        </button>
+                        <ProductShareMenu v-if="product.title" :title="product.title" />
+                      </div>
+                    </div>
                   </div>
 
                   <!-- Publisher + meta links -->
@@ -150,23 +181,6 @@
                     >
                       {{ inStock ? 'موجود' : 'ناموجود' }}
                     </span>
-
-                    <div class="flex items-center gap-1.5 mr-auto sm:mr-0">
-                      <ProductShareMenu v-if="product.title" :title="product.title" />
-                      <button
-                        type="button"
-                        :aria-label="isWishlisted ? 'حذف از علاقه‌مندی‌ها' : 'افزودن به علاقه‌مندی‌ها'"
-                        :class="[
-                          'w-9 h-9 rounded-xl border flex items-center justify-center transition-colors',
-                          isWishlisted
-                            ? 'border-red-200 bg-red-50 text-red-500'
-                            : 'border-slate/10 bg-white text-slate/55 hover:text-slate hover:border-slate/20',
-                        ]"
-                        @click="toggleWishlist"
-                      >
-                        <AppIcon :icon="isWishlisted ? 'mdi:heart' : 'mdi:heart-outline'" class="w-5 h-5" />
-                      </button>
-                    </div>
                   </div>
 
                   <div v-if="featureItems.length" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -246,45 +260,6 @@
                 </div>
               </div>
 
-              <!-- Mobile inline price + cart (Milkan-style) -->
-              <div class="lg:hidden mt-6 rounded-2xl bg-white border border-slate/8 p-5 shadow-card">
-                <p class="text-xs font-bold text-slate/45 mb-1">قیمت</p>
-                <p class="text-2xl font-black text-slate mb-4">{{ formattedPrice }}</p>
-                <div class="flex flex-wrap items-center gap-3">
-                  <div class="flex items-center gap-2 rounded-2xl bg-cream border border-slate/10 p-1">
-                    <button
-                      type="button"
-                      aria-label="کاهش تعداد"
-                      class="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-white transition-colors text-slate disabled:opacity-40"
-                      :disabled="quantity <= 1"
-                      @click="decreaseQuantity"
-                    >
-                      <AppIcon icon="mdi:minus" class="w-4 h-4" />
-                    </button>
-                    <span class="w-8 text-center font-bold text-slate">{{ quantity }}</span>
-                    <button
-                      type="button"
-                      aria-label="افزایش تعداد"
-                      class="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-white transition-colors text-slate disabled:opacity-40"
-                      :disabled="!canIncrease"
-                      @click="increaseQuantity"
-                    >
-                      <AppIcon icon="mdi:plus" class="w-4 h-4" />
-                    </button>
-                  </div>
-                  <button
-                    type="button"
-                    :disabled="!inStock"
-                    class="flex-1 min-w-[140px] py-3.5 px-6 rounded-2xl bg-slate text-white font-bold text-sm
-                           flex items-center justify-center gap-2 hover:bg-lime hover:text-slate transition-colors
-                           disabled:opacity-50 disabled:cursor-not-allowed"
-                    @click="justAdded ? goToCart() : addToCart"
-                  >
-                    <AppIcon :icon="justAdded ? 'mdi:arrow-left' : 'mdi:cart-plus'" class="w-5 h-5" />
-                    {{ justAdded ? 'رفتن به سبد' : inStock ? 'افزودن به سبد' : 'ناموجود' }}
-                  </button>
-                </div>
-              </div>
             </div>
           </motion.div>
 
@@ -337,7 +312,7 @@
             :show-nav="false"
           />
           <ClientOnly>
-            <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4 mt-6">
+            <div class="mt-6 grid grid-cols-2 gap-x-3 gap-y-5 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
               <motion.div
                 v-for="(item, i) in relatedProducts"
                 :key="item._id"
@@ -346,7 +321,7 @@
                 :viewport="{ once: true, amount: 0.2 }"
                 :transition="{ duration: 0.4, delay: i * 0.06 }"
               >
-                <ProductCard :product="item" />
+                <ProductCard compact :product="item" />
               </motion.div>
             </div>
           </ClientOnly>
@@ -357,14 +332,10 @@
     <!-- Sticky mobile bar -->
     <div
       v-if="product && !pending && !fetchError"
-      class="fixed inset-x-0 bottom-[4.75rem] z-30 lg:hidden border-t border-slate/10 bg-white/95 backdrop-blur-md px-4 py-3"
+      class="fixed inset-x-0 bottom-[4.75rem] z-30 border-t border-slate/10 bg-white px-4 py-3 lg:hidden"
     >
-      <div class="max-w-[1280px] mx-auto flex items-center gap-3">
-        <div class="shrink-0">
-          <p class="text-[10px] font-bold text-slate/45">قیمت</p>
-          <p class="text-base font-black text-slate">{{ formattedPrice }}</p>
-        </div>
-        <div class="flex items-center gap-2 rounded-2xl bg-cream border border-slate/10 p-1 shrink-0">
+      <div class="mx-auto flex max-w-[1280px] items-center gap-3">
+        <div class="flex shrink-0 items-center gap-2 rounded-2xl border border-slate/10 bg-cream p-1">
           <button
             type="button"
             aria-label="کاهش تعداد"

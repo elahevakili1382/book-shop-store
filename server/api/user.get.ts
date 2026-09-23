@@ -12,6 +12,7 @@ function publicUser(user: {
   address?: string
   city?: string
   postalCode?: string
+  walletBalance?: number
 }) {
   return {
     id: user._id.toString(),
@@ -22,6 +23,7 @@ function publicUser(user: {
     address: user.address || '',
     city: user.city || '',
     postalCode: user.postalCode || '',
+    walletBalance: user.walletBalance ?? 0,
   }
 }
 
@@ -32,7 +34,7 @@ export default defineEventHandler(async (event) => {
   }
 
   await connectDB()
-  const user = await User.findById(session.id).select('name email role phone address city postalCode')
+  const user = await User.findById(session.id).select('name email role phone address city postalCode walletBalance')
   if (!user) {
     return { ok: false, user: null }
   }

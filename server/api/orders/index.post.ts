@@ -16,9 +16,13 @@ export default defineEventHandler(async (event) => {
     }
 
     const priced = await buildOrderFromItems(body?.items, body?.shippingMethod)
-    const paymentMethod = body?.paymentMethod === 'cod' ? 'cod' : 'online'
-
     const session = getAuthOptional(event)
+    const requestedMethod = String(body?.paymentMethod || 'online')
+    const paymentMethod =
+      requestedMethod === 'cod' ? 'cod' : requestedMethod === 'wallet' ? 'wallet' : 'online'
+    if (paymentMethod === 'wallet' && !session?.id) {
+      throw createError({ statusCode: 401, statusMessage: 'برای پرداخت با کیف پول وارد شو' })
+    }
 
     const order = await Order.create({
       userId: session?.id || '',

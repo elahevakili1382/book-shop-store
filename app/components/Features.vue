@@ -14,7 +14,7 @@
         :initial="{ opacity: 0, y: 12 }"
         :animate="{ opacity: 1, y: 0 }"
         :transition="{ duration: 0.45 }"
-        class="flex flex-wrap gap-2 mb-8"
+        class="mb-6 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap"
       >
         <motion.button
           v-for="(cat, i) in categories"
@@ -26,7 +26,7 @@
           :while-hover="{ y: -2 }"
           :while-tap="{ scale: 0.97 }"
           :class="[
-            'inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-semibold transition-colors',
+            'flex min-h-11 w-full min-w-0 items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-xs font-semibold transition-colors sm:w-auto sm:px-4 sm:text-sm',
             activeSlug === cat.slug
               ? 'bg-slate text-white border-slate shadow-card'
               : 'bg-white border-slate/10 text-slate/70 hover:border-slate/20 hover:text-slate',
@@ -40,10 +40,10 @@
             class="object-contain shrink-0 opacity-80"
             format="webp"
           />
-          {{ cat.name }}
+          <span class="truncate">{{ cat.name }}</span>
           <span
             :class="[
-              'text-[10px] font-semibold px-1.5 py-0.5 rounded-full',
+              'hidden text-[10px] font-semibold px-1.5 py-0.5 rounded-full sm:inline',
               activeSlug === cat.slug ? 'bg-white/15 text-white' : 'bg-slate/5 text-slate/50',
             ]"
           >
@@ -71,7 +71,7 @@
           <SwiperSlide
             v-for="product in products"
             :key="product.id ?? product._id"
-            class="!w-[min(72vw,17.5rem)] sm:!w-[15.5rem] lg:!w-[14.75rem] flex-shrink-0"
+            class="!w-[min(46vw,11.25rem)] sm:!w-[13rem] lg:!w-[14rem] flex-shrink-0"
           >
             <ProductCard :product="product" />
           </SwiperSlide>
@@ -119,7 +119,7 @@ const products = computed(() => localProducts.value)
 async function loadCategoryProducts(slug: string) {
   isLoading.value = true
   try {
-    await productStore.fetchCategoryProducts(slug)
+    await productStore.fetchCategoryProducts(slug, 12)
     localProducts.value = [...productStore.products]
   } finally {
     isLoading.value = false

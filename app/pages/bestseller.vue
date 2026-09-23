@@ -13,7 +13,7 @@ const bestSellers = computed(() =>
   store.products.filter((p) => (p.rating ?? 0) >= 4.5)
 )
 
-const applyFilter = async () => {
+async function applyFilter() {
   if (searchQuery.value) {
     await store.searchProducts(searchQuery.value)
   } else if (selectedCategory.value) {
@@ -21,6 +21,21 @@ const applyFilter = async () => {
   } else {
     await store.fetchAllCategoriesProducts()
   }
+}
+
+function pickCategory(slug: string) {
+  selectedCategory.value = slug
+  searchQuery.value = ''
+  applyFilter()
+}
+
+function chipClass(active: boolean) {
+  return [
+    'inline-flex h-9 shrink-0 items-center rounded-full border px-3.5 text-xs font-semibold transition-colors',
+    active
+      ? 'border-slate bg-slate text-white'
+      : 'border-slate/10 bg-white text-slate/65 hover:border-slate/20 hover:text-slate',
+  ]
 }
 
 onMounted(async () => {
@@ -31,42 +46,43 @@ onMounted(async () => {
 })
 
 definePageMeta({ layout: 'default' })
-useSeoMeta({ title: 'پرفروش‌ها' })
+useSeoMeta({ title: 'پرفروش‌ها | Booklett' })
 </script>
 
 <template>
-  <section class="mx-auto max-w-[1280px] px-4 py-10 sm:px-8">
-    <h1 class="text-center text-3xl font-black text-slate sm:text-4xl">پرفروش‌ها</h1>
-    <span class="mx-auto mb-8 mt-3 block h-1 w-12 rounded-full bg-lime" />
+  <section class="mx-auto max-w-[1280px] px-4 py-6 sm:px-8 sm:py-10">
+    <h1 class="text-xl font-black text-slate sm:text-3xl">پرفروش‌ها</h1>
+    <p class="mt-1 text-sm text-slate/50">{{ bestSellers.length.toLocaleString('fa-IR') }} کتاب</p>
 
-    <div class="mb-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-      <input
-        v-model="searchQuery"
-        type="search"
-        placeholder="جستجوی کتاب..."
-        class="w-full rounded-2xl border border-slate/10 bg-white px-4 py-2.5 text-sm shadow-card focus:outline-none focus:ring-2 focus:ring-lime sm:flex-1"
-      />
-      <select
-        v-model="selectedCategory"
-        class="w-full rounded-2xl border border-slate/10 bg-white px-4 py-2.5 text-sm shadow-card focus:outline-none focus:ring-2 focus:ring-lime sm:w-48"
-      >
-        <option value="">همه دسته‌ها</option>
-        <option v-for="cat in categoryStore.categories" :key="cat.slug" :value="cat.slug">
-          {{ cat.name }}
-        </option>
-      </select>
-      <button
-        type="button"
-        class="rounded-2xl bg-lime px-6 py-2.5 text-sm font-bold text-slate hover:opacity-90"
-        @click="applyFilter"
-      >
-        فیلتر
+    <input
+      v-model="searchQuery"
+      type="search"
+      placeholder="جستجوی کتاب..."
+      class="mt-4 w-full rounded-2xl border border-slate/10 bg-white px-4 py-2.5 text-sm shadow-card focus:outline-none focus:ring-2 focus:ring-lime"
+      @keyup.enter="applyFilter"
+    />
+
+    <nav
+      class="-mx-4 mt-4 flex gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden"
+      aria-label="فیلتر دسته"
+    >
+      <button type="button" :class="chipClass(!selectedCategory)" @click="pickCategory('')">
+        همه
       </button>
-    </div>
+      <button
+        v-for="cat in categoryStore.categories"
+        :key="cat.slug"
+        type="button"
+        :class="chipClass(selectedCategory === cat.slug)"
+        @click="pickCategory(cat.slug)"
+      >
+        {{ cat.name }}
+      </button>
+    </nav>
 
     <div v-if="store.isLoading" class="py-20 text-center text-slate/50">در حال بارگذاری کتاب‌ها...</div>
     <div v-else-if="store.error" class="py-20 text-center text-red-500">{{ store.error }}</div>
-    <ProductGrid v-else-if="bestSellers.length" :products="bestSellers" />
-    <p v-else class="py-16 text-center text-slate/50">کتاب پرفروشی پیدا نشد.</p>
+    <ProductGrid v-else-if="bestSellers.length" class="mt-6" numbered :products="bestSellers" />
+    <p v-else class="mt-10 py-12 text-center text-slate/50">کتاب پرفروشی پیدا نشد.</p>
   </section>
 </template>

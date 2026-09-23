@@ -18,11 +18,11 @@ export default defineEventHandler(async (event) => {
   }
 
   await connectDB()
-  const user = await User.findByIdAndUpdate(
+    const user = await User.findByIdAndUpdate(
     session.id,
     { $set: { name, phone, address, city, postalCode } },
     { new: true, runValidators: true },
-  ).select('name email role phone address city postalCode')
+  ).select('name email role phone address city postalCode walletBalance')
 
   if (!user) {
     throw createError({ statusCode: 404, statusMessage: 'کاربر پیدا نشد' })
@@ -39,6 +39,7 @@ export default defineEventHandler(async (event) => {
       address: user.address || '',
       city: user.city || '',
       postalCode: user.postalCode || '',
+      walletBalance: user.walletBalance ?? 0,
     },
   }
 })

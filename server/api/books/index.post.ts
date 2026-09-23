@@ -52,6 +52,7 @@ export default defineEventHandler(async(event) =>{
     publishedYear: Number.isFinite(publishedYear) ? publishedYear : undefined,
     features,
     slug: slug || undefined,
+    source: 'admin',
   })
 
   if (!created.slug) {

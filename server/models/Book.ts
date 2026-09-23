@@ -19,6 +19,7 @@ export interface IBook {
   translator?: string
   isbn?: string
   features?: string[]
+  source?: 'catalog-api' | 'admin' | 'seed'
 }
 
 const BookSchema = new mongoose.Schema<IBook>(
@@ -88,6 +89,11 @@ const BookSchema = new mongoose.Schema<IBook>(
     features: {
       type: [String],
       default: [],
+    },
+    source: {
+      type: String,
+      enum: ['catalog-api', 'admin', 'seed'],
+      index: true,
     },
   },
   { timestamps: true }

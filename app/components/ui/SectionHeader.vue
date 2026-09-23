@@ -4,7 +4,7 @@
       <p v-if="eyebrow" class="mb-1.5 text-xs font-bold text-slate/45">
         {{ eyebrow }}
       </p>
-      <h2 class="text-2xl sm:text-3xl font-black text-slate">{{ title }}</h2>
+      <h2 class="text-xl font-black text-slate sm:text-3xl">{{ title }}</h2>
       <p v-if="subtitle" class="text-sm text-slate/55 mt-1.5">{{ subtitle }}</p>
     </div>
     <div class="flex items-center gap-2 self-start sm:self-auto">

@@ -89,13 +89,13 @@ export const useProductStore = defineStore('productStore', () => {
     return m
   })
 
-  async function fetchCategoryProducts(category: string) {
+  async function fetchCategoryProducts(category: string, limit = 24) {
     isLoading.value = true
     error.value = null
 
     try {
       const data = await $fetch<Record<string, unknown>[]>('/api/books', {
-        query: { category },
+        query: { category, limit },
       })
 
       const list = Array.isArray(data) ? data.map(mapBookToProduct) : []
@@ -109,13 +109,14 @@ export const useProductStore = defineStore('productStore', () => {
     }
   }
 
-  async function fetchAllCategoriesProducts(limit?: number) {
+  async function fetchAllCategoriesProducts(limit = 48) {
     isLoading.value = true
     error.value = null
 
     try {
-      const query = typeof limit === 'number' && limit > 0 ? { limit } : undefined
-      const data = await $fetch<Record<string, unknown>[]>('/api/books', { query })
+      const data = await $fetch<Record<string, unknown>[]>('/api/books', {
+        query: { limit },
+      })
 
       const list = Array.isArray(data) ? data.map(mapBookToProduct) : []
       products.value = list
@@ -133,7 +134,9 @@ export const useProductStore = defineStore('productStore', () => {
     error.value = null
 
     try {
-      const data = await $fetch<Record<string, unknown>[]>('/api/books')
+      const data = await $fetch<Record<string, unknown>[]>('/api/books', {
+        query: { q: query, limit: 24 },
+      })
 
       const list = Array.isArray(data)
         ? data

@@ -1,11 +1,9 @@
 import { defineEventHandler, createError } from 'h3'
 import { connectDB } from '../../utils/mongodb'
-import { ensureBookCatalog } from '../../utils/ensureBookCatalog'
 import { findBookByParam, getBookRouteParam, serializeBook } from '../../utils/bookLookup'
 
 export default defineEventHandler(async (event) => {
   await connectDB()
-  await ensureBookCatalog()
 
   const param = getBookRouteParam(event)
   if (!param) {

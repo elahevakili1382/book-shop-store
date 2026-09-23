@@ -17,7 +17,7 @@
             <AppIcon icon="mdi:arrow-left" class="size-4 text-slate/40" />
           </NuxtLink>
 
-          <h1 class="mt-8 text-balance text-3xl font-black leading-[1.2] sm:text-5xl lg:text-[3.25rem]">
+          <h1 class="hero-title mt-8 text-balance text-3xl font-black leading-[1.2] sm:text-5xl lg:text-[3.25rem]">
             کتاب بعدی‌ات یک کلیک فاصله دارد
           </h1>
           <p class="mx-auto mt-5 max-w-md text-base leading-relaxed text-slate/55 sm:text-lg lg:mx-0">

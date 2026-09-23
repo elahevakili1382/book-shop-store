@@ -96,7 +96,7 @@ const slidePrev = () => swiperInstance.value?.slidePrev()
 async function fetchProducts(slug: string) {
   isLoading.value = true
   try {
-    await store.fetchCategoryProducts(slug)
+    await store.fetchCategoryProducts(slug, 12)
     products.value = store.products.map((p) => ({ ...p, _key: p.id + slug }))
     await nextTick()
     swiperInstance.value?.update()
@@ -127,19 +127,19 @@ function selectCategory(slug: string) {
   overflow: visible !important;
 }
 .peek-slide {
-  width: min(72vw, 17.5rem);
+  width: min(46vw, 11.25rem);
   flex-shrink: 0;
   display: flex;
   height: auto;
 }
 @media (min-width: 640px) {
   .peek-slide {
-    width: 15.5rem;
+    width: 13rem;
   }
 }
 @media (min-width: 1024px) {
   .peek-slide {
-    width: 14.75rem;
+    width: 14rem;
   }
 }
 </style>

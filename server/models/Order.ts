@@ -1,6 +1,6 @@
 import mongoose, { type Model } from 'mongoose'
 
-export type PaymentMethod = 'online' | 'cod'
+export type PaymentMethod = 'online' | 'cod' | 'wallet'
 export type OrderStatus = 'pending' | 'paid' | 'failed' | 'shipped'
 
 export interface IOrderItem {
@@ -74,7 +74,7 @@ const OrderSchema = new mongoose.Schema<IOrder>(
     },
     paymentMethod: {
       type: String,
-      enum: ['online', 'cod'],
+      enum: ['online', 'cod', 'wallet'],
       default: 'online',
     },
     shippingMethod: {

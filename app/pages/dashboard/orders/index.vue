@@ -202,7 +202,7 @@
               </div>
               <div class="bg-dash-bg rounded-xl p-3 border border-dash-border">
                 <p class="text-dash-muted text-xs mb-1">روش پرداخت</p>
-                <p>{{ selected.paymentMethod === 'cod' ? 'پرداخت در محل' : 'آنلاین' }}</p>
+                <p>{{ paymentMethodLabel(selected.paymentMethod) }}</p>
               </div>
             </div>
 
@@ -434,6 +434,12 @@ function statusLabel(status: string) {
   return map[status] || status
 }
 
+function paymentMethodLabel(method?: string) {
+  if (method === 'cod') return 'پرداخت در محل'
+  if (method === 'wallet') return 'کیف پول'
+  return 'آنلاین'
+}
+
 function csvCell(value: string) {
   const text = String(value || '').replace(/"/g, '""')
   return `"${text}"`
@@ -452,7 +458,7 @@ function downloadExcel() {
       statusLabel(order.status),
       String(order.amount || 0),
       String(order.items?.length || 0),
-      order.paymentMethod === 'cod' ? 'پرداخت در محل' : 'آنلاین',
+      paymentMethodLabel(order.paymentMethod),
     ]),
   ]
   const csv = `\uFEFF${rows.map((row) => row.map(csvCell).join(',')).join('\n')}`

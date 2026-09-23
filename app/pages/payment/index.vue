@@ -124,7 +124,7 @@
               class="w-full rounded-2xl bg-slate py-3.5 text-sm font-bold text-white hover:bg-lime hover:text-slate disabled:opacity-50"
               @click="confirmOrder"
             >
-              {{ isOnline ? 'پرداخت آنلاین' : 'ثبت سفارش و پرداخت در محل' }}
+              {{ payButtonLabel }}
             </button>
             <button
               type="button"
@@ -171,24 +171,47 @@ const busy = ref(false)
 
 const cart = useCartStore()
 const toast = useToast()
+const auth = useAuthStore()
+const walletBalance = ref(0)
 const isOnline = computed(() => payment.value === 'online')
+const isWallet = computed(() => payment.value === 'wallet')
 const shippingCost = computed(() => shippingFee(shippingMethod.value))
 const payableTotal = computed(() => cart.cartTotal + shippingCost.value)
+const canPayWallet = computed(() => auth.isAuthenticated && walletBalance.value >= payableTotal.value)
 
-const paymentMethods = [
-  {
-    value: 'online',
-    label: 'پرداخت آنلاین زرین‌پال',
-    desc: 'انتقال به درگاه امن؛ سفارش بعد از تأیید پرداخت قطعی می‌شود',
-    icon: 'mdi:credit-card-outline',
-  },
-  {
-    value: 'delivery',
-    label: 'پرداخت در محل',
-    desc: 'مبلغ را هنگام تحویل نقدی یا کارت می‌پردازی',
-    icon: 'mdi:cash-multiple',
-  },
-]
+const paymentMethods = computed(() => {
+  const methods = [
+    {
+      value: 'online',
+      label: 'پرداخت آنلاین زرین‌پال',
+      desc: 'انتقال به درگاه امن؛ سفارش بعد از تأیید پرداخت قطعی می‌شود',
+      icon: 'mdi:credit-card-outline',
+    },
+    {
+      value: 'delivery',
+      label: 'پرداخت در محل',
+      desc: 'مبلغ را هنگام تحویل نقدی یا کارت می‌پردازی',
+      icon: 'mdi:cash-multiple',
+    },
+  ]
+  if (auth.isAuthenticated) {
+    methods.unshift({
+      value: 'wallet',
+      label: 'کیف پول',
+      desc: canPayWallet.value
+        ? `موجودی ${formatPrice(walletBalance.value)} تومان؛ بعد از ثبت از موجودی کم می‌شود`
+        : `موجودی ${formatPrice(walletBalance.value)} تومان کافی نیست. از پنل کاربری شارژ کن.`,
+      icon: 'mdi:wallet-outline',
+    })
+  }
+  return methods
+})
+
+const payButtonLabel = computed(() => {
+  if (isWallet.value) return 'پرداخت از کیف پول'
+  if (isOnline.value) return 'پرداخت آنلاین'
+  return 'ثبت سفارش و پرداخت در محل'
+})
 
 function itemHref(item) {
   return productPath({ slug: item.slug, title: item.name, id: item.id })
@@ -218,7 +241,8 @@ async function ensureOrder() {
       address: address.value.trim(),
       city: city.value.trim(),
       postalCode: postalCode.value.trim(),
-      paymentMethod: payment.value === 'online' ? 'online' : 'cod',
+      paymentMethod:
+        payment.value === 'wallet' ? 'wallet' : payment.value === 'online' ? 'online' : 'cod',
       shippingMethod: shippingMethod.value,
       deliveryDay: selectedDay.value,
       deliverySlot: selectedSlot.value,
@@ -254,6 +278,22 @@ async function confirmOrder() {
   try {
     const id = await ensureOrder()
 
+    if (isWallet.value) {
+      if (!canPayWallet.value) {
+        toast.error('موجودی کیف پول کافی نیست')
+        return
+      }
+      const paid = await $fetch('/api/payment/wallet', {
+        method: 'POST',
+        body: { orderId: id },
+      })
+      cart.clearCart()
+      saveCheckout({ orderId: id })
+      walletBalance.value = Number(paid?.walletBalance ?? walletBalance.value)
+      await navigateTo(`/payment/callback?cod=ok&order=${encodeURIComponent(id)}&wallet=1`)
+      return
+    }
+
     if (!isOnline.value) {
       await $fetch('/api/payment/cod', {
         method: 'POST',
@@ -287,7 +327,7 @@ async function confirmOrder() {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   cart.loadCart()
   if (!import.meta.client) return
 
@@ -307,10 +347,20 @@ onMounted(() => {
   city.value = data.city || ''
   postalCode.value = data.postalCode || ''
   address.value = data.address || ''
-  payment.value = data.payment === 'delivery' ? 'delivery' : 'online'
+  payment.value =
+    data.payment === 'delivery' ? 'delivery' : data.payment === 'wallet' ? 'wallet' : 'online'
   shippingMethod.value = data.shippingMethod || 'courier'
   selectedDay.value = data.selectedDay || ''
   selectedSlot.value = data.selectedSlot || ''
   orderId.value = data.orderId || ''
+
+  if (auth.isAuthenticated) {
+    try {
+      const me = await $fetch('/api/user')
+      walletBalance.value = Number(me?.user?.walletBalance || 0)
+    } catch {
+      walletBalance.value = 0
+    }
+  }
 })
 </script>

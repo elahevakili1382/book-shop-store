@@ -90,7 +90,10 @@ onMounted(async () => {
   if (String(route.query.cod || '') === 'ok') {
     isSuccess.value = true
     orderId.value = String(route.query.order || draft.orderId || '')
-    message.value = 'سفارش با پرداخت در محل ثبت شد. هنگام تحویل مبلغ را پرداخت می‌کنی.'
+    message.value =
+      String(route.query.wallet || '') === '1'
+        ? 'سفارش با کیف پول ثبت شد. مبلغ از موجودی کم شد و سفارش در صف ارسال است.'
+        : 'سفارش با پرداخت در محل ثبت شد. هنگام تحویل مبلغ را پرداخت می‌کنی.'
     clearCheckout()
     return
   }

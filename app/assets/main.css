@@ -40,3 +40,25 @@ select,
 textarea {
   font-family: inherit;
 }
+
+@media (max-width: 639px) {
+  .storefront h1:not(.hero-title) {
+    font-size: clamp(1.2rem, 5vw, 1.4rem) !important;
+    line-height: 1.3 !important;
+  }
+
+  .storefront h1.hero-title {
+    font-size: clamp(1.45rem, 6.4vw, 1.75rem) !important;
+    line-height: 1.25 !important;
+  }
+
+  .storefront h2 {
+    font-size: clamp(1.05rem, 4.4vw, 1.25rem) !important;
+    line-height: 1.35 !important;
+  }
+
+  .storefront h3 {
+    font-size: clamp(1rem, 4vw, 1.15rem) !important;
+    line-height: 1.35 !important;
+  }
+}

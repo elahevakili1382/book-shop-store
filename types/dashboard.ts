@@ -45,7 +45,7 @@ export interface Order {
   city?: string
   postalCode?: string
   amount: number
-  paymentMethod: 'online' | 'cod'
+  paymentMethod: 'online' | 'cod' | 'wallet'
   status: OrderStatus
   authority?: string
   items: OrderItem[]

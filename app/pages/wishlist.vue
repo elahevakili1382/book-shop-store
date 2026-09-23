@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import ProductGrid from '../components/ui/ProductGrid.vue'
 import { useWishlistStore } from '../stores/wishlist'
 import type { Product } from '~/types/types'
@@ -42,15 +42,35 @@ useSeoMeta({
 })
 
 const wishlist = useWishlistStore()
-onMounted(() => wishlist.load())
+const catalog = ref<Product[]>([])
+const pending = ref(true)
 
-const { data, pending } = await useAsyncData('wishlist-books', async () => {
-  return await $fetch<Product[]>('/api/books', { query: { limit: 80 } })
+async function loadBooks() {
+  wishlist.load()
+  const ids = wishlist.ids.map(String).filter(Boolean)
+  if (!ids.length) {
+    catalog.value = []
+    pending.value = false
+    return
+  }
+  pending.value = true
+  try {
+    catalog.value = await $fetch<Product[]>('/api/books', { query: { ids: ids.join(',') } })
+  } finally {
+    pending.value = false
+  }
+}
+
+onMounted(() => {
+  void loadBooks()
 })
 
-const products = computed(() => {
-  const catalog = data.value ?? []
-  const wanted = new Set(wishlist.ids.map(String))
-  return catalog.filter((book) => wanted.has(String(book.id ?? book._id)))
-})
+watch(
+  () => wishlist.ids.join(','),
+  () => {
+    void loadBooks()
+  },
+)
+
+const products = computed(() => catalog.value)
 </script>

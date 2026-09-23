@@ -60,7 +60,7 @@ const slideNext = () => swiperInstance.value?.slideNext()
 const slidePrev = () => swiperInstance.value?.slidePrev()
 
 const { data, pending: isLoading } = await useAsyncData('new-arrivals-programming', async () => {
-  return await productStore.fetchCategoryProducts('programming')
+  return await productStore.fetchCategoryProducts('programming', 12)
 })
 
 const products = computed(() => data.value ?? [])
@@ -71,19 +71,19 @@ const products = computed(() => data.value ?? [])
   overflow: visible !important;
 }
 .peek-slide {
-  width: min(72vw, 17.5rem);
+  width: min(46vw, 11.25rem);
   flex-shrink: 0;
   display: flex;
   height: auto;
 }
 @media (min-width: 640px) {
   .peek-slide {
-    width: 15.5rem;
+    width: 13rem;
   }
 }
 @media (min-width: 1024px) {
   .peek-slide {
-    width: 14.75rem;
+    width: 14rem;
   }
 }
 </style>

@@ -87,20 +87,23 @@ export async function findBookByParam(param: string): Promise<LeanBook | null> {
   const bySlug = await Book.findOne({ slug: lower }).lean()
   if (bySlug) return bySlug as LeanBook
 
+  const isbn = decoded.replace(/[^0-9A-Za-z]/g, '')
+  if (isbn.length >= 10 && isbn.length <= 17) {
+    const byIsbn = await Book.findOne({ isbn }).lean()
+    if (byIsbn) return byIsbn as LeanBook
+  }
+
   const byTitleEn = await Book.findOne({
     titleEn: new RegExp(`^${escapeRegex(decoded)}$`, 'i'),
   }).lean()
   if (byTitleEn) return byTitleEn as LeanBook
 
-  const all = (await Book.find().lean()) as LeanBook[]
-  return (
-    all.find((b) => bookPublicSlug(b) === lower) ||
-    all.find((b) => slugify(b.titleEn || '') === lower) ||
-    all.find((b) => slugify(b.title || '') === lower) ||
-    all.find((b) => (b.titleEn || '').toLowerCase() === lower) ||
-    all.find((b) => b.title === decoded) ||
-    null
-  )
+  const byTitle = await Book.findOne({
+    title: new RegExp(`^${escapeRegex(decoded)}$`, 'i'),
+  }).lean()
+  if (byTitle) return byTitle as LeanBook
+
+  return null
 }
 
 function escapeRegex(value: string) {

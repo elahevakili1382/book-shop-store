@@ -11,6 +11,10 @@ export interface IUser {
   address?: string
   city?: string
   postalCode?: string
+  walletBalance?: number
+  walletChargeAuthority?: string
+  walletChargeAmount?: number
+  lastWalletAuthority?: string
   province?: string
   resetPasswordToken?: string
   resetPasswordExpires?: Date
@@ -65,6 +69,25 @@ const UserSchema = new mongoose.Schema<IUser>(
       type: String,
       default: '',
       trim: true,
+    },
+    walletBalance: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    walletChargeAuthority: {
+      type: String,
+      default: '',
+      index: true,
+    },
+    walletChargeAmount: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+    lastWalletAuthority: {
+      type: String,
+      default: '',
     },
     resetPasswordToken: {
       type: String,

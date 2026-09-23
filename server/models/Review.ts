@@ -3,6 +3,7 @@ import mongoose, { type Model } from 'mongoose'
 export interface IReview {
   bookSlug: string
   authorName: string
+  userId?: string
   rating: number
   comment: string
   createdAt?: Date
@@ -21,6 +22,12 @@ const ReviewSchema = new mongoose.Schema<IReview>(
       type: String,
       required: true,
       trim: true,
+    },
+    userId: {
+      type: String,
+      index: true,
+      trim: true,
+      default: '',
     },
     rating: {
       type: Number,
