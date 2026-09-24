@@ -1,7 +1,7 @@
 <template>
     <div class="font-sans">
+        <ToastContainer />
         <NuxtLayout>
-          <ToastContainer/>
             <NuxtPage/>
         </NuxtLayout>
     </div>

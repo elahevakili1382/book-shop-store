@@ -53,7 +53,7 @@ import type { Product } from '../../types/types'
 
 const props = defineProps<{ product: Product }>()
 const cartStore = useCartStore()
-const toast = useToast()
+const notify = useMyToast()
 
 const formattedPrice = computed(
   () => new Intl.NumberFormat('fa-IR').format(props.product.price) + ' تومان'
@@ -75,10 +75,10 @@ function addToCart() {
     },
     1
   )
-  toast.success({
+  notify.add({
+    type: 'success',
+    title: 'سبد خرید',
     message: `«${props.product.title}» به سبد خرید اضافه شد`,
-    position: 'topRight',
-    timeout: 2400,
   })
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed top-4 right-4 z-[9999] space-y-3">
+  <div class="fixed top-[4.75rem] inset-x-3 z-[120] flex flex-col items-stretch gap-3 sm:inset-x-auto sm:start-4 sm:w-[320px]">
     <transition-group name="toast" tag="div">
       <div
         v-for="t in toasts"
@@ -26,8 +26,6 @@
 </template>
 
 <script setup lang="ts">
-import { useMyToast } from '../composables/usemyToast'
-
 const { toasts, remove } = useMyToast()
 
 const bg = (type: string) => {

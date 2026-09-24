@@ -251,7 +251,7 @@
                       class="w-full py-3.5 px-6 rounded-2xl bg-slate text-white font-bold text-sm
                              flex items-center justify-center gap-2 hover:bg-lime hover:text-slate transition-colors
                              disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-slate disabled:hover:text-white"
-                      @click="justAdded ? goToCart() : addToCart"
+                      @click="justAdded ? goToCart() : addToCart()"
                     >
                       <AppIcon :icon="justAdded ? 'mdi:arrow-left' : 'mdi:cart-plus'" class="w-5 h-5" />
                       {{ justAdded ? 'رفتن به سبد' : inStock ? 'افزودن به سبد' : 'ناموجود' }}
@@ -362,7 +362,7 @@
           class="flex-1 py-3 rounded-2xl bg-slate text-white font-bold text-sm flex items-center justify-center gap-2
                  hover:bg-lime hover:text-slate transition-colors
                  disabled:opacity-50 disabled:cursor-not-allowed"
-          @click="justAdded ? goToCart() : addToCart"
+          @click="justAdded ? goToCart() : addToCart()"
         >
           <AppIcon :icon="justAdded ? 'mdi:arrow-left' : 'mdi:cart-plus'" class="w-5 h-5" />
           {{ justAdded ? 'رفتن به سبد' : inStock ? 'افزودن به سبد' : 'ناموجود' }}
@@ -393,6 +393,7 @@ const categoryStore = useCategoryStore()
 const quantity = ref(1)
 const justAdded = ref(false)
 const toast = useToast()
+const notify = useMyToast()
 
 const route = useRoute()
 const slug = computed(() => route.params.slug as string)
@@ -588,13 +589,12 @@ const addToCart = () => {
     quantity.value
   )
 
-  toast.success({
-    message: `«${product.value.title}» به سبد خرید اضافه شد`,
-    position: 'topRight',
-    timeout: 2400,
-  })
-
   justAdded.value = true
+  notify.add({
+    type: 'success',
+    title: 'سبد خرید',
+    message: `«${product.value.title}» به سبد خرید اضافه شد`,
+  })
   setTimeout(() => {
     justAdded.value = false
   }, 4000)

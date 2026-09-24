@@ -1,5 +1,3 @@
-import { ref } from 'vue'
-
 type ToastType = 'success' | 'error' | 'warning' | 'info'
 
 interface Toast {
@@ -9,30 +7,32 @@ interface Toast {
   message: string
 }
 
-const toasts = ref<Toast[]>([])
-let counter = 1
-
 export function useMyToast() {
+  const toasts = useState<Toast[]>('app-toasts', () => [])
+
+  const remove = (id: number) => {
+    toasts.value = toasts.value.filter(t => t.id !== id)
+  }
+
   const add = (toast: {
     type?: ToastType
     title?: string
     message: string
     duration?: number
   }) => {
-    const id = counter++
+    const id = Date.now() + Math.floor(Math.random() * 1000)
 
-    toasts.value.push({
-      id,
-      type: toast.type || 'info',
-      title: toast.title || 'پیام سیستم',
-      message: toast.message
-    })
+    toasts.value = [
+      ...toasts.value,
+      {
+        id,
+        type: toast.type || 'info',
+        title: toast.title || 'پیام سیستم',
+        message: toast.message
+      }
+    ]
 
     setTimeout(() => remove(id), toast.duration || 3500)
-  }
-
-  const remove = (id: number) => {
-    toasts.value = toasts.value.filter(t => t.id !== id)
   }
 
   return { toasts, add, remove }

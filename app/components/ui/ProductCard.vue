@@ -95,7 +95,7 @@ import { useCartStore } from '../../stores/cart'
 import { productPath } from '../../utils/slugify'
 import { categoryLabel } from '../../utils/categoryLabel'
 
-const toast = useToast()
+const notify = useMyToast()
 const justAdded = ref(false)
 
 const props = withDefaults(
@@ -164,15 +164,14 @@ function addProduct() {
     },
     1
   )
-  toast.success({
-    message: `«${props.product.title}» به سبد خرید اضافه شد`,
-    position: 'topRight',
-    timeout: 2400,
-  })
-
   justAdded.value = true
+  notify.add({
+    type: 'success',
+    title: 'سبد خرید',
+    message: `«${props.product.title}» به سبد خرید اضافه شد`,
+  })
   setTimeout(() => {
     justAdded.value = false
-  }, 1500)
+  }, 2500)
 }
 </script>
