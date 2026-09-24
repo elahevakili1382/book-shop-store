@@ -25,7 +25,6 @@ const LOCAL_BOOK_IMAGES = {
   'Atomic Habits': '/images/books/atomic-habits.jpg',
   'The Pragmatic Programmer': '/images/books/pragmatic-programmer.jpg',
   'Design Patterns': '/images/books/design-patterns.jpg',
-  "You Don't Know JS": '/images/books/you-dont-know-js.jpg',
   'Deep Work': '/images/books/deep-work.jpg',
   'The 7 Habits of Highly Effective People': '/images/books/seven-habits.jpg',
   'Mindset': '/images/books/mindset.jpg',

@@ -2,6 +2,7 @@ import { defineEventHandler, createError, getQuery } from 'h3'
 import mongoose from 'mongoose'
 import { connectDB } from '../../utils/mongodb'
 import { Book } from '../../models/Book'
+import { Category } from '../../models/Category'
 import { serializeBook, type LeanBook } from '../../utils/bookLookup'
 
 const LIST_FIELDS = 'title titleEn price image slug rating stock category author isbn publishedYear'
@@ -19,6 +20,7 @@ export default defineEventHandler(async (event) => {
     const exclude = typeof query.exclude === 'string' ? query.exclude : undefined
     const search = typeof query.q === 'string' ? query.q.trim() : ''
     const full = String(query.full || '') === '1'
+    const catalog = String(query.catalog || '') === '1'
     const idsRaw = typeof query.ids === 'string' ? query.ids : ''
     const ids = idsRaw
       .split(',')
@@ -26,7 +28,7 @@ export default defineEventHandler(async (event) => {
       .filter((id) => mongoose.isValidObjectId(id))
       .slice(0, 40)
 
-    const maxLimit = full ? 200 : 80
+    const maxLimit = full || catalog ? 200 : 80
     const limitRaw = query.limit
     const parsedLimit =
       typeof limitRaw === 'string' && /^\d+$/.test(limitRaw)
@@ -43,7 +45,14 @@ export default defineEventHandler(async (event) => {
     if (category) filter.category = category
     if (search) {
       const rx = new RegExp(escapeRegex(search), 'i')
-      filter.$or = [{ title: rx }, { titleEn: rx }, { author: rx }]
+      const matchedCategories = await Category.find({ name: rx }).select('slug').lean()
+      const categorySlugs = matchedCategories.map((cat) => cat.slug).filter(Boolean)
+      filter.$or = [
+        { title: rx },
+        { titleEn: rx },
+        { author: rx },
+        ...(categorySlugs.length ? [{ category: { $in: categorySlugs } }] : []),
+      ]
     }
 
     let cursor = Book.find(filter).sort({ createdAt: -1 }).limit(limit).lean()

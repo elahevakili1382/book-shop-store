@@ -138,13 +138,7 @@ export const useProductStore = defineStore('productStore', () => {
         query: { q: query, limit: 24 },
       })
 
-      const list = Array.isArray(data)
-        ? data
-            .filter((b) =>
-              (b.title as string)?.toLowerCase().includes(query.toLowerCase())
-            )
-            .map(mapBookToProduct)
-        : []
+      const list = Array.isArray(data) ? data.map(mapBookToProduct) : []
 
       products.value = list
       return list

@@ -35,7 +35,6 @@ const LOCAL_BOOK_IMAGES = {
   'Atomic Habits': '/images/books/atomic-habits.jpg',
   'The Pragmatic Programmer': '/images/books/pragmatic-programmer.jpg',
   'Design Patterns': '/images/books/design-patterns.jpg',
-  "You Don't Know JS": '/images/books/you-dont-know-js.jpg',
   'Deep Work': '/images/books/deep-work.jpg',
   'The 7 Habits of Highly Effective People': '/images/books/seven-habits.jpg',
   Mindset: '/images/books/mindset.jpg',
@@ -58,7 +57,6 @@ const ISBN_BY_TITLE = {
   'Atomic Habits': '9780735211292',
   'The Pragmatic Programmer': '9780135957059',
   'Design Patterns': '9780201633610',
-  "You Don't Know JS": '9781449335215',
   'Deep Work': '9781455586691',
   'The 7 Habits of Highly Effective People': '9781982137138',
   Mindset: '9780345472328',
@@ -81,7 +79,6 @@ const TITLE_FA = {
   'Atomic Habits': 'عادت‌های اتمی',
   'The Pragmatic Programmer': 'برنامه‌نویس عمل‌گرا',
   'Design Patterns': 'الگوهای طراحی',
-  "You Don't Know JS": 'تو جاوااسکریپت را نمی‌شناسی',
   'Deep Work': 'کار عمیق',
   'The 7 Habits of Highly Effective People': 'هفت عادت مردمان موثر',
   Mindset: 'ذهنیت',
@@ -98,7 +95,7 @@ const TITLE_FA = {
   'The Selfish Gene': 'ژن خودخواه',
 }
 
-const REVIEW_COUNTS = [128, 94, 312, 76, 58, 103, 187, 245, 91, 421, 356, 278, 203, 389, 112, 67, 154, 892, 176, 89]
+const REVIEW_COUNTS = [128, 94, 312, 76, 58, 187, 245, 91, 421, 356, 278, 203, 389, 112, 67, 154, 892, 176, 89]
 
 const BOOK_META = [
   { author: 'Robert C. Martin', description: 'اصول نوشتن کد تمیز و قابل نگهداری برای توسعه‌دهندگان حرفه‌ای.', price: 485000, category: 'programming', stock: 12, rating: 4.8, pages: 464, publisher: 'Prentice Hall', format: 'جلد شومیز', publishedYear: 2008 },
@@ -106,7 +103,6 @@ const BOOK_META = [
   { author: 'James Clear', description: 'راهنمای علمی ساخت عادت‌های مثبت.', price: 295000, category: 'psychology', stock: 20, rating: 4.7, pages: 320, publisher: 'Avery', format: 'جلد شومیز', publishedYear: 2018, translator: 'سارا محمدی' },
   { author: 'Andrew Hunt, David Thomas', description: 'مهارت‌های یک برنامه‌نویس حرفه‌ای.', price: 510000, category: 'programming', stock: 6, rating: 4.6, pages: 352, publisher: 'Addison-Wesley', format: 'جلد شومیز', publishedYear: 2019 },
   { author: 'Erich Gamma et al.', description: 'الگوهای طراحی شیءگرا.', price: 620000, category: 'programming', stock: 5, rating: 4.4, pages: 416, publisher: 'Addison-Wesley', format: 'جلد گالینگور', publishedYear: 1994 },
-  { author: 'Kyle Simpson', description: 'درک عمیق JavaScript.', price: 380000, category: 'programming', stock: 10, rating: 4.5, pages: 278, publisher: "O'Reilly Media", format: 'جلد شومیز', publishedYear: 2015 },
   { author: 'Cal Newport', description: 'استراتژی‌های تمرکز عمیق.', price: 275000, category: 'psychology', stock: 15, rating: 4.6, pages: 296, publisher: 'Grand Central', format: 'جلد شومیز', publishedYear: 2016, translator: 'نیما رضایی' },
   { author: 'Stephen R. Covey', description: 'هفت عادت بنیادین موفقیت.', price: 340000, category: 'psychology', stock: 18, rating: 4.5, pages: 384, publisher: 'Free Press', format: 'جلد شومیز', publishedYear: 2020, translator: 'مریم احمدی' },
   { author: 'Carol S. Dweck', description: 'تغییر ذهنیت برای رشد.', price: 260000, category: 'psychology', stock: 14, rating: 4.4, pages: 320, publisher: 'Ballantine', format: 'جلد شومیز', publishedYear: 2016 },
@@ -129,7 +125,6 @@ const ENGLISH_TITLES = [
   'Atomic Habits',
   'The Pragmatic Programmer',
   'Design Patterns',
-  "You Don't Know JS",
   'Deep Work',
   'The 7 Habits of Highly Effective People',
   'Mindset',

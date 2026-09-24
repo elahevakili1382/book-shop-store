@@ -81,38 +81,37 @@
 
         <transition name="fade">
           <div
-            v-if="isDropdownVisible"
+            v-if="showSearchResults"
             class="absolute top-full left-0 right-0 mt-2 bg-white shadow-card rounded-2xl z-10 max-h-80 overflow-y-auto border border-slate/10"
           >
-            <ul>
+            <ul role="listbox">
+              <li v-if="searchLoading" class="px-4 py-3 text-slate/50 text-center text-sm">در حال جستجو...</li>
+              <li v-else-if="searchError" class="px-4 py-3 text-red-500 text-center text-sm">{{ searchError }}</li>
               <li
-                v-for="p in store.products"
-                :key="p._id"
-                class="flex items-center gap-3 px-4 py-3 hover:bg-cream cursor-pointer transition-colors"
-                @click="goToProduct(p)"
+                v-else-if="!searchHits.length"
+                class="px-4 py-3 text-slate/50 text-center text-sm"
               >
-                <ClientOnly>
-                  <NuxtImg
+                کتابی پیدا نشد
+              </li>
+              <li v-for="p in searchHits" v-else :key="p._id">
+                <button
+                  type="button"
+                  class="flex w-full items-center gap-3 px-4 py-3 text-right hover:bg-cream transition-colors"
+                  @click="goToProduct(p)"
+                >
+                  <img
                     :src="p.image || '/images/default-book.jpg'"
                     :alt="p.title"
                     width="40"
                     height="56"
-                    class="shrink-0 rounded-lg object-cover"
+                    class="h-14 w-10 shrink-0 rounded-lg object-cover"
                   />
-                </ClientOnly>
-                <div class="flex-1 min-w-0 text-right">
-                  <h3 class="text-sm font-semibold text-slate truncate">{{ p.title }}</h3>
-                  <p class="text-xs text-slate/50 truncate">{{ p.category }}</p>
-                </div>
-                <span class="text-xs font-bold text-slate shrink-0">{{ formatPrice(p.price) }}</span>
-              </li>
-              <li v-if="store.isLoading" class="px-4 py-3 text-slate/50 text-center text-sm">در حال جستجو...</li>
-              <li v-if="store.error" class="px-4 py-3 text-red-500 text-center text-sm">{{ store.error }}</li>
-              <li
-                v-if="!store.isLoading && !store.products.length && searchQuery"
-                class="px-4 py-3 text-slate/50 text-center text-sm"
-              >
-                محصولی یافت نشد
+                  <span class="min-w-0 flex-1">
+                    <span class="block truncate text-sm font-semibold text-slate">{{ p.title }}</span>
+                    <span class="block truncate text-xs text-slate/50">{{ displayCategory(p.category) }}</span>
+                  </span>
+                  <span class="shrink-0 text-xs font-bold text-slate">{{ formatPrice(p.price) }}</span>
+                </button>
               </li>
             </ul>
           </div>
@@ -124,8 +123,11 @@
         <button
           type="button"
           class="p-2 rounded-full text-slate hover:bg-cream"
+          :class="isMobileSearchOpen ? 'bg-cream' : ''"
           aria-label="جستجو"
-          @click="isMobileSearchOpen = !isMobileSearchOpen"
+          aria-controls="mobile-search"
+          :aria-expanded="isMobileSearchOpen"
+          @click="toggleMobileSearch"
         >
           <AppIcon icon="mdi:magnify" class="w-5 h-5" />
         </button>
@@ -143,28 +145,65 @@
         <transition name="fade">
           <div
             v-if="isMobileSearchOpen"
-            class="fixed top-[4.25rem] inset-x-4 z-50"
-            click-outside="closeDropdown"
+            id="mobile-search"
+            class="fixed inset-x-0 top-[4.25rem] z-[60] px-3 pt-2"
+            click-outside="closeMobileSearch"
           >
-            <input
-              v-model="searchQuery"
-              type="text"
-              placeholder="جستجو..."
-              class="w-full rounded-2xl px-3 py-2.5 bg-white border border-slate/10 shadow-card text-sm text-right focus:outline-none focus:ring-1 focus:ring-slate/20"
-              @input="handleInput"
-            />
-            <div
-              v-if="isDropdownVisible"
-              class="mt-2 bg-white shadow-card rounded-2xl border border-slate/10 max-h-64 overflow-y-auto"
-            >
-              <ul>
-                <li
-                  v-for="p in store.products"
-                  :key="p._id"
-                  class="px-4 py-2.5 text-sm text-slate hover:bg-cream cursor-pointer text-right"
-                  @click="goToProduct(p)"
+            <div class="overflow-hidden rounded-2xl border border-slate/10 bg-white shadow-card">
+              <div class="flex items-center gap-2 border-b border-slate/10 px-3">
+                <AppIcon icon="mdi:magnify" class="h-5 w-5 shrink-0 text-slate/40" />
+                <input
+                  ref="mobileSearchInput"
+                  v-model="searchQuery"
+                  type="search"
+                  role="combobox"
+                  aria-autocomplete="list"
+                  aria-controls="mobile-search-results"
+                  :aria-expanded="showSearchResults"
+                  placeholder="نام کتاب، نویسنده یا موضوع"
+                  class="h-12 w-full bg-transparent text-right text-sm font-medium text-slate outline-none placeholder:text-slate/35"
+                  @input="handleInput"
+                />
+                <button
+                  v-if="searchQuery"
+                  type="button"
+                  class="shrink-0 rounded-full p-1 text-slate/45 hover:text-slate"
+                  aria-label="پاک کردن جستجو"
+                  @click="clearSearch"
                 >
-                  {{ p.title }}
+                  <AppIcon icon="mdi:close" class="h-4 w-4" />
+                </button>
+              </div>
+
+              <ul
+                v-if="showSearchResults"
+                id="mobile-search-results"
+                role="listbox"
+                class="max-h-72 overflow-y-auto"
+              >
+                <li v-if="searchLoading" class="px-4 py-3 text-center text-sm text-slate/50">در حال جستجو...</li>
+                <li v-else-if="searchError" class="px-4 py-3 text-center text-sm text-red-500">{{ searchError }}</li>
+                <li v-else-if="!searchHits.length" class="px-4 py-3 text-center text-sm text-slate/50">کتابی پیدا نشد</li>
+                <li v-for="p in searchHits" v-else :key="p._id">
+                  <button
+                    type="button"
+                    role="option"
+                    class="flex w-full items-center gap-3 px-3 py-2.5 text-right transition-colors hover:bg-cream"
+                    @click="goToProduct(p)"
+                  >
+                    <img
+                      :src="p.image || '/images/default-book.jpg'"
+                      :alt="p.title"
+                      width="40"
+                      height="56"
+                      class="h-14 w-10 shrink-0 rounded-lg object-cover"
+                    />
+                    <span class="min-w-0 flex-1">
+                      <span class="block truncate text-sm font-bold text-slate">{{ p.title }}</span>
+                      <span class="mt-0.5 block truncate text-xs text-slate/50">{{ displayCategory(p.category) }}</span>
+                    </span>
+                    <span class="shrink-0 text-xs font-bold text-slate">{{ formatPrice(p.price) }}</span>
+                  </button>
                 </li>
               </ul>
             </div>
@@ -317,14 +356,13 @@
 import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import { useCategoryStore } from '../stores/categories'
 import { useCartStore } from '../stores/cart'
-import { useProductStore } from '../stores/productStore'
 import { useUIStore } from '../stores/ui'
 import { productPath } from '../utils/slugify'
+import { categoryLabel, categorySearchText } from '../utils/categoryLabel'
 import type { Product } from '~/types/types'
 
 const ui = useUIStore()
 const cart = useCartStore()
-const store = useProductStore()
 const auth = useAuthStore()
 const router = useRouter()
 const route = useRoute()
@@ -344,16 +382,22 @@ const accountTo = computed(() =>
 const dashboardTo = computed(() => (isAdmin.value ? '/dashboard' : '/login#demo'))
 
 const searchQuery = ref('')
+const searchHits = ref<Product[]>([])
+const searchCatalog = ref<Product[]>([])
+const searchLoading = ref(false)
+const searchError = ref('')
 const isMobileSearchOpen = ref(false)
-const typing = ref(false)
+const mobileSearchInput = ref<HTMLInputElement | null>(null)
+let searchSeq = 0
+let catalogPromise: Promise<void> | null = null
 const headerHidden = ref(false)
 const headerSolid = ref(false)
 
 const headerClass = computed(() => {
   const hidden = headerHidden.value && !ui.isMobileMenuOpen ? '-translate-y-full' : 'translate-y-0'
   const look = headerSolid.value
-    ? 'border-solid border-slate/15 bg-white shadow-card'
-    : 'border-dashed border-slate/15 bg-white/90 backdrop-blur-md'
+    ? 'border-solid border-slate/10 bg-cream shadow-card'
+    : 'border-dashed border-slate/10 bg-cream'
   return `${hidden} ${look}`
 })
 
@@ -364,8 +408,6 @@ const mobileNav = [
   { label: 'علاقه‌مندی‌ها', to: '/wishlist', icon: 'mdi:heart-outline' },
   { label: 'درباره ما', to: '/about', icon: 'mdi:information-outline' },
 ]
-
-let timer: ReturnType<typeof setTimeout> | null = null
 
 // 70% scaffold — TODO 10%: isNavActive(path) بنویس و navLinkClass را ساده کن
 
@@ -384,39 +426,101 @@ function navLinkClass(path: string, exact = true, block = false) {
     : `${base} text-slate/60 hover:text-slate hover:bg-cream`
 }
 
+const showSearchResults = computed(() => searchQuery.value.trim().length > 0)
+
+function displayCategory(slug?: string) {
+  if (!slug) return ''
+  return categoryStore.categories.find((cat) => cat.slug === slug)?.name || categoryLabel(slug)
+}
+
+function bookMatches(book: Product, query: string) {
+  const q = query.toLowerCase()
+  return [book.title, book.titleEn, book.author, displayCategory(book.category), categorySearchText(book.category)]
+    .filter(Boolean)
+    .some((field) => String(field).toLowerCase().includes(q))
+}
+
+function applyFilter(query: string) {
+  searchHits.value = searchCatalog.value.filter((book) => bookMatches(book, query)).slice(0, 6)
+}
+
+function ensureCatalog() {
+  if (searchCatalog.value.length) return Promise.resolve()
+  if (catalogPromise) return catalogPromise
+  catalogPromise = $fetch<Product[]>('/api/books', { query: { catalog: '1', limit: 200 } })
+    .then((data) => {
+      searchCatalog.value = Array.isArray(data) ? data : []
+    })
+    .catch(() => {
+      catalogPromise = null
+      searchError.value = 'جستجو انجام نشد'
+    })
+  return catalogPromise
+}
+
 function handleInput() {
-  typing.value = true
-  if (timer) clearTimeout(timer)
-  if (!searchQuery.value.trim()) {
-    store.products = []
+  const query = searchQuery.value.trim()
+  searchError.value = ''
+  if (!query) {
+    searchSeq += 1
+    searchHits.value = []
+    searchLoading.value = false
     return
   }
-  timer = setTimeout(async () => {
-    await store.searchProducts(searchQuery.value)
-    typing.value = false
-  }, 400)
+
+  if (searchCatalog.value.length) {
+    searchLoading.value = false
+    applyFilter(query)
+    return
+  }
+
+  searchLoading.value = true
+  const seq = ++searchSeq
+  void ensureCatalog()?.then(() => {
+    if (seq !== searchSeq || searchQuery.value.trim() !== query) return
+    applyFilter(query)
+    searchLoading.value = false
+  })
 }
 
 function clearSearch() {
+  searchSeq += 1
   searchQuery.value = ''
-  store.products = []
+  searchHits.value = []
+  searchLoading.value = false
+  searchError.value = ''
+}
+
+function closeMobileSearch() {
+  isMobileSearchOpen.value = false
+  clearSearch()
+}
+
+function toggleMobileSearch() {
+  if (isMobileSearchOpen.value) {
+    closeMobileSearch()
+    return
+  }
+  ui.closeMobileMenu()
+  void ensureCatalog()
+  isMobileSearchOpen.value = true
 }
 
 function goToProduct(product: Product) {
-  clearSearch()
-  router.push(productPath(product))
+  const path = productPath(product)
+  closeMobileSearch()
+  router.push(path)
 }
 
 function formatPrice(price: number) {
   return new Intl.NumberFormat('fa-IR').format(price) + ' تومان'
 }
 
-const isDropdownVisible = computed(
-  () => searchQuery.value.trim() && store.products.length
-)
-
 function closeDropdown() {
-  store.products = []
+  if (window.innerWidth < 768) return
+  searchHits.value = []
+  searchLoading.value = false
+  searchError.value = ''
 }
 
 function closeOnDesktop() {
@@ -424,6 +528,7 @@ function closeOnDesktop() {
 }
 
 function onMenuButtonClick() {
+  closeMobileSearch()
   overlayReady.value = false
   ui.toggleMobileMenu()
 }
@@ -438,7 +543,7 @@ let lastScrollY = 0
 function onScroll() {
   const y = window.scrollY
   headerSolid.value = y > 8
-  if (ui.isMobileMenuOpen || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  if (ui.isMobileMenuOpen || isMobileSearchOpen.value || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     headerHidden.value = false
     lastScrollY = y
     return
@@ -455,6 +560,7 @@ function onScroll() {
 
 onMounted(() => {
   categoryStore.fetchCategories()
+  void ensureCatalog()
   window.addEventListener('resize', closeOnDesktop)
   window.addEventListener('scroll', onScroll, { passive: true })
   onScroll()
@@ -489,11 +595,18 @@ watch(
 
 watch(
   () => route.path,
-  () =>{
+  () => {
     isCategoryOpen.value = false
     ui.closeMobileMenu()
-  }
+    closeMobileSearch()
+  },
 )
+
+watch(isMobileSearchOpen, async (open) => {
+  if (!open) return
+  await nextTick()
+  mobileSearchInput.value?.focus()
+})
 </script>
 
 <style scoped>
